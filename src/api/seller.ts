@@ -3,14 +3,15 @@ import { ApiResponse } from '../domain/Common';
 
 interface SellerApplicationPayload {
     businessName: string;
-    businessType: string; // e.g., 'RESTAURANT', 'CAFE'
     description: string;
-    phoneNumber: string;
+    address: string;
+    city: string;
+    lat: number;
+    lng: number;
+    phone?: string;
 }
 
 export const apply = async (payload: SellerApplicationPayload): Promise<ApiResponse<any>> => {
     const { data } = await apiClient.post('/seller/apply', payload);
     return data.data;
 };
-
-// Other seller endpoints would go here
