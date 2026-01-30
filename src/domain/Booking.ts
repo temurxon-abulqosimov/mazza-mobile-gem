@@ -2,6 +2,8 @@ import { BookingStatus } from './enums/BookingStatus';
 import { PickupWindow, Product } from './Product';
 import { Store } from './Store';
 
+export { BookingStatus };
+
 export interface BookingPayment {
   status: string;
   amount: number;

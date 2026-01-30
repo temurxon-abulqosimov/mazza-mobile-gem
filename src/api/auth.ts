@@ -12,12 +12,12 @@ interface AuthResponse {
 
 export const login = async (credentials: LoginFormData): Promise<AuthResponse> => {
   const { data } = await apiClient.post('/auth/login', credentials);
-  return data;
+  return data.data; // Extract the actual data from the wrapper
 };
 
 export const register = async (userData: RegisterFormData): Promise<AuthResponse> => {
   const { data } = await apiClient.post('/auth/register', userData);
-  return data;
+  return data.data; // Extract the actual data from the wrapper
 };
 
 export const logout = async (): Promise<void> => {
@@ -29,5 +29,5 @@ export const logout = async (): Promise<void> => {
 
 export const refreshToken = async (token: string): Promise<{ accessToken: string; refreshToken: string; }> => {
     const { data } = await apiClient.post('/auth/refresh', { refreshToken: token });
-    return data.tokens;
+    return data.data.tokens; // Extract tokens from the nested data structure
 }

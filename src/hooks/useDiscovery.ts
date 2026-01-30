@@ -20,7 +20,7 @@ export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryPara
 
   return {
     products: data?.data.products ?? [],
-    pagination: data?.meta.pagination,
+    pagination: data?.meta?.pagination,
     isLoading,
     isError,
     error,

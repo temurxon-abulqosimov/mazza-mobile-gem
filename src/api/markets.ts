@@ -4,10 +4,10 @@ import { ApiResponse } from '../domain/Common';
 
 export const getMarkets = async (): Promise<ApiResponse<{ markets: Market[] }>> => {
   const { data } = await apiClient.get('/markets');
-  return data;
+  return data.data;
 };
 
 export const getMarketById = async (id: string): Promise<ApiResponse<{ market: Market }>> => {
     const { data } = await apiClient.get(`/markets/${id}`);
-    return data;
+    return data.data;
 }

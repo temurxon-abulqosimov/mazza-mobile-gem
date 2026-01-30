@@ -12,20 +12,20 @@ export const createBooking = async (payload: CreateBookingPayload, idempotencyKe
   const { data } = await apiClient.post('/bookings', payload, {
     headers: { 'Idempotency-Key': idempotencyKey },
   });
-  return data;
+  return data.data;
 };
 
 export const getUserBookings = async (status: 'active' | 'past', cursor?: string): Promise<PaginatedResponse<{ bookings: Booking[] }>> => {
     const { data } = await apiClient.get('/bookings', { params: { status, cursor } });
-    return data;
+    return data.data;
 };
 
 export const getBookingById = async (id: string): Promise<ApiResponse<{ booking: Booking }>> => {
     const { data } = await apiClient.get(`/bookings/${id}`);
-    return data;
+    return data.data;
 }
 
 export const cancelBooking = async (id: string, reason: string): Promise<ApiResponse<{ booking: Booking }>> => {
     const { data } = await apiClient.post(`/bookings/${id}/cancel`, { reason });
-    return data;
+    return data.data;
 }

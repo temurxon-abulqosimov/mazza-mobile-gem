@@ -11,7 +11,7 @@ interface GetFavoritesParams {
 
 export const getFavorites = async (params: GetFavoritesParams): Promise<PaginatedResponse<{ favorites: FavoriteStore[] }>> => {
     const { data } = await apiClient.get('/favorites', { params });
-    return data;
+    return data.data;
 }
 
 export const addFavorite = async (storeId: string): Promise<void> => {

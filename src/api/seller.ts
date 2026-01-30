@@ -10,7 +10,7 @@ interface SellerApplicationPayload {
 
 export const apply = async (payload: SellerApplicationPayload): Promise<ApiResponse<any>> => {
     const { data } = await apiClient.post('/seller/apply', payload);
-    return data;
+    return data.data;
 };
 
 // Other seller endpoints would go here

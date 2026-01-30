@@ -10,12 +10,12 @@ interface GetNotificationsParams {
 
 export const getNotifications = async (params: GetNotificationsParams): Promise<PaginatedResponse<{ notifications: Notification[] }>> => {
     const { data } = await apiClient.get('/notifications', { params });
-    return data;
+    return data.data;
 };
 
 export const getUnreadCount = async (): Promise<{ count: number }> => {
     const { data } = await apiClient.get('/notifications/unread-count');
-    return data;
+    return data.data;
 };
 
 export const markAsRead = async (notificationIds: string[]): Promise<void> => {

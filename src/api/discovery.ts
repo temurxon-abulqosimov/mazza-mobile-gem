@@ -14,12 +14,12 @@ interface DiscoveryParams {
 
 export const discoverProducts = async (params: DiscoveryParams): Promise<PaginatedResponse<{ products: Product[] }>> => {
   const { data } = await apiClient.get('/discovery/products', { params });
-  return data;
+  return { data: data.data, meta: data.meta };
 };
 
 export const discoverStores = async (params: DiscoveryParams): Promise<PaginatedResponse<{ stores: Store[] }>> => {
   const { data } = await apiClient.get('/discovery/stores', { params });
-  return data;
+  return { data: data.data, meta: data.meta };
 };
 
 interface SearchParams {
@@ -32,5 +32,5 @@ interface SearchParams {
 export const search = async (params: SearchParams): Promise<any> => {
     const { data } = await apiClient.get('/discovery/search', { params });
     // Define specific type for search results if needed
-    return data;
+    return data.data;
 }

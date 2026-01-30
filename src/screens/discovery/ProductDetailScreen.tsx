@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { useProduct } from '../../hooks/useProduct';
 import { useBooking } from '../../hooks/useBooking';
+import { useAuthGuard } from '../../hooks/useAuthGuard';
 
 type ProductDetailRouteProp = RouteProp<DiscoveryStackParamList, 'ProductDetail'>;
 type ProductDetailNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'ProductDetail'>;
@@ -18,10 +19,16 @@ const ProductDetailScreen = () => {
 
   const { product, isLoading, isError, refetch } = useProduct(productId);
   const { createBookingAsync, isCreatingBooking } = useBooking();
+  const { requireAuth } = useAuthGuard();
 
   const [quantity, setQuantity] = useState(1);
 
   const handleBooking = async () => {
+    // Check authentication before allowing reservation
+    if (!requireAuth('Please login to reserve products and save meals!')) {
+      return;
+    }
+
     if (!product) return;
 
     try {

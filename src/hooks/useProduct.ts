@@ -11,7 +11,7 @@ export const useProduct = (productId: string) => {
   });
 
   return {
-    product: data?.data.product,
+    product: data?.product,
     isLoading,
     isError,
     error,
