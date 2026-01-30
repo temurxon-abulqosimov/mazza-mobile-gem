@@ -22,13 +22,15 @@ const PendingSellersScreen = () => {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data: sellers, isLoading } = useQuery({
+  const { data: response, isLoading } = useQuery({
     queryKey: ['pendingSellers'],
     queryFn: async () => {
       const { data } = await apiClient.get('/admin/sellers/pending');
-      return data.data as PendingSeller[];
+      return data.data as { sellers: PendingSeller[]; total: number; nextCursor?: string };
     },
   });
+
+  const sellers = response?.sellers || [];
 
   const approveMutation = useMutation({
     mutationFn: async (sellerId: string) => {
@@ -109,10 +111,10 @@ const PendingSellersScreen = () => {
     >
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Pending Seller Applications</Text>
-        <Text style={styles.headerSubtitle}>{sellers?.length || 0} applications waiting</Text>
+        <Text style={styles.headerSubtitle}>{sellers.length} applications waiting</Text>
       </View>
 
-      {!sellers || sellers.length === 0 ? (
+      {sellers.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyIcon}>📋</Text>
           <Text style={styles.emptyText}>No pending applications</Text>
