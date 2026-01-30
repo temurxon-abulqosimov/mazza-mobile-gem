@@ -1,14 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button, ActivityIndicator, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuth } from '../../hooks/useAuth';
 import { useAuthStore } from '../../state/authStore';
 import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
+import { MainTabParamList } from '../../navigation/MainAppNavigator';
 import { UserRole } from '../../domain/enums/UserRole';
 
-type ProfileNavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'ProfileHome'>;
+type ProfileNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<ProfileStackParamList, 'ProfileHome'>,
+  BottomTabNavigationProp<MainTabParamList>
+>;
 
 const ProfileScreen = () => {
   const navigation = useNavigation<ProfileNavigationProp>();
@@ -43,7 +48,7 @@ const ProfileScreen = () => {
     );
   }
 
-  const canBecomeSeller = userProfile.role === UserRole.BUYER;
+  const canBecomeSeller = userProfile.role === UserRole.CONSUMER;
 
   return (
     <ScrollView style={styles.container}>
@@ -88,7 +93,7 @@ const ProfileScreen = () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>MY ACTIVITY</Text>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Orders')}>
           <Text style={styles.menuItemIcon}>📦</Text>
           <Text style={styles.menuItemText}>My Orders</Text>
           <Text style={styles.menuItemArrow}>›</Text>
