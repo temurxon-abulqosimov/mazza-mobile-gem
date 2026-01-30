@@ -1,29 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
+import { apiClient } from '../../api/client';
+import { AdminStackParamList } from '../../navigation/AdminNavigator';
+
+type NavigationProp = NativeStackNavigationProp<AdminStackParamList>;
+
+interface AdminStats {
+  totalUsers: number;
+  activeSellers: number;
+  pendingSellers: number;
+  totalProducts: number;
+  totalOrders: number;
+}
 
 const AdminDashboardScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const { logout } = useAuth();
-  const [refreshing, setRefreshing] = React.useState(false);
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = React.useCallback(() => {
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['adminStats'],
+    queryFn: async () => {
+      const { data } = await apiClient.get('/admin/stats');
+      return data.data as AdminStats;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
+  });
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1000);
-  }, []);
+    await queryClient.invalidateQueries({ queryKey: ['adminStats'] });
+    setRefreshing(false);
+  };
 
   const StatCard = ({ title, value, color }: { title: string; value: string | number; color: string }) => (
     <View style={[styles.statCard, { borderLeftColor: color }]}>
-      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statValue}>{isLoading ? '...' : value}</Text>
       <Text style={styles.statTitle}>{title}</Text>
     </View>
   );
 
-  const MenuCard = ({ icon, title, subtitle, onPress }: { icon: string; title: string; subtitle: string; onPress: () => void }) => (
+  const MenuCard = ({ icon, title, subtitle, onPress, badge }: {
+    icon: string;
+    title: string;
+    subtitle: string;
+    onPress: () => void;
+    badge?: number;
+  }) => (
     <TouchableOpacity style={styles.menuCard} onPress={onPress}>
       <View style={styles.menuIcon}>
         <Text style={styles.menuIconText}>{icon}</Text>
+        {badge !== undefined && badge > 0 && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{badge > 99 ? '99+' : badge}</Text>
+          </View>
+        )}
       </View>
       <View style={styles.menuContent}>
         <Text style={styles.menuTitle}>{title}</Text>
@@ -45,12 +81,12 @@ const AdminDashboardScreen = () => {
 
       {/* Stats Overview */}
       <View style={styles.statsContainer}>
-        <StatCard title="Total Users" value="0" color="#4CAF50" />
-        <StatCard title="Active Sellers" value="0" color="#FF6B35" />
+        <StatCard title="Total Users" value={stats?.totalUsers || 0} color="#4CAF50" />
+        <StatCard title="Active Sellers" value={stats?.activeSellers || 0} color="#FF6B35" />
       </View>
       <View style={styles.statsContainer}>
-        <StatCard title="Total Products" value="0" color="#2196F3" />
-        <StatCard title="Total Orders" value="0" color="#9C27B0" />
+        <StatCard title="Total Products" value={stats?.totalProducts || 0} color="#2196F3" />
+        <StatCard title="Total Orders" value={stats?.totalOrders || 0} color="#9C27B0" />
       </View>
 
       {/* Quick Actions */}
@@ -61,10 +97,8 @@ const AdminDashboardScreen = () => {
           icon="👤"
           title="Pending Sellers"
           subtitle="Review seller applications"
-          onPress={() => {
-            // TODO: Navigate to pending sellers
-            console.log('Navigate to pending sellers');
-          }}
+          badge={stats?.pendingSellers}
+          onPress={() => navigation.navigate('PendingSellers')}
         />
 
         <MenuCard
@@ -195,9 +229,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+    position: 'relative',
   },
   menuIconText: {
     fontSize: 24,
+  },
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#FF3B30',
+    borderRadius: 12,
+    minWidth: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   menuContent: {
     flex: 1,
