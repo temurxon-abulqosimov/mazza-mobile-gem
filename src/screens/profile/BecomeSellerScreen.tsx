@@ -22,12 +22,15 @@ const BecomeSellerScreen = () => {
         try {
             await applyAsSeller(data);
             Alert.alert(
-                'Application Submitted', 
+                'Application Submitted',
                 'Thank you! Your application is under review. We will get back to you soon.',
                 [{ text: 'OK', onPress: () => navigation.goBack() }]
             );
         } catch (error: any) {
-            const message = error.response?.data?.message || 'Something went wrong.';
+            console.error('Seller application error:', error);
+            console.error('Error response:', error.response);
+            console.error('Error data:', error.response?.data);
+            const message = error.response?.data?.message || error.message || 'Something went wrong.';
             Alert.alert('Application Failed', message);
         }
     };
