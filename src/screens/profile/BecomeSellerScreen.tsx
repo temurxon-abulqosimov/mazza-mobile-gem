@@ -68,7 +68,9 @@ const BecomeSellerScreen = () => {
             );
         } catch (error: any) {
             console.error('Seller application error:', error);
-            const message = error.response?.data?.error?.message?.join(', ') || error.message || 'Something went wrong.';
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
+            const message = error.response?.data?.message || error.response?.data?.error?.message?.join(', ') || error.message || 'Something went wrong.';
             Alert.alert('Application Failed', message);
         }
     };
