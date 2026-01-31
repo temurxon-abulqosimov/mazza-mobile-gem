@@ -58,6 +58,11 @@ const ProfileScreen = () => {
   const canBecomeSeller = userProfile.role === UserRole.CONSUMER;
   const isSeller = userProfile.role === UserRole.SELLER;
 
+  // Debug: Log the role to console
+  console.log('User Profile Role:', userProfile.role);
+  console.log('Is Seller?', isSeller);
+  console.log('Can Become Seller?', canBecomeSeller);
+
   return (
     <ScrollView
       style={styles.container}
@@ -65,6 +70,13 @@ const ProfileScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
       }
     >
+      {/* DEBUG: Show current role */}
+      <View style={styles.debugBanner}>
+        <Text style={styles.debugText}>
+          Current Role: {userProfile.role} | Is Seller: {isSeller ? 'YES' : 'NO'}
+        </Text>
+      </View>
+
       <View style={styles.header}>
         <Image source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }} style={styles.avatar} />
         <Text style={styles.fullName}>{userProfile.fullName}</Text>
@@ -275,6 +287,19 @@ const GuestProfileView = () => {
 const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   container: { flex: 1, backgroundColor: '#f5f5f5' },
+  debugBanner: {
+    backgroundColor: '#FFE5E5',
+    borderBottomWidth: 2,
+    borderBottomColor: '#FF0000',
+    padding: 12,
+  },
+  debugText: {
+    color: '#CC0000',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'monospace',
+  },
   header: {
     alignItems: 'center',
     padding: 20,
