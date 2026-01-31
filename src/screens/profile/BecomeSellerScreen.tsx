@@ -14,15 +14,15 @@ type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'BecomeSe
 
 const BecomeSellerScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { control, handleSubmit, setValue, formState: { errors } } = useForm<SellerApplicationFormData>({
+    const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm<SellerApplicationFormData>({
         resolver: zodResolver(sellerApplicationSchema),
-        defaultValues: {
-            lat: 40.7128,
-            lng: -74.0060,
-        }
     });
     const { applyAsSeller, isApplying } = useSeller();
     const [isGettingLocation, setIsGettingLocation] = useState(false);
+    const [locationObtained, setLocationObtained] = useState(false);
+
+    const lat = watch('lat');
+    const lng = watch('lng');
 
     useEffect(() => {
         getCurrentLocation();
@@ -33,6 +33,11 @@ const BecomeSellerScreen = () => {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
+                Alert.alert(
+                    'Location Permission Required',
+                    'Please enable location permission to automatically fill your business address. You can also enter it manually.',
+                    [{ text: 'OK' }]
+                );
                 setIsGettingLocation(false);
                 return;
             }
@@ -47,12 +52,28 @@ const BecomeSellerScreen = () => {
             });
 
             if (addressResult) {
-                const fullAddress = [addressResult.street, addressResult.streetNumber].filter(Boolean).join(' ');
-                if (fullAddress) setValue('address', fullAddress);
-                if (addressResult.city) setValue('city', addressResult.city);
+                const fullAddress = [addressResult.street, addressResult.streetNumber, addressResult.district].filter(Boolean).join(' ');
+                if (fullAddress) {
+                    setValue('address', fullAddress);
+                } else if (addressResult.name) {
+                    setValue('address', addressResult.name);
+                }
+                if (addressResult.city) {
+                    setValue('city', addressResult.city);
+                } else if (addressResult.subregion) {
+                    setValue('city', addressResult.subregion);
+                }
             }
+
+            setLocationObtained(true);
+            Alert.alert('Success', 'Location obtained! Please verify the address and city fields.');
         } catch (error) {
             console.error('Location error:', error);
+            Alert.alert(
+                'Location Error',
+                'Could not get your location. Please enter your business address manually.',
+                [{ text: 'OK' }]
+            );
         } finally {
             setIsGettingLocation(false);
         }
@@ -87,11 +108,16 @@ const BecomeSellerScreen = () => {
 
             <View style={styles.locationSection}>
                 <TouchableOpacity style={styles.locationButton} onPress={getCurrentLocation} disabled={isGettingLocation}>
-                    {isGettingLocation ? <ActivityIndicator color="#FF6B35" /> : <Text style={styles.locationButtonText}>📍 Use Current Location</Text>}
+                    {isGettingLocation ? <ActivityIndicator color="#FF6B35" /> : <Text style={styles.locationButtonText}>📍 {locationObtained ? 'Update Location' : 'Use Current Location'}</Text>}
                 </TouchableOpacity>
+                {locationObtained && lat && lng && (
+                    <Text style={styles.locationInfo}>
+                        ✓ Location: {lat.toFixed(6)}, {lng.toFixed(6)}
+                    </Text>
+                )}
             </View>
 
-            <ControlledInput name="phone" label="Phone (Optional)" control={control} error={errors.phone} keyboardType="phone-pad" />
+            <ControlledInput name="phone" label="Phone Number" control={control} error={errors.phone} keyboardType="phone-pad" />
 
             {isApplying ? (
                 <ActivityIndicator size="large" color="#FF6B35" />
@@ -111,6 +137,7 @@ const styles = StyleSheet.create({
     locationSection: { marginBottom: 16 },
     locationButton: { backgroundColor: '#FFF5F2', borderColor: '#FF6B35', borderWidth: 1, borderRadius: 8, paddingVertical: 14, alignItems: 'center' },
     locationButtonText: { color: '#FF6B35', fontSize: 16, fontWeight: '600' },
+    locationInfo: { marginTop: 8, fontSize: 12, color: '#28a745', textAlign: 'center' },
     submitButton: { backgroundColor: '#FF6B35', borderRadius: 8, paddingVertical: 16, alignItems: 'center', marginTop: 20, marginBottom: 40 },
     submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });

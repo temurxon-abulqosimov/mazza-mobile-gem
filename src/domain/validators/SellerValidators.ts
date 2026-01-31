@@ -7,7 +7,7 @@ export const sellerApplicationSchema = z.object({
   city: z.string().min(2, 'City is required').max(100),
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
-  phone: z.string().min(10).max(20).optional(),
+  phone: z.string().min(10, 'Phone number must be at least 10 digits').max(20, 'Phone number must be at most 20 digits'),
 });
 
 export type SellerApplicationFormData = z.infer<typeof sellerApplicationSchema>;
