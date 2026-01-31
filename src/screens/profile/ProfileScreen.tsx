@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Button, ActivityIndicator, ScrollView, Image, Alert, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button, ActivityIndicator, ScrollView, Image, Alert, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -22,6 +22,13 @@ const ProfileScreen = () => {
 
   const { userProfile, isLoading, isError, refetch } = useUserProfile();
   const { logout } = useAuth();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to log out?", [
@@ -49,14 +56,21 @@ const ProfileScreen = () => {
   }
 
   const canBecomeSeller = userProfile.role === UserRole.CONSUMER;
+  const isSeller = userProfile.role === UserRole.SELLER;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
       <View style={styles.header}>
         <Image source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }} style={styles.avatar} />
         <Text style={styles.fullName}>{userProfile.fullName}</Text>
         <Text style={styles.email}>{userProfile.email}</Text>
         <Text style={styles.memberSince}>Member since {new Date(userProfile.memberSince).toLocaleDateString()}</Text>
+        {isSeller && <Text style={styles.sellerBadge}>🏪 Seller</Text>}
       </View>
 
       <View style={styles.gamificationSection}>
@@ -65,14 +79,57 @@ const ProfileScreen = () => {
           <View style={[styles.progressBar, { width: `${userProfile.level.progress}%` }]} />
         </View>
       </View>
-      
+
       <View style={styles.statsContainer}>
           <StatCard label="Meals Saved" value={userProfile.stats.mealsSaved} />
           <StatCard label="CO2 Prevented (kg)" value={userProfile.stats.co2Prevented.toFixed(1)} />
           <StatCard label="Money Saved" value={`$${userProfile.stats.moneySaved.toFixed(2)}`} />
       </View>
 
-      {/* Become a Seller CTA - Prominent Card */}
+      {/* Seller Dashboard Section - Shown for SELLER role */}
+      {isSeller && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>SELLER DASHBOARD</Text>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Coming Soon', 'Seller dashboard is under development')}
+          >
+            <Text style={styles.menuItemIcon}>📊</Text>
+            <Text style={styles.menuItemText}>Dashboard & Analytics</Text>
+            <Text style={styles.menuItemArrow}>›</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Coming Soon', 'Product management is under development')}
+          >
+            <Text style={styles.menuItemIcon}>📦</Text>
+            <Text style={styles.menuItemText}>Manage Products</Text>
+            <Text style={styles.menuItemArrow}>›</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Coming Soon', 'Orders management is under development')}
+          >
+            <Text style={styles.menuItemIcon}>📋</Text>
+            <Text style={styles.menuItemText}>View Orders</Text>
+            <Text style={styles.menuItemArrow}>›</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Coming Soon', 'Store settings is under development')}
+          >
+            <Text style={styles.menuItemIcon}>⚙️</Text>
+            <Text style={styles.menuItemText}>Store Settings</Text>
+            <Text style={styles.menuItemArrow}>›</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Become a Seller CTA - Prominent Card - Only for CONSUMERS */}
       {canBecomeSeller && (
         <TouchableOpacity
           style={styles.becomeSellerCard}
@@ -243,6 +300,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     marginTop: 4,
+  },
+  sellerBadge: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FF6B35',
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    backgroundColor: '#FFF5F2',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   gamificationSection: {
       padding: 20,
