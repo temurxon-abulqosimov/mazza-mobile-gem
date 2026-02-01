@@ -3,11 +3,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import SettingsScreen from '../screens/profile/SettingsScreen';
 import BecomeSellerScreen from '../screens/profile/BecomeSellerScreen';
+import SellerDashboardScreen from '../screens/seller/SellerDashboardScreen';
+import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
+import SellerOrdersScreen from '../screens/seller/SellerOrdersScreen';
+import StoreSettingsScreen from '../screens/seller/StoreSettingsScreen';
 
 export type ProfileStackParamList = {
   ProfileHome: undefined;
   Settings: undefined;
   BecomeSeller: undefined;
+  SellerDashboard: undefined;
+  ManageProducts: undefined;
+  SellerOrders: undefined;
+  StoreSettings: undefined;
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -18,6 +26,10 @@ const ProfileNavigator = () => {
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="BecomeSeller" component={BecomeSellerScreen} options={{ presentation: 'modal' }}/>
+      <Stack.Screen name="SellerDashboard" component={SellerDashboardScreen} />
+      <Stack.Screen name="ManageProducts" component={ManageProductsScreen} />
+      <Stack.Screen name="SellerOrders" component={SellerOrdersScreen} />
+      <Stack.Screen name="StoreSettings" component={StoreSettingsScreen} />
     </Stack.Navigator>
   );
 };

@@ -105,7 +105,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => Alert.alert('Coming Soon', 'Seller dashboard is under development')}
+            onPress={() => navigation.navigate('SellerDashboard' as never)}
           >
             <Text style={styles.menuItemIcon}>📊</Text>
             <Text style={styles.menuItemText}>Dashboard & Analytics</Text>
@@ -114,7 +114,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => Alert.alert('Coming Soon', 'Product management is under development')}
+            onPress={() => navigation.navigate('ManageProducts' as never)}
           >
             <Text style={styles.menuItemIcon}>📦</Text>
             <Text style={styles.menuItemText}>Manage Products</Text>
@@ -123,7 +123,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => Alert.alert('Coming Soon', 'Orders management is under development')}
+            onPress={() => navigation.navigate('SellerOrders' as never)}
           >
             <Text style={styles.menuItemIcon}>📋</Text>
             <Text style={styles.menuItemText}>View Orders</Text>
@@ -132,7 +132,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity
             style={styles.menuItem}
-            onPress={() => Alert.alert('Coming Soon', 'Store settings is under development')}
+            onPress={() => navigation.navigate('StoreSettings' as never)}
           >
             <Text style={styles.menuItemIcon}>⚙️</Text>
             <Text style={styles.menuItemText}>Store Settings</Text>
