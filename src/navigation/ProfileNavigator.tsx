@@ -7,6 +7,7 @@ import SellerDashboardScreen from '../screens/seller/SellerDashboardScreen';
 import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
 import SellerOrdersScreen from '../screens/seller/SellerOrdersScreen';
 import StoreSettingsScreen from '../screens/seller/StoreSettingsScreen';
+import AddProductScreen from '../screens/seller/AddProductScreen';
 
 export type ProfileStackParamList = {
   ProfileHome: undefined;
@@ -16,6 +17,7 @@ export type ProfileStackParamList = {
   ManageProducts: undefined;
   SellerOrders: undefined;
   StoreSettings: undefined;
+  AddProduct: undefined;
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -30,6 +32,7 @@ const ProfileNavigator = () => {
       <Stack.Screen name="ManageProducts" component={ManageProductsScreen} />
       <Stack.Screen name="SellerOrders" component={SellerOrdersScreen} />
       <Stack.Screen name="StoreSettings" component={StoreSettingsScreen} />
+      <Stack.Screen name="AddProduct" component={AddProductScreen} options={{ presentation: 'modal' }} />
     </Stack.Navigator>
   );
 };
