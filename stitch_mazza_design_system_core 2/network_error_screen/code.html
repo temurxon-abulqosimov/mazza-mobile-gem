@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Connection Error - MAZZA</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee7c2b",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221810",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", 
+                        "lg": "1rem", 
+                        "xl": "1.5rem", 
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-[#181411] dark:text-gray-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex items-center p-4 pb-2 justify-between z-10">
+<button aria-label="Go back" class="flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[#181411] dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<h2 class="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
+                Connection Error
+            </h2>
+</header>
+<!-- Main Content (EmptyState) -->
+<main class="flex-1 flex flex-col items-center justify-center px-6 pb-20">
+<div class="flex flex-col items-center gap-8 w-full max-w-md">
+<!-- Illustration -->
+<div class="relative w-full aspect-square max-w-[280px] flex items-center justify-center">
+<!-- Decorative background shape -->
+<div class="absolute inset-0 bg-primary/10 dark:bg-primary/5 rounded-full blur-3xl transform scale-75"></div>
+<!-- Main Image -->
+<div class="relative z-10 w-64 h-64 bg-center bg-contain bg-no-repeat" data-alt="Illustration of a broken pretzel symbolizing a disconnected network" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMGDMGkRxFk-ecWTqcoMfyi2b2VQ_2WY3akJ2cefivPMRC37sdGXpivs7UCZ3ocCVU9l0AZsPc0AXqcpX3TV11LuYhl78jJMkZogF2VES36KZxWQGWyXfcY0xDKGloNmdc8a4RSTMGegC1YwKzTO4uHUytULVZdHPddtL9QMd5aAdEt4OZr-n8hwF3RS2hh2gZj3ecQqphDcrLtTjfrnTusycFk0_WIolZAG3t6byUSXmi74IXsMgRp89ipCxWq2ov6N2m5RnM0Z2x");'>
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex flex-col items-center gap-3 text-center">
+<h1 class="text-[#181411] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
+                        Something went wrong
+                    </h1>
+<p class="text-[#181411]/70 dark:text-gray-400 text-base font-normal leading-relaxed max-w-[320px]">
+                        We couldn't connect to our servers. Please check your internet connection and try again.
+                    </p>
+</div>
+<!-- Primary Action -->
+<button class="flex w-full max-w-[320px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary hover:bg-[#d96b1f] transition-colors text-white text-base font-bold leading-normal tracking-[0.015em] shadow-sm hover:shadow-md active:scale-[0.98] transform duration-100">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">refresh</span>
+<span>Retry</span>
+</span>
+</button>
+<!-- Secondary Action (SingleButton component adaptation) -->
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-transparent text-primary hover:text-[#d96b1f] dark:text-primary dark:hover:text-[#ff9d5c] text-sm font-bold leading-normal tracking-[0.015em] transition-colors">
+<span class="truncate">Contact Support</span>
+</button>
+</div>
+</main>
+<!-- Bottom safe area spacing if needed -->
+<div class="h-4 w-full"></div>
+</div>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAZZA OTP Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "primary-hover": "#e65a2a",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d1a15",
+                        "text-main-light": "#181210",
+                        "text-main-dark": "#e7deda",
+                        "text-sub-light": "#8b7e78",
+                        "text-sub-dark": "#a09088",
+                        "border-light": "#e7deda",
+                        "border-dark": "#4a352f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col items-center justify-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-md h-screen flex flex-col bg-surface-light dark:bg-surface-dark relative shadow-2xl overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between px-4 py-4 shrink-0 z-10">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-main-light dark:text-text-main-dark transition-colors" type="button">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col px-6 pt-2 pb-6 overflow-y-auto">
+<!-- Headline Section -->
+<div class="mb-8 text-center mt-4">
+<h1 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark tracking-tight mb-3">Verification</h1>
+<p class="text-text-sub-light dark:text-text-sub-dark text-base leading-relaxed px-4">
+                    We’ve sent a 4-digit verification code to <span class="font-semibold text-text-main-light dark:text-text-main-dark">mazza@email.com</span>
+</p>
+</div>
+<!-- OTP Input Section -->
+<div class="flex justify-center mb-10 w-full">
+<div class="flex gap-4 justify-between w-full max-w-[280px]">
+<!-- Input 1 -->
+<input autofocus="" class="w-14 h-16 text-center text-2xl font-bold bg-background-light dark:bg-background-dark border-2 border-primary text-text-main-light dark:text-text-main-dark rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all caret-primary shadow-sm" maxlength="1" type="number" value="5"/>
+<!-- Input 2 -->
+<input class="w-14 h-16 text-center text-2xl font-bold bg-background-light dark:bg-background-dark border-2 border-transparent focus:border-primary text-text-main-light dark:text-text-main-dark rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all caret-primary shadow-sm" maxlength="1" type="number" value=""/>
+<!-- Input 3 -->
+<input class="w-14 h-16 text-center text-2xl font-bold bg-background-light dark:bg-background-dark border-2 border-transparent focus:border-primary text-text-main-light dark:text-text-main-dark rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all caret-primary shadow-sm" maxlength="1" type="number" value=""/>
+<!-- Input 4 -->
+<input class="w-14 h-16 text-center text-2xl font-bold bg-background-light dark:bg-background-dark border-2 border-transparent focus:border-primary text-text-main-light dark:text-text-main-dark rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all caret-primary shadow-sm" maxlength="1" type="number" value=""/>
+</div>
+</div>
+<!-- Timer and Resend -->
+<div class="flex flex-col items-center gap-2 mb-8">
+<div class="flex items-center justify-center gap-2 bg-background-light dark:bg-background-dark px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-sm">timer</span>
+<span class="text-text-main-light dark:text-text-main-dark text-sm font-medium">00:30</span>
+</div>
+<p class="text-text-sub-light dark:text-text-sub-dark text-sm">
+                    Didn't receive code? 
+                    <button class="text-primary font-semibold hover:text-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled="">
+                        Resend Code
+                    </button>
+</p>
+</div>
+<!-- Verify Button -->
+<div class="mt-auto mb-4">
+<button class="w-full bg-primary hover:bg-primary-hover text-white text-lg font-semibold h-14 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center transition-all active:scale-[0.98]">
+                    Verify
+                </button>
+</div>
+</main>
+<!-- Custom Numeric Keypad Area (Simulated) -->
+<div class="bg-background-light dark:bg-background-dark pb-8 pt-4 px-6 rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20">
+<div class="grid grid-cols-3 gap-y-4 gap-x-6">
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">1</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">2</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">3</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">4</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">5</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">6</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">7</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">8</button>
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">9</button>
+<div class="h-12"></div> <!-- Empty space for alignment -->
+<button class="h-12 flex items-center justify-center text-2xl font-medium text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">0</button>
+<button class="h-12 flex items-center justify-center text-text-main-light dark:text-text-main-dark rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined">backspace</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

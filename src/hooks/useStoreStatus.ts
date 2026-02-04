@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleStoreStatus, StoreStatus } from '../api/seller';
+import { ApiResponse } from '../domain/Common';
 
 export const useStoreStatus = () => {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<StoreStatus, Error, boolean>({
+  const mutation = useMutation<ApiResponse<StoreStatus>, Error, boolean>({
     mutationFn: (isOpen: boolean) => toggleStoreStatus(isOpen),
     onSuccess: () => {
       // Invalidate dashboard stats to refresh the UI

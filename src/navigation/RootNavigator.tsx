@@ -4,11 +4,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainAppNavigator from './MainAppNavigator';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
+import AddProductScreen from '../screens/seller/AddProductScreen';
+import SellerOrderDetailScreen from '../screens/seller/SellerOrderDetailScreen';
 
 export type RootStackParamList = {
   MainApp: undefined;
   Login: undefined;
   Register: undefined;
+  AddProduct: undefined;
+  SellerOrderDetail: { order: any };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,7 +26,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator id="RootStack" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="MainApp" component={MainAppNavigator} />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen
@@ -34,6 +38,16 @@ const RootNavigator = () => {
             name="Register"
             component={RegisterScreen}
             options={{ headerShown: true, title: 'Create Account' }}
+          />
+          <Stack.Screen
+            name="AddProduct"
+            component={AddProductScreen}
+            options={{ headerShown: true, title: 'Add Product' }}
+          />
+          <Stack.Screen
+            name="SellerOrderDetail"
+            component={SellerOrderDetailScreen}
+            options={{ headerShown: false }}
           />
         </Stack.Group>
       </Stack.Navigator>

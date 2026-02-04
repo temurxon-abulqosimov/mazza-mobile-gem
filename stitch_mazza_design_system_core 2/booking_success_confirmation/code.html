@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Confirmation</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+                colors: {
+                "primary": "#f56e3d",
+                "background-light": "#f8f6f5",
+                "background-dark": "#221510",
+                "success": "#22c55e",
+                },
+                fontFamily: {
+                "display": ["Inter", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181311] dark:text-white antialiased">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Top App Bar -->
+<div class="flex items-center p-4 justify-between sticky top-0 z-10 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[#181311] dark:text-white" style="font-size: 24px;">close</span>
+</div>
+<h2 class="text-[#181311] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Confirmation</h2>
+<div class="size-10"></div> <!-- Spacer for centering -->
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-32"> <!-- pb-32 for sticky footer space -->
+<!-- Success Hero -->
+<div class="flex flex-col items-center pt-6 pb-2 px-6 text-center">
+<div class="mb-4 rounded-full bg-green-100 dark:bg-green-900/30 p-3">
+<span class="material-symbols-outlined text-success" style="font-size: 64px; font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="text-[#181311] dark:text-white tracking-tight text-[32px] font-extrabold leading-tight mb-2">Reservation Confirmed!</h1>
+<p class="text-[#8a6b60] dark:text-[#d1b9b0] text-base font-normal leading-normal max-w-[280px]">Thanks for rescuing food today. Here are your pickup details.</p>
+</div>
+<!-- Pickup Ticket Card -->
+<div class="px-4 py-6">
+<div class="flex flex-col bg-white dark:bg-[#2f221d] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-[#f0ebe9] dark:border-[#423028] overflow-hidden">
+<!-- Ticket Header -->
+<div class="bg-primary/10 dark:bg-primary/20 p-3 flex items-center justify-center gap-2 border-b border-dashed border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm">confirmation_number</span>
+<p class="text-primary text-xs font-bold uppercase tracking-widest">Pickup Ticket</p>
+</div>
+<!-- Time & Date -->
+<div class="p-6 text-center border-b border-[#f0ebe9] dark:border-[#423028]">
+<p class="text-[#8a6b60] dark:text-[#a89088] text-sm font-medium mb-1">PICKUP WINDOW</p>
+<h3 class="text-[#181311] dark:text-white text-2xl font-bold tracking-tight">Today, 5:30 PM - 6:00 PM</h3>
+<p class="text-red-500 text-xs font-semibold mt-2 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+                            Don't be late! Window closes at 6:00 PM
+                        </p>
+</div>
+<!-- Location & Map -->
+<div class="p-4 flex flex-col gap-4">
+<div class="flex gap-4 items-start">
+<div class="h-16 w-16 shrink-0 rounded-lg bg-gray-100 bg-center bg-cover border border-gray-100 dark:border-gray-700" data-alt="Small map snippet centered on location" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDLB56y2foQEFjF1fEVPyEumQqIXHElVY4WVlNF9W7z7Nz-byuZU6TqTQavlIRmup3HNIs_KxF8OEossMZnUM8YaCoOntlRZJrlwRnQAcrgL5cgsGqpe91sfJ8OdKoNTG55P-62zvcZE4-_KlWQxP5LewLlksCoQeR5Njn0oVajIiT1cwRvNMlo-HDK5ccxJplHtPCucBZZxN_ccwz70fwvIp4EHwkH2LAKVFRzs26JG0AqdFMug9bWgm7gE2T7JAkMUaFV3uXV6Hp1");'>
+</div>
+<div class="flex flex-col">
+<p class="text-[#181311] dark:text-white text-lg font-bold">Joe's Bagels</p>
+<p class="text-[#8a6b60] dark:text-[#a89088] text-sm">123 Market St, San Francisco, CA</p>
+<a class="text-primary text-sm font-semibold mt-1 flex items-center gap-1" href="#">
+                                    Get Directions <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+</div>
+<!-- Instruction Banner -->
+<div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg flex gap-3 items-center">
+<span class="material-symbols-outlined text-blue-600 dark:text-blue-400">phonelink_ring</span>
+<p class="text-blue-900 dark:text-blue-100 text-sm font-medium leading-tight">Show this screen to the store staff at pickup to claim your bag.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Summary -->
+<div class="px-4 pb-6">
+<h3 class="text-[#181311] dark:text-white text-lg font-bold mb-3 px-1">Order Summary</h3>
+<div class="flex items-center gap-4 p-4 bg-white dark:bg-[#2f221d] rounded-xl border border-[#f0ebe9] dark:border-[#423028]">
+<div class="w-16 h-16 shrink-0 rounded-lg bg-center bg-cover" data-alt="Brown paper bag filled with baked goods" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCNEVTdDZhmeE-NT6BE_RouNv-guSHhG0UjJ963e9iEAzu6mnEBPRyGnYY78u7jko4fIrhmHb5QmXfd9fkTEhinnHsjFS_02IasNYT5IpN_Ma8Hm7oiNozIUfGdqht86_cU2M_--6eit6KepCcp634wxV170LziTO0Gpv-hoYyFngrPhJSAGuICZoOALNcOguudwXFcAUi7C69-6jqU7RdEanGVwoWTU45kFoJ3HhNvMz4nX6d2Oq9Bwyo4O8MBlZ3M6x5_fK9wzltD");'></div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="text-[#181311] dark:text-white font-semibold">1x Surprise Bag</p>
+<p class="text-[#181311] dark:text-white font-bold">$4.99</p>
+</div>
+<p class="text-[#8a6b60] dark:text-[#a89088] text-xs">Order #MZ-8829</p>
+<p class="text-green-600 dark:text-green-400 text-xs font-medium mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">savings</span> You saved $10.00!
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Action Area -->
+<div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-[#221510] border-t border-[#f0ebe9] dark:border-[#332a25] p-4 flex flex-col gap-3 pb-8">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined text-white">calendar_add_on</span>
+<span class="text-white text-base font-bold">Add to Calendar</span>
+</button>
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-transparent px-6 py-3 text-primary transition-colors hover:bg-primary/5">
+<span class="text-base font-bold">View Order Details</span>
+</button>
+</div>
+</div>
+</body></html>

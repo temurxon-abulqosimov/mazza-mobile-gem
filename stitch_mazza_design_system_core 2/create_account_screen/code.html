@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Account - MAZZA</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#181210] dark:text-white transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark">
+<!-- Top App Bar -->
+<div class="flex items-center p-4 pb-2 justify-between">
+<button class="text-[#181210] dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 24px;">arrow_back</span>
+</button>
+<h2 class="text-[#181210] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12 opacity-0">Sign Up</h2> <!-- Hidden title for layout balance -->
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 flex flex-col px-6 pt-2 pb-8">
+<!-- Headline Text -->
+<div class="mb-8">
+<h1 class="text-[#181210] dark:text-white tracking-tight text-[32px] font-bold leading-tight text-left mb-3">Let's get started</h1>
+<p class="text-[#8d6a5e] dark:text-[#c4aead] text-base font-normal leading-normal">Create an account to save food and reduce waste.</p>
+</div>
+<!-- Form Fields -->
+<div class="flex flex-col gap-6">
+<!-- Full Name Field -->
+<label class="flex flex-col w-full group">
+<span class="text-[#181210] dark:text-gray-200 text-sm font-semibold leading-normal pb-2 ml-1">Full Name</span>
+<div class="flex w-full items-center rounded-xl bg-white dark:bg-[#2f1f1a] shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] ring-1 ring-transparent group-focus-within:ring-2 group-focus-within:ring-primary/50 transition-all duration-300">
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-[#181210] dark:text-white focus:outline-none focus:ring-0 h-14 placeholder:text-[#9ca3af] dark:placeholder:text-[#7d6a66] px-4 text-base font-normal leading-normal rounded-l-xl" placeholder="Jane Doe" type="text"/>
+<div class="pr-4 text-[#8d6a5e] dark:text-[#a08075] flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 24px;">person</span>
+</div>
+</div>
+</label>
+<!-- Email Field -->
+<label class="flex flex-col w-full group">
+<span class="text-[#181210] dark:text-gray-200 text-sm font-semibold leading-normal pb-2 ml-1">Email</span>
+<div class="flex w-full items-center rounded-xl bg-white dark:bg-[#2f1f1a] shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] ring-1 ring-transparent group-focus-within:ring-2 group-focus-within:ring-primary/50 transition-all duration-300">
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-[#181210] dark:text-white focus:outline-none focus:ring-0 h-14 placeholder:text-[#9ca3af] dark:placeholder:text-[#7d6a66] px-4 text-base font-normal leading-normal rounded-l-xl" placeholder="jane@example.com" type="email"/>
+<div class="pr-4 text-[#8d6a5e] dark:text-[#a08075] flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 24px;">mail</span>
+</div>
+</div>
+</label>
+<!-- Password Field -->
+<label class="flex flex-col w-full group">
+<span class="text-[#181210] dark:text-gray-200 text-sm font-semibold leading-normal pb-2 ml-1">Password</span>
+<div class="flex w-full items-center rounded-xl bg-white dark:bg-[#2f1f1a] shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2)] ring-1 ring-transparent group-focus-within:ring-2 group-focus-within:ring-primary/50 transition-all duration-300">
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-[#181210] dark:text-white focus:outline-none focus:ring-0 h-14 placeholder:text-[#9ca3af] dark:placeholder:text-[#7d6a66] px-4 text-base font-normal leading-normal rounded-l-xl" placeholder="••••••••" type="password"/>
+<button class="pr-4 text-[#8d6a5e] dark:text-[#a08075] flex items-center justify-center focus:outline-none hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined" style="font-size: 24px;">visibility</span>
+</button>
+</div>
+</label>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-3 mt-1 px-1">
+<div class="relative flex items-center pt-0.5">
+<input class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-[#d6cbb9] dark:border-[#5a4038] bg-white dark:bg-[#2f1f1a] checked:border-primary checked:bg-primary transition-all focus:ring-0 focus:ring-offset-0" id="terms" type="checkbox"/>
+<span class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 transition-opacity mt-0.5">
+<span class="material-symbols-outlined" style="font-size: 16px; font-weight: bold;">check</span>
+</span>
+</div>
+<label class="text-sm text-[#4e433f] dark:text-[#c4aead] leading-snug cursor-pointer select-none" for="terms">
+                        I agree to the <a class="font-medium text-primary hover:text-[#e65c2b] transition-colors underline decoration-primary/30 underline-offset-2" href="#">Terms &amp; Conditions</a> and <a class="font-medium text-primary hover:text-[#e65c2b] transition-colors underline decoration-primary/30 underline-offset-2" href="#">Privacy Policy</a>.
+                    </label>
+</div>
+</div>
+<!-- Primary Action Button -->
+<div class="mt-10 mb-6">
+<button class="w-full bg-primary hover:bg-[#e65c2b] text-white font-bold text-[17px] h-14 rounded-xl shadow-[0_4px_14px_rgba(255,105,51,0.4)] flex items-center justify-center transition-all duration-200 active:scale-[0.98] active:shadow-none">
+                    Create Account
+                </button>
+</div>
+<!-- Footer Navigation -->
+<div class="text-center mt-auto pb-4">
+<p class="text-[#4e433f] dark:text-[#c4aead] text-[15px]">
+                    Already have an account? 
+                    <a class="font-bold text-primary hover:text-[#e65c2b] transition-colors ml-1" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

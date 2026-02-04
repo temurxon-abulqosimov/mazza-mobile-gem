@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Action Success Modal</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#21c488",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#12201b",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar hiding if needed */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased">
+<!-- Mobile Viewport Container -->
+<div class="relative flex h-screen w-full flex-col overflow-hidden mx-auto max-w-md bg-white dark:bg-background-dark shadow-2xl">
+<!-- Background Content (Simulated Store Page) -->
+<div aria-hidden="true" class="flex-1 flex flex-col relative opacity-40 pointer-events-none select-none">
+<!-- Header -->
+<div class="flex items-center justify-between p-4 pt-12 bg-white dark:bg-background-dark">
+<span class="material-symbols-outlined text-2xl cursor-pointer">arrow_back</span>
+<h1 class="text-lg font-bold">Store Details</h1>
+<span class="material-symbols-outlined text-2xl cursor-pointer">favorite</span>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar">
+<!-- Hero Image -->
+<div class="w-full h-64 bg-gray-200 relative">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Fresh vegetables and fruits at a market stall" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCMraY61grQkCCUMHn2JMSqJZvsHcFnykvUdSNz3EnjCnZb1Nnup2Rz0mKkRORsEkxj2_LG-ZqTAV1q9Fp85eqmZbnENYrV84nS6sc-1Z5zUs_2R3h1mFck6lW7jCY_hEQxs42-6wVPmw-zAfDIeO74fxkYzG_GOxE3IjhnV18JrneuRCyODP1mJyT-5JxqsuT-UJ21JuLn8IviKQdOs8AniEwvvemdEVdsJfUCr4UHootF2X8kkIp4XTkU7h0uGT5o2Fbiv02ACShz');">
+</div>
+<div class="absolute bottom-4 right-4 bg-white dark:bg-black/80 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                        4.8 ★ (120+)
+                    </div>
+</div>
+<!-- Store Info -->
+<div class="p-6">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h2 class="text-2xl font-bold mb-1">Green Valley Grocer</h2>
+<p class="text-slate-500 text-sm">Grocery • 0.8 mi away</p>
+</div>
+<div class="h-10 w-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">eco</span>
+</div>
+</div>
+<div class="flex gap-3 mb-6">
+<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-medium">Vegetarian</span>
+<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-medium">Bakery</span>
+<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-medium">Pickup</span>
+</div>
+<hr class="border-gray-100 dark:border-gray-800 mb-6"/>
+<h3 class="font-bold text-lg mb-4">About this store</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        We specialize in organic produce and artisanal baked goods. Our surplus bags often contain assorted pastries, seasonal fruits, and fresh vegetables that are perfectly good to eat.
+                    </p>
+<div class="h-40 w-full bg-gray-100 dark:bg-gray-800 rounded-xl mb-6 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Map showing store location in city grid" data-location="Seattle, WA" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCtkErW8PdXQMl5r72Mx0EBY_M0Oqvd0_qCqhC4EUDLQG3JnTRdYlr5KdUOhKK7b8xlHd6tDyL9athkrpKs4SGZL2-MFHsQUPHaVdvk6aonnolZYIXv1f1Esaq5uFmTFr-gpepmFRFfn8XemxKR-2SG6hxr221VI1EahR4ggrXXLy-IunlHKewb_WdlnHZ_R2iGiyKHnGnPORW67wPN03114ioS9zzVhEn33qXVr_UXcUcj-VaOyVo0XoJOygfMIuOD3Qqo-mH_UNlY');">
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar (Simulated) -->
+<div class="p-4 border-t border-gray-100 dark:border-gray-800 pb-8 bg-white dark:bg-background-dark">
+<button class="w-full bg-primary h-12 rounded-xl text-black font-bold">Following</button>
+</div>
+</div>
+<!-- MODAL OVERLAY -->
+<div class="absolute inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-[2px]">
+<!-- Modal Card -->
+<div class="w-full max-w-[340px] bg-white dark:bg-[#1A2C26] rounded-[24px] shadow-2xl overflow-hidden flex flex-col items-center p-8 animate-in fade-in zoom-in-95 duration-300">
+<!-- Success Icon -->
+<div class="relative flex items-center justify-center h-24 w-24 rounded-full bg-primary/10 dark:bg-primary/20 mb-6">
+<!-- Decorative blurry glow behind icon -->
+<div class="absolute inset-0 rounded-full bg-primary blur-xl opacity-20"></div>
+<span class="material-symbols-outlined text-primary text-[48px] font-bold" style="font-variation-settings: 'wght' 700, 'FILL' 0;">
+                        check
+                    </span>
+</div>
+<!-- Text Content -->
+<div class="w-full text-center space-y-3 mb-8">
+<h2 class="text-[#121715] dark:text-white tracking-tight text-[26px] font-bold leading-tight">
+                        Store Followed!
+                    </h2>
+<p class="text-slate-500 dark:text-slate-400 text-[15px] font-normal leading-relaxed px-2">
+                        You'll be the first to know when they post new surplus bags.
+                    </p>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full cursor-pointer flex items-center justify-center overflow-hidden rounded-2xl h-14 bg-primary text-[#121715] text-[16px] font-bold leading-normal tracking-wide hover:bg-opacity-90 transition-all active:scale-[0.98]">
+<span>Got it</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

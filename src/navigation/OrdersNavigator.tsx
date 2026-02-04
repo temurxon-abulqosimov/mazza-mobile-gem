@@ -16,7 +16,7 @@ const Stack = createNativeStackNavigator<OrdersStackParamList>();
 
 const OrdersNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator id="OrdersStack" initialRouteName="OrderList">
       <Stack.Screen
         name="Map"
         component={MapScreen}

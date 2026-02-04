@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Select Your Market</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+                colors: {
+                "primary": "#ff6933",
+                "background-light": "#f8f6f5",
+                "background-dark": "#23140f",
+                },
+                fontFamily: {
+                "display": ["Inter", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar hide for cleaner UI on mobile */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-50 font-display transition-colors duration-200">
+<div class="relative flex h-full w-full max-w-md mx-auto flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between p-4 pb-2 bg-background-light dark:bg-background-dark sticky top-0 z-10">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-slate-900 dark:text-white">
+<span class="material-symbols-outlined" style="font-size: 24px;">arrow_back_ios_new</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10 text-slate-900 dark:text-white">Select Your Market</h2>
+</header>
+<!-- SearchBar -->
+<div class="px-4 py-4 sticky top-[60px] z-10 bg-background-light dark:bg-background-dark">
+<label class="flex flex-col w-full h-12 shadow-sm">
+<div class="flex w-full flex-1 items-stretch rounded-xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all overflow-hidden">
+<div class="flex items-center justify-center pl-4 pr-2 text-slate-400 dark:text-slate-400">
+<span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent border-none text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 text-base font-normal leading-normal h-full py-0" placeholder="Search city or zip code" type="text" value=""/>
+</div>
+</label>
+</div>
+<!-- SingleButton (Current Location) -->
+<div class="px-4 pb-4">
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-12 px-5 bg-white dark:bg-white/10 hover:bg-slate-50 dark:hover:bg-white/15 border border-transparent active:scale-[0.98] transition-all duration-200 shadow-sm gap-3 group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform" style="font-size: 24px;">my_location</span>
+<span class="text-primary font-bold text-base tracking-wide">Use Current Location</span>
+</button>
+</div>
+<div class="h-px bg-slate-200 dark:bg-white/10 mx-4 mb-4"></div>
+<!-- TitleText -->
+<div class="px-4 pb-4 pt-2">
+<h1 class="text-xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white">Featured Markets</h1>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Discover popular food rescue locations</p>
+</div>
+<!-- ImageGrid -->
+<div class="grid grid-cols-2 gap-4 px-4 pb-8">
+<!-- Card 1 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="New York City skyline with tall buildings during sunset" data-location="New York City" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzjBGa6MlgwtD3U-swKdQtrQ_UdBK_0v88aSLs0qUCdwfwyrhSyCe4EdyIWPi18Vx7u-I0ARuqWKJ3nyLvG181vSYmJYJTTMrVDQaFASOsU8K_-vGIi5OkPZ--LY9qco9pMUeugwiGd9Emn-ar1r1Ov0C0lPT6oSAp8RkFQFVbpfrz6VUROvEongiDE8f82ruEVWGkkO5gzTlY9zqrGR2TxpNZJZ-vePoei17TN8Gk5YdBNgJ9W2E981Xx-wuKRVfyiIijGY9UWnN2");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<div class="flex justify-between items-start">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">New York City</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">120+ Active Stores</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="Austin Texas Capitol building view from a distance" data-location="Austin" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBHiFEjrIX4wo6XvdqaOn4_4a7bcDksPAIcZ-H4aDZskO8rL_XA-gave6IN6rISy5M_oy5XGWspQRTCQQtoLatfAUH7JHhR0Gullk8fMd7USEhpa5iJ4a-SniWrZ64kLLBtJx7VM8DPCx0En74lgt7vFPXjQNAf22BJ-HtIURfwy_9KhBbGU8VLf2X7pnDH4hBgdw_eHKrK-8YPiatjV6sXZ9M9ZOSrW9zTsQyMfSsEp2k1VjXMAW1l8cxK_k2m8GQHhALTWGeXr3Wc");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Austin</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">45 Active Stores</p>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="Chicago Cloud Gate sculpture reflecting the city skyline" data-location="Chicago" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBJsEo0l8FA2RDmuBoXQZpxX7sAz352sGf7RVL0cyMsgUxBAO4HRbgslpqHDAsBSSl28d8TTSxxsDyqXpU825eYJIuC5TVnYwty6bzQHHwkQudQfjG-LsKAjsQj7BnI6JDm6DQTKBC_U5ZxkUwZ0CaO39S0tAbQdoK5GzD3NI3zbxguXBldJFTjxDm29gPRCJrIRUddkuarudKgwomORJRYuuXgqAJXBhynQdzJunIxHFhogsavKCje8IARu6z50rmvELE8BgYGx8Nd");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Chicago</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">80 Active Stores</p>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="Golden Gate Bridge in San Francisco with fog" data-location="San Francisco" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKtuY97mAo20abuV5oIrnEfWaUR7_BcXmZhBkaIN_YOXWOZ9g1G8gLLJAJTQ8SHcDDPhGgzbgb3wGC2T_apyGSg43BKPGfrgQQm54sOkKYz_fkrWCx2i9QoZP5utmTs37srADH_XkK5Ws0AjJuipd_y-jivo7ZExBhvlrdVYFOPsuKK36xdhoVmBG4dKVDqF5MK6C0EkRFUVFCnPRTDjGNseN8ebOdFaIeyRNjSqeOQVMQbz9pi3Tbu3pxYMEJDdB2eLjC1azdmkP2");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">San Francisco</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">65 Active Stores</p>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="Downtown Los Angeles skyline with palm trees" data-location="Los Angeles" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGNKVzCQxxX52L_A-mOHlxBKV1yg7dQVH2rFTqAuzj_huFV7g8r8AHGKMl2iA66vTAUN6USmBwXb8uX_IpL9960EWWnTGFtXGR0hEJ8RPIIF57S-iO61ae91CZJMUx1mU3h6-UgAa2uxFPBpbtznCQJaUlefZCu8p07MM7WWDL5QBCxtyljOkYQlTWDfuo3KLtnZNdFCIig1KA271QiZOyPkXczkU67ZjARm57IE2VXWNsmnSnkW7f5z4tf8_Ht0ODknldhEQVNc7Q");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Los Angeles</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">95 Active Stores</p>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="flex flex-col gap-3 group cursor-pointer">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-sm bg-slate-200 dark:bg-slate-800">
+<div class="w-full h-full bg-center bg-cover transition-transform duration-500 group-hover:scale-105" data-alt="Seattle Space Needle with cloudy sky background" data-location="Seattle" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBJb7t2NWQHiUSPC9t6pKeldTPv3v3ecnng6gFnzjS1_lxLC9mrUZZOvQbG5mh_-fw7YIDpdJtBAyDmCr_FuhJhLXskK2HC8YUxz18-FJ0AeXADNnILKNM1P_v4AHtHc_psvJq8OK2LpTB2N4Y1tN5V3UFSNmkS7FAxczD-1Q9k98-pnROMJb9SEL3gA3PsyTTl6kd06vxfkly72xAPtfOExRD_XKl6DM3AO1qkn6Mma5Jgx1tggeFbM-9DzQapaJ7JGzRkRHJtvjcU");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Seattle</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary" style="font-size: 16px; font-variation-settings: 'FILL' 1;">storefront</span>
+<p class="text-primary text-xs font-semibold uppercase tracking-wide">50 Active Stores</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Safe Area Spacer for Bottom -->
+<div class="h-8 w-full bg-transparent"></div>
+</div>
+</body></html>

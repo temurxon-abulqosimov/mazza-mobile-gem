@@ -9,7 +9,7 @@ export const useMyProducts = () => {
   });
 
   return {
-    products: data?.products ?? [],
+    products: data?.data.products ?? [],
     isLoading,
     isError,
     error,

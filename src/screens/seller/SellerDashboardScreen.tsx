@@ -21,7 +21,7 @@ const SellerDashboardScreen = () => {
   const { userProfile } = useUserProfile();
   const { stats, isLoading, error, refetch } = useDashboardStats();
   const { toggleStatus, isToggling } = useStoreStatus();
-  const { orders, isLoading: isLoadingOrders, refetch: refetchOrders } = useLiveOrders();
+  const { orders = [], isLoading: isLoadingOrders, refetch: refetchOrders } = useLiveOrders();
 
   // Local state for optimistic UI update
   const [localIsOpen, setLocalIsOpen] = useState<boolean | null>(null);
@@ -68,7 +68,7 @@ const SellerDashboardScreen = () => {
             <View style={styles.statIconContainer}>
               <Text style={styles.statIconText}>💵</Text>
             </View>
-            {stats.earningsChange !== 0 && (
+            {stats.earningsChange != null && stats.earningsChange !== 0 && (
               <View style={styles.statBadge}>
                 <Text style={styles.statBadgeText}>
                   {stats.earningsChange > 0 ? '+' : ''}
@@ -262,7 +262,7 @@ const SellerDashboardScreen = () => {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Live Orders</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('Wallet')}>
                 <Text style={styles.seeAllButton}>View All</Text>
               </TouchableOpacity>
             </View>

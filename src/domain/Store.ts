@@ -3,6 +3,8 @@ import { Category } from './Category';
 export interface StoreLocation {
   address: string;
   city?: string;
+  state?: string;
+  zipCode?: string;
   lat: number;
   lng: number;
 }

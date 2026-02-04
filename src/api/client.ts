@@ -27,8 +27,10 @@ export const apiClient = axios.create({
 // Request Interceptor: Inject bearer token
 apiClient.interceptors.request.use(
   (config) => {
-    const { accessToken } = useAuthStore.getState();
-    if (accessToken) {
+    const authState = useAuthStore.getState();
+    const accessToken = authState?.accessToken;
+    // Skip auth for discovery endpoints
+    if (accessToken && !config.url?.startsWith('/discovery')) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
@@ -45,7 +47,9 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    const { refreshToken, setTokens, clearTokens } = useAuthStore.getState().actions;
+    const authState = useAuthStore.getState();
+    const refreshToken = authState?.refreshToken;
+    const { setTokens, clearTokens } = authState?.actions || {};
 
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -74,14 +78,14 @@ apiClient.interceptors.response.use(
       try {
         const { data } = await axios.post(`${config.apiUrl}/auth/refresh`, { refreshToken });
         const newTokens = {
-            accessToken: data.data.tokens.accessToken,
-            refreshToken: data.data.tokens.refreshToken,
+          accessToken: data.data.tokens.accessToken,
+          refreshToken: data.data.tokens.refreshToken,
         };
         setTokens(newTokens);
-        
+
         originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
         processQueue(null, newTokens.accessToken);
-        
+
         return axios(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Management - MAZZA</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                        "card-light": "#ffffff",
+                        "card-dark": "#2f1f1a",
+                        "text-dark": "#181210",
+                        "text-light": "#ffffff",
+                        "muted-light": "#8d6a5e",
+                        "muted-dark": "#a89088",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem", 
+                        "lg": "1rem", 
+                        "xl": "1.5rem", 
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-dark dark:text-text-light transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm p-4 pb-2">
+<div class="flex items-center justify-between">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-text-dark dark:text-text-light">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">My Orders</h2>
+</div>
+</div>
+<!-- Tabs -->
+<div class="sticky top-[60px] z-40 bg-background-light dark:bg-background-dark pb-2">
+<div class="flex border-b border-[#e7deda] dark:border-white/10 px-4 justify-between">
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-primary pb-[13px] pt-4 flex-1 transition-colors">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Ongoing</p>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-muted-light dark:text-muted-dark hover:text-text-dark dark:hover:text-text-light pb-[13px] pt-4 flex-1 transition-colors">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Past</p>
+</button>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 flex flex-col p-4 gap-5">
+<!-- Ongoing Order Card 1 (Ready for Pickup) -->
+<div class="flex flex-col rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm border border-black/5 dark:border-white/5">
+<!-- Header part with Image & Title -->
+<div class="flex gap-4 mb-4">
+<div class="w-20 h-20 rounded-lg bg-gray-200 dark:bg-gray-700 bg-center bg-cover shrink-0" data-alt="Assorted bagels in a basket" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmCK4fxkfb-MODLsLmw-w3CzSLwMA6pJ9j4NTD8pJBRQijstINtze2gqhY20HJWt9ir1NC1jmQHN4IFeIOPwQ5fP5xTu2d9isSmRDfjGW6t1E245eltys2MXFB3y3smR9tcbtIvPtmcRw5mlHwENVwlGW5GFO7tNIyqZiQmP3G4gW5JXu_uIipmrSqsynb6SrYYh-K4tDyRMTa5hHqjtZu8MxasPjAHF1vcPF3Nierh4dybHkCHQcnTnwoI-vcxnfMhgU-cOqPcArW");'></div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-base font-bold leading-tight line-clamp-1">Joe's Bagels</h3>
+</div>
+<p class="text-muted-light dark:text-muted-dark text-xs mt-1">123 Market St • <span class="text-text-dark dark:text-white font-medium">$4.99</span></p>
+</div>
+<div class="inline-flex items-center gap-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded-lg w-fit mt-1">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span class="text-xs font-bold">Pickup in 15m</span>
+</div>
+</div>
+</div>
+<!-- Progress Bar Section -->
+<div class="flex flex-col gap-2 mb-4">
+<div class="flex justify-between items-end">
+<p class="text-sm font-medium text-primary">Ready for Pickup</p>
+<p class="text-xs text-muted-light dark:text-muted-dark">Step 2 of 3</p>
+</div>
+<!-- Stepper Visual -->
+<div class="relative h-2 w-full bg-[#e7deda] dark:bg-white/10 rounded-full overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full" style="width: 66%;"></div>
+</div>
+<!-- Step Labels -->
+<div class="flex justify-between px-0.5 pt-1">
+<span class="text-[10px] font-medium text-primary">Reserved</span>
+<span class="text-[10px] font-medium text-primary">Ready</span>
+<span class="text-[10px] font-medium text-muted-light dark:text-muted-dark/50">Collected</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex w-full items-center justify-center rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 text-white gap-2 text-sm font-bold transition-colors shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+<span>View Ticket</span>
+</button>
+</div>
+<!-- Ongoing Order Card 2 (Reserved) -->
+<div class="flex flex-col rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm border border-black/5 dark:border-white/5">
+<div class="flex gap-4 mb-4">
+<div class="w-20 h-20 rounded-lg bg-gray-200 dark:bg-gray-700 bg-center bg-cover shrink-0" data-alt="Fresh vegetables in a market stall" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDaFFMH5IEMeH0d9KzZxYLSKc_bciDkG4ay5F0wmmGo9t5BSC3fdPA1_ZLycjPQL0delJEXBcXbCfcgqjoht9UWiTmJpTDXdThncoGERcYCOFQUc58FK9GjBlpzU6OP3WRCu7aNXyzKZ8ORLiVRqltyVzgbf2ydoyOKGNtqyTLzVPTyofc0aCMNpHrCHAKtDAppMNLNRC12s4BjFPUV_H7cTFWwoVIMloiYDq-XySrBj_lelP02Co4oeRvEf36QBxIW18ZbFE7n3Ddp");'></div>
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-base font-bold leading-tight line-clamp-1">Fresh Market</h3>
+</div>
+<p class="text-muted-light dark:text-muted-dark text-xs mt-1">456 Main Ave • <span class="text-text-dark dark:text-white font-medium">$12.50</span></p>
+</div>
+<div class="inline-flex items-center gap-1.5 bg-orange-100 dark:bg-orange-900/30 text-primary px-2 py-1 rounded-lg w-fit mt-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span class="text-xs font-bold">Pickup in 2h 30m</span>
+</div>
+</div>
+</div>
+<!-- Progress Bar Section -->
+<div class="flex flex-col gap-2 mb-4">
+<div class="flex justify-between items-end">
+<p class="text-sm font-medium text-text-dark dark:text-text-light">Reserved</p>
+<p class="text-xs text-muted-light dark:text-muted-dark">Step 1 of 3</p>
+</div>
+<div class="relative h-2 w-full bg-[#e7deda] dark:bg-white/10 rounded-full overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full" style="width: 33%;"></div>
+</div>
+<div class="flex justify-between px-0.5 pt-1">
+<span class="text-[10px] font-medium text-primary">Reserved</span>
+<span class="text-[10px] font-medium text-muted-light dark:text-muted-dark/50">Ready</span>
+<span class="text-[10px] font-medium text-muted-light dark:text-muted-dark/50">Collected</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="flex w-full items-center justify-center rounded-lg h-10 px-4 bg-[#f5f1f0] dark:bg-white/5 hover:bg-[#ebe6e4] dark:hover:bg-white/10 text-text-dark dark:text-text-light gap-2 text-sm font-semibold transition-colors">
+<span class="material-symbols-outlined text-[20px]">map</span>
+<span>Get Directions</span>
+</button>
+</div>
+<!-- "Recent History" Section to showcase Past Cards -->
+<div class="pt-2">
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-sm font-bold text-muted-light dark:text-muted-dark uppercase tracking-wider">Completed Today</h3>
+</div>
+<!-- Past Order Card -->
+<div class="flex items-center justify-between gap-4 rounded-xl bg-card-light dark:bg-card-dark p-4 shadow-sm border border-black/5 dark:border-white/5 opacity-80 hover:opacity-100 transition-opacity">
+<div class="flex gap-4 items-center flex-1">
+<div class="w-14 h-14 rounded-lg bg-gray-200 dark:bg-gray-700 bg-center bg-cover shrink-0 grayscale-[50%]" data-alt="Sushi platter on a wooden table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDD2Nvqx0KC9YSOp-RnzLGFxkpKVqV8lUjWPNzlsfr-BaoPh8rza55jMHGQZiNmNsvFrUFeiLs2Lv1udHM77wh1B6hO65acHCz0gU8XI8u2Lv_FfU7oARATcRClVXm_xhr8GrUJE7zZDr57F5bbbL6b-0u7Npg-CanBTE2U33-TXfaMKkjyZGJFG7d3Tye4OAODv-YoVE6nc1plO79e5PA8nTn9dcKO4ZAbBjlphRqg3VAKI4cMtTxIdYNegZwMUu4EElDrjErsW5Xn");'></div>
+<div class="flex flex-col gap-0.5">
+<h3 class="text-sm font-bold text-text-dark dark:text-text-light">Sushi Place</h3>
+<p class="text-xs text-muted-light dark:text-muted-dark">Picked up • $5.99</p>
+<div class="flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-green-600 dark:text-green-400">check_circle</span>
+<span class="text-[10px] font-bold text-green-600 dark:text-green-400">COMPLETED</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button aria-label="Reorder" class="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+<button aria-label="Rate Order" class="flex size-8 items-center justify-center rounded-full border border-[#e7deda] dark:border-white/20 text-muted-light dark:text-muted-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Placeholder for empty space at bottom -->
+<div class="h-10"></div>
+</div>
+<!-- Bottom Navigation Bar (Visual Only) -->
+<div class="sticky bottom-0 z-50 border-t border-[#e7deda] dark:border-white/10 bg-card-light dark:bg-card-dark">
+<div class="flex items-center justify-between px-6 py-3">
+<button class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition-colors">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-medium">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-current">receipt_long</span>
+<span class="text-[10px] font-medium">Orders</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-4 bg-card-light dark:bg-card-dark"></div>
+</div>
+</div>
+</body></html>

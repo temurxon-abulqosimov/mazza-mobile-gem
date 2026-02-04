@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit User Preferences</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d452",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                         'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for cleaner UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111813] dark:text-white transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark group/design-root">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 flex items-center justify-between bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm p-4 pb-2">
+<button class="flex size-10 items-center justify-center rounded-full text-[#111813] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+</button>
+<h2 class="text-[#111813] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Edit Profile</h2>
+<!-- Spacer to balance title alignment -->
+<div class="size-10"></div>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 flex flex-col px-4 pb-24 pt-2">
+<!-- Profile Header / Avatar -->
+<div class="flex flex-col items-center justify-center py-6 gap-4">
+<div class="relative group cursor-pointer">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-32 w-32 shadow-soft border-4 border-white dark:border-[#1A2E22]" data-alt="Portrait of the user smiling against a blurred background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1tOVmdJ62dxqMHCVfZyWUdz9PR1ky5yWrEgIAh_AznKj2Y4HKadqFjJdc870tP4e_FE3y3sU6rQfzDuyz0z-kX4Ahl5syNWO-DBAOQMeGtW9toB8WRjHKBGy58fme7G-t6l-cn1D1XRY79LFJbzpnx168HyxN4iHYL2tETQ4SUiuewEPD6d645qEzMCn3YoeAcBUq2AjBpUFGJubx1f6mVkV6Z0VZKXR7AJqUncByloz6r37RNJpqGg347kgWiwIoIp4hlAL_ii5-");'>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full border-[3px] border-background-light dark:border-background-dark flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</div>
+</div>
+<button class="text-primary font-semibold text-sm hover:opacity-80 transition-opacity">Change Photo</button>
+</div>
+<!-- Form Fields Section -->
+<div class="flex flex-col gap-5 mt-2">
+<!-- Name Field -->
+<div class="flex flex-col gap-2">
+<label class="text-[#111813] dark:text-gray-200 text-sm font-medium leading-normal ml-1">Full Name</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-[#111813] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-white dark:bg-[#1A2E22] h-14 placeholder:text-[#61896f] dark:placeholder:text-[#4a7a5d] px-[15px] text-base font-normal leading-normal shadow-soft transition-all" placeholder="Enter your full name" value="Jane Doe"/>
+</div>
+</div>
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="text-[#111813] dark:text-gray-200 text-sm font-medium leading-normal ml-1">Email Address</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-[#111813] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-white dark:bg-[#1A2E22] h-14 placeholder:text-[#61896f] dark:placeholder:text-[#4a7a5d] px-[15px] text-base font-normal leading-normal shadow-soft transition-all" placeholder="name@example.com" type="email" value="jane.doe@example.com"/>
+</div>
+</div>
+<!-- Phone Field -->
+<div class="flex flex-col gap-2">
+<label class="text-[#111813] dark:text-gray-200 text-sm font-medium leading-normal ml-1">Phone Number</label>
+<div class="relative">
+<input class="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-xl text-[#111813] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-white dark:bg-[#1A2E22] h-14 placeholder:text-[#61896f] dark:placeholder:text-[#4a7a5d] px-[15px] text-base font-normal leading-normal shadow-soft transition-all" placeholder="+1 (000) 000-0000" type="tel" value="+1 (555) 123-4567"/>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-px w-full bg-black/5 dark:bg-white/10 my-2"></div>
+<!-- Dietary Preferences Section -->
+<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-1 ml-1">
+<h3 class="text-[#111813] dark:text-white text-lg font-bold leading-tight">Dietary Preferences</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm">Select all that apply to customize your menu.</p>
+</div>
+<div class="flex flex-wrap gap-3 pt-2">
+<!-- Active Chip -->
+<label class="cursor-pointer group">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2.5 rounded-full bg-white dark:bg-[#1A2E22] border border-transparent shadow-soft text-[#111813] dark:text-gray-200 text-sm font-medium transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-md peer-checked:ring-2 peer-checked:ring-primary/30 hover:bg-gray-50 dark:hover:bg-[#233b2d]">
+                                Vegetarian
+                            </div>
+</label>
+<!-- Inactive Chip -->
+<label class="cursor-pointer group">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2.5 rounded-full bg-white dark:bg-[#1A2E22] border border-transparent shadow-soft text-[#111813] dark:text-gray-200 text-sm font-medium transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-md peer-checked:ring-2 peer-checked:ring-primary/30 hover:bg-gray-50 dark:hover:bg-[#233b2d]">
+                                Vegan
+                            </div>
+</label>
+<!-- Active Chip -->
+<label class="cursor-pointer group">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2.5 rounded-full bg-white dark:bg-[#1A2E22] border border-transparent shadow-soft text-[#111813] dark:text-gray-200 text-sm font-medium transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-md peer-checked:ring-2 peer-checked:ring-primary/30 hover:bg-gray-50 dark:hover:bg-[#233b2d]">
+                                Gluten-Free
+                            </div>
+</label>
+<!-- Inactive Chip -->
+<label class="cursor-pointer group">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2.5 rounded-full bg-white dark:bg-[#1A2E22] border border-transparent shadow-soft text-[#111813] dark:text-gray-200 text-sm font-medium transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-md peer-checked:ring-2 peer-checked:ring-primary/30 hover:bg-gray-50 dark:hover:bg-[#233b2d]">
+                                Dairy-Free
+                            </div>
+</label>
+<!-- Inactive Chip -->
+<label class="cursor-pointer group">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2.5 rounded-full bg-white dark:bg-[#1A2E22] border border-transparent shadow-soft text-[#111813] dark:text-gray-200 text-sm font-medium transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-md peer-checked:ring-2 peer-checked:ring-primary/30 hover:bg-gray-50 dark:hover:bg-[#233b2d]">
+                                Nut-Free
+                            </div>
+</label>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action Area -->
+<div class="fixed bottom-0 left-0 w-full z-20 bg-gradient-to-t from-background-light via-background-light/95 to-transparent dark:from-background-dark dark:via-background-dark/95 pb-6 pt-12 px-4 pointer-events-none">
+<div class="max-w-md mx-auto pointer-events-auto">
+<button class="flex w-full items-center justify-center rounded-xl bg-primary h-14 px-5 shadow-lg shadow-primary/30 transition-transform active:scale-[0.98] hover:bg-[#0fc34b]">
+<span class="text-white text-base font-bold tracking-tight">Save Changes</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

@@ -9,7 +9,7 @@ export const useBookingDetail = (bookingId: string) => {
   });
 
   return {
-    booking: data?.booking,
+    booking: data?.data?.booking,
     isLoading,
     isError,
     refetch,

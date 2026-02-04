@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Product Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f46a25",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#221610",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2A1F18",
+                        "text-main-light": "#181311",
+                        "text-main-dark": "#f8f6f5",
+                        "text-sub-light": "#8a6e60",
+                        "text-sub-dark": "#a69085",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main-light dark:text-text-main-dark transition-colors duration-200">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 flex items-center justify-between bg-surface-light dark:bg-surface-dark px-4 py-3 shadow-sm transition-colors duration-200">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-text-main-light dark:text-text-main-dark hover:bg-black/5 dark:hover:bg-white/10">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold leading-tight tracking-tight">My Inventory</h1>
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full text-text-main-light dark:text-text-main-dark hover:bg-black/5 dark:hover:bg-white/10">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<!-- Search Bar -->
+<div class="px-4 py-4">
+<label class="flex w-full items-center gap-3 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 transition-all focus-within:ring-2 focus-within:ring-primary dark:ring-white/10">
+<span class="material-symbols-outlined text-text-sub-light dark:text-text-sub-dark">search</span>
+<input class="h-full w-full border-none bg-transparent p-0 text-base font-normal text-text-main-light placeholder:text-text-sub-light focus:ring-0 dark:text-text-main-dark dark:placeholder:text-text-sub-dark" placeholder="Search by product name or SKU" type="text"/>
+</label>
+</div>
+<!-- Filter Chips -->
+<div class="no-scrollbar flex gap-3 overflow-x-auto px-4 pb-2">
+<button class="shrink-0 rounded-full bg-primary px-5 py-2 text-sm font-medium text-white shadow-sm transition-transform active:scale-95">
+                All
+            </button>
+<button class="shrink-0 rounded-full bg-white dark:bg-surface-dark px-5 py-2 text-sm font-medium text-text-main-light dark:text-text-main-dark shadow-sm ring-1 ring-black/5 dark:ring-white/10 transition-transform active:scale-95">
+                Active
+            </button>
+<button class="shrink-0 rounded-full bg-white dark:bg-surface-dark px-5 py-2 text-sm font-medium text-text-main-light dark:text-text-main-dark shadow-sm ring-1 ring-black/5 dark:ring-white/10 transition-transform active:scale-95">
+                Inactive
+            </button>
+<button class="shrink-0 rounded-full bg-white dark:bg-surface-dark px-5 py-2 text-sm font-medium text-text-main-light dark:text-text-main-dark shadow-sm ring-1 ring-black/5 dark:ring-white/10 transition-transform active:scale-95">
+                Low Stock
+            </button>
+</div>
+<!-- Product List -->
+<div class="flex flex-col gap-4 p-4">
+<!-- Item 1 -->
+<div class="group flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-md">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="aspect-square size-[72px] shrink-0 rounded-lg bg-gray-200 bg-cover bg-center" data-alt="Close up of fresh red apples in a box" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwdKP9WFE4TG-yoZO1grAJnI6pcEThUW6uvFNrg1KhObM6wmP2VtZvtTcRhXUh9o1CCfud0H1KIPrJMEjdNt0_kZjtzqFzBQ3YpQ6MOevAltBbSB-X576vx1tiNNCiQbPmRLqpPRnhRzdWFtRGdCsGxvmr-vF_c98cawFa6DZ84_XZTylNXgzB_kEyR6mfHsRUoH8el9lihe5-sU0JuV5xiiH7sbc4vpYM649IavRv586j0TfbXjX6emARnjKQFEg5KY0tJiFhqu7C');">
+</div>
+<div class="flex flex-col justify-center gap-1 overflow-hidden">
+<p class="truncate text-base font-bold text-text-main-light dark:text-text-main-dark">Honeycrisp Apples</p>
+<div class="flex items-center gap-2 text-sm text-text-sub-light dark:text-text-sub-dark">
+<span class="font-medium text-primary">$24.50</span>
+<span>•</span>
+<span class="truncate">12 boxes left</span>
+</div>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="h-7 w-12 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 dark:bg-gray-700 peer-checked:bg-primary transition-all"></div>
+<div class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5"></div>
+</label>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-md opacity-80">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="aspect-square size-[72px] shrink-0 rounded-lg bg-gray-200 bg-cover bg-center grayscale" data-alt="Rustic sourdough bread loaf on wooden table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPfYJNiimEspRllN2xKa1rvLU6R8uTANExEmRUUeitLGIDDLUaROi76t2zUxU7-KIeoarnkb8goe6sCb_6csZnCbv4_HK_3wg_OlF0_CYlcbBGHkb-7hxFUQgf0HVmv17Ze3pxmM8PGBJmwcvl2fhiL-XDRfyHc_jaxgm3QtPTV2_SgPRVKYACvZmlEReytX_0iCuqJTkh7RMHkmPVkAsf3stBQrNtHGiTss_tfb1DU7ug-nyJKkRYZvJTN15IF1Lp1WQiBm9vHq6L');">
+</div>
+<div class="flex flex-col justify-center gap-1 overflow-hidden">
+<p class="truncate text-base font-bold text-text-main-light dark:text-text-main-dark">Artisan Sourdough</p>
+<div class="flex items-center gap-2 text-sm text-text-sub-light dark:text-text-sub-dark">
+<span class="font-medium text-text-main-light dark:text-text-main-dark">$8.00</span>
+<span>•</span>
+<span class="truncate text-red-500 font-medium">Out of stock</span>
+</div>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex cursor-pointer items-center">
+<input class="peer sr-only" type="checkbox"/>
+<div class="h-7 w-12 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 dark:bg-gray-700 peer-checked:bg-primary transition-all"></div>
+<div class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5"></div>
+</label>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="group flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-md">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="aspect-square size-[72px] shrink-0 rounded-lg bg-gray-200 bg-cover bg-center" data-alt="Halved fresh avocados on a dark surface" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDos2voqWhf4GEz6485OCsrrqwGPUUwhmrGVg0rQZ0z-fRvsfUM2dFHtf599QNdnPPpOWss5fSm04TxulG0IbCOu7cDGy91SDy4mDX-O5YPgSQD7TuzJPXZIn8_9b7muMQ-EppC4lD6bqKVR9V-X52yXDBWsipm1yPQU9eKHBybfcfzLACF-ZkOEFtWHZUoK6F5qhgiiR3h4KBKjWao71nnAynPz5fKfDza7wPLZ8YxUXC0L6CEtzHzKqrrABxbN8jPG9O3BUwyD4Cl');">
+</div>
+<div class="flex flex-col justify-center gap-1 overflow-hidden">
+<p class="truncate text-base font-bold text-text-main-light dark:text-text-main-dark">Organic Avocados</p>
+<div class="flex items-center gap-2 text-sm text-text-sub-light dark:text-text-sub-dark">
+<span class="font-medium text-primary">$1.50 ea</span>
+<span>•</span>
+<span class="truncate">45 remaining</span>
+</div>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="h-7 w-12 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 dark:bg-gray-700 peer-checked:bg-primary transition-all"></div>
+<div class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5"></div>
+</label>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="group flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-md">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="aspect-square size-[72px] shrink-0 rounded-lg bg-gray-200 bg-cover bg-center" data-alt="Fresh green basil leaves in a bunch" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAbI3nhnYiYNaUNvQTQZTzxGCXE0vkxiyx3R4lTsp9xyE0XHJjDJn3REi2EYI91qRvbhkzjHG_pIROgWMJ9ITcrUnMvM6memDfjlBmZuadte00ffV0bJ2o_QEgjQnrU0NDSXFiygMgrRBEYMMA4jDFZ9144haLJPUSJBrt7J1k1b6sZcZtbjzcU_tjKWv6vLpCGFOZDFYx4yRHY6d9Jq-wjQRdERG2E6E5SJoYOPtNZ1xDwA7B263R4_fHT6_UdKTq-_QT9FJwuQekg');">
+</div>
+<div class="flex flex-col justify-center gap-1 overflow-hidden">
+<p class="truncate text-base font-bold text-text-main-light dark:text-text-main-dark">Fresh Basil Bunch</p>
+<div class="flex items-center gap-2 text-sm text-text-sub-light dark:text-text-sub-dark">
+<span class="font-medium text-primary">$3.00</span>
+<span>•</span>
+<span class="truncate text-primary font-medium">Low Stock (3)</span>
+</div>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="h-7 w-12 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 dark:bg-gray-700 peer-checked:bg-primary transition-all"></div>
+<div class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5"></div>
+</label>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="group flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-surface-dark p-3 shadow-sm ring-1 ring-black/5 dark:ring-white/5 transition-all hover:shadow-md">
+<div class="flex items-center gap-4 overflow-hidden">
+<div class="aspect-square size-[72px] shrink-0 rounded-lg bg-gray-200 bg-cover bg-center" data-alt="Jar of homemade berry jam with spoon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCnNAVVhO2P6yPUYLtZPhy3yl6apAYg9zoJkWjn2aCVF7k_cCGR32ULAu9bSFsYn86DRrhJwsi9YqOSrBcW2tsQbWO-KOsoMNNZiKPioAqUotThg3dkW_TIC2E-k7DbwOBLcgDzoGfCNWJtBFDn24_745KRFRRTOsdEkFF3BOMPx6HHajM9eGr08c1Le3l59BcZsHxQD3c-yKpPEEjajbiJBD0Y38hBWZSCD2QYsJk1L03KXYaddc9_3u3SJDP_ncTYjLTQqlEe3XSW');">
+</div>
+<div class="flex flex-col justify-center gap-1 overflow-hidden">
+<p class="truncate text-base font-bold text-text-main-light dark:text-text-main-dark">Strawberry Jam</p>
+<div class="flex items-center gap-2 text-sm text-text-sub-light dark:text-text-sub-dark">
+<span class="font-medium text-primary">$6.50</span>
+<span>•</span>
+<span class="truncate">8 remaining</span>
+</div>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex cursor-pointer items-center">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="h-7 w-12 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/20 dark:bg-gray-700 peer-checked:bg-primary transition-all"></div>
+<div class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-all peer-checked:translate-x-5"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<div class="fixed bottom-6 right-6 z-30">
+<button class="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/40 transition-transform active:scale-95 hover:shadow-xl hover:shadow-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/30">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</div>
+</body></html>

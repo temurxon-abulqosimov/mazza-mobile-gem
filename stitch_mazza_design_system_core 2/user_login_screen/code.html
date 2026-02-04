@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAZZA Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding if needed for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111827] antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<!-- Top App Bar -->
+<div class="flex items-center p-4 pb-2 justify-between">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-black/5 active:bg-black/10 transition-colors">
+<span class="material-symbols-outlined text-[#111827] dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<h2 class="text-[#111827] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Login</h2>
+</div>
+<!-- Main Content Scrollable Area -->
+<div class="flex flex-col flex-1 px-6 pt-4 pb-8 overflow-y-auto no-scrollbar">
+<!-- Header / Logo Area -->
+<div class="flex flex-col items-center justify-center py-6">
+<div class="size-16 rounded-[16px] bg-primary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+<!-- Logo Placeholder: Stylized M -->
+<span class="material-symbols-outlined text-white" style="font-size: 36px;">volunteer_activism</span>
+</div>
+</div>
+<!-- Headline -->
+<div class="text-center mb-8">
+<h1 class="text-[#111827] dark:text-white tracking-tight text-[32px] font-bold leading-tight mb-2">Welcome back!</h1>
+<p class="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">Login to your account to start rescuing food.</p>
+</div>
+<!-- Form Fields -->
+<form class="flex flex-col gap-5 w-full">
+<!-- Email Input -->
+<div class="flex flex-col gap-1.5">
+<label class="text-[#111827] dark:text-white text-sm font-medium leading-normal pl-1" for="email">Email</label>
+<input class="form-input flex w-full rounded-[12px] text-[#111827] border border-gray-200 bg-white focus:border-primary focus:ring-1 focus:ring-primary h-14 placeholder:text-gray-400 px-4 text-base transition-colors" id="email" placeholder="name@example.com" type="email"/>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-1.5">
+<label class="text-[#111827] dark:text-white text-sm font-medium leading-normal pl-1" for="password">Password</label>
+<div class="relative">
+<input class="form-input flex w-full rounded-[12px] text-[#111827] border border-gray-200 bg-white focus:border-primary focus:ring-1 focus:ring-primary h-14 placeholder:text-gray-400 pl-4 pr-12 text-base transition-colors" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-gray-400 hover:text-gray-600" type="button">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end mt-1">
+<a class="text-[#FF6B35] text-sm font-medium hover:text-[#e55a2b] transition-colors" href="#">Forgot Password?</a>
+</div>
+</div>
+<!-- Login Button -->
+<button class="mt-4 w-full h-14 bg-primary hover:bg-orange-600 active:bg-orange-700 text-white text-base font-bold rounded-[12px] shadow-lg shadow-primary/25 transition-all flex items-center justify-center" type="button">
+                    Login
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative my-8">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-background-light dark:bg-background-dark px-3 text-sm text-gray-500 font-medium">Or continue with</span>
+</div>
+</div>
+<!-- Social Login Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-3 h-14 rounded-[12px] border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+<img alt="Google Logo" class="w-5 h-5" data-alt="Google G Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4WiYnstqOFdhg7I9EUv9Cu5lhKpWdjWT2At3pHcrjqYQVGPi9rulg8ZsWMinkLUOSfzPnXlt2CAjEHE1Rcq2ERWFqMaXH6DFpg3vKnegGMnqo4JIs0anG8Zj7VFwySX-L8fFXk_jgnsC3bAdMq45h4dEXpWO7HynEG3Ah7n24p6On0dWnCd7wgQEWL2ZgJz77F5MxxasX-NiynNsVRp-K5VhxcYnDA1rs_HJTh85zGODMfszeIV9uJxHK9otECDU91tjmKB0il14Y"/>
+<span class="text-[#111827] font-medium text-sm">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 h-14 rounded-[12px] border border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+<!-- Simple Apple Icon SVG path since external image might break or not be strictly allowed if not Google -->
+<svg aria-hidden="true" class="w-5 h-5 text-black" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"></path>
+<!-- Replacing Apple with Facebook path temporarily as it is a common social login alternative and SVG is safe, 
+                             but to stick to request "Apple", I will use a generic icon or assume system font support  
+                             Actually, let's just use a clean icon place holder to be safe. -->
+</svg>
+<!-- Correction: User asked for Apple. I will use a generic SVG path that looks like a logo or just text if SVG path is uncertain.
+                         Let's use a standard Apple path. -->
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M17.5,12.6c-0.1-2.4,2-3.6,2.1-3.7c-1.1-1.6-2.9-1.8-3.5-1.9c-1.5-0.1-2.9,0.9-3.7,0.9c-0.8,0-2-0.8-3.3-0.8C6.9,7.2,4.8,9,4.8,12.7c0,2.3,0.9,4.4,2.3,6.3c1,1.5,2.2,3.1,3.8,3c1.5-0.1,2.1-1,3.9-1c1.9,0,2.4,1,3.9,1c1.6,0,2.7-1.5,3.7-3c0.7-1,1-1.5,1.5-2.2C19.8,16.7,17.6,16,17.5,12.6z M13,5.3c0.8-0.9,1.3-2.2,1.2-3.4c-1.1,0.1-2.5,0.7-3.3,1.7c-0.7,0.8-1.4,2.2-1.2,3.4C10.9,7.1,12.2,6.3,13,5.3z"></path>
+</svg>
+<span class="text-[#111827] font-medium text-sm">Apple</span>
+</button>
+</div>
+<!-- Footer Spacer -->
+<div class="h-8"></div>
+<!-- Bottom Link -->
+<div class="mt-auto flex justify-center py-4">
+<p class="text-gray-500 text-sm">
+                    Don't have an account? 
+                    <a class="text-primary font-bold hover:underline" href="#">Sign up</a>
+</p>
+</div>
+</div>
+</div>
+</body></html>

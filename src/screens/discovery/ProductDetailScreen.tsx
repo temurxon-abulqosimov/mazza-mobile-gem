@@ -40,7 +40,7 @@ const ProductDetailScreen = () => {
       const result = await createBookingAsync({
         productId: product.id,
         quantity,
-        paymentMethodId: 'pm_mock_id',
+        paymentMethodId: '123e4567-e89b-12d3-a456-426614174000',
       });
       navigation.navigate('BookingConfirmation', { booking: result.data.booking });
     } catch (error: any) {
@@ -227,7 +227,7 @@ const ProductDetailScreen = () => {
         <View style={styles.footer}>
           <Button
             title="Sold Out"
-            onPress={() => {}}
+            onPress={() => { }}
             disabled
             fullWidth
             size="large"

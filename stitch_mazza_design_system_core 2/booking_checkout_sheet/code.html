@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Checkout Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-900 font-display flex justify-center h-screen overflow-hidden w-full items-end sm:items-center relative">
+<!-- Background Image Simulation for Product Page context -->
+<div class="absolute inset-0 w-full h-full opacity-30 pointer-events-none" data-alt="Blurred background of food marketplace" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBY_oadbAUVs1X0a0VTjwRrigDYbp1LPBjtYM_I2Y4Jw-2jyhlWC6QZY4-HbVL9CW-0_3AJ3XLb0aoJ_u1uoxbB53HgOLlWOvOML7Wf5Al20-e7B2TLk8nGblStxH_r9FkRiwYFBXzdXIDUVzxjPhHPDeMt70ObrAglRA1EWorAe__aR-hMaZ3PWd3Bdcr208x_ITV7y7buJy8_eD9syp-vAEyiVXxHhgQmovuNzNOU6griZpGsuLug50xlL1PSzW7fWx80kqlWn7fS'); background-size: cover; background-position: center;">
+</div>
+<!-- Mobile Sheet Container -->
+<div class="relative w-full max-w-md h-[95vh] sm:h-[850px] flex flex-col justify-end z-10 transition-transform duration-300 ease-out translate-y-0">
+<!-- Bottom Sheet -->
+<div class="w-full bg-background-light dark:bg-background-dark rounded-t-[32px] shadow-[0_-8px_40px_rgba(0,0,0,0.2)] flex flex-col h-full relative overflow-hidden">
+<!-- Handle -->
+<div class="flex items-center justify-center pt-3 pb-2 shrink-0 bg-background-light dark:bg-background-dark cursor-grab active:cursor-grabbing w-full">
+<div class="h-1.5 w-12 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+<!-- Header -->
+<div class="px-6 pb-2 pt-1 shrink-0 bg-background-light dark:bg-background-dark z-20 flex justify-between items-center">
+<h2 class="text-[#181210] dark:text-white text-2xl font-bold leading-tight tracking-tight">Checkout</h2>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-5 pt-2 pb-32">
+<!-- Order Summary Card -->
+<div class="bg-white dark:bg-[#2f2b29] rounded-2xl p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] mb-6 border border-gray-100 dark:border-transparent">
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-[72px] shrink-0 relative shadow-inner" data-alt="Mazza Mystery Box with assorted artisan breads" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCB1P7KqGOrVr6yEqygdl4yjwKlbeON5lAzCkc5o7YtTYFm0JclQbBEj7HgPwTG89mssLP1gxvH6Pti1Z6CwTEifJVdppRRbTEU9U-eau7ghNP-Hb2l1bxoI0ySSwQAMLSCHtQanqXfC4tucMdaCA9v7_el4v2B91J6tRy0HNCjbzLLDrV18Tok_ZlU9AMr5TBFeBkc6naA-A4Qktf50WpH-mOp_Ln3z7uxfPy8740wlygPJteS4-CFrlEvEWzDUHruL0s0eW3nUmJb");'>
+</div>
+<div class="flex flex-col flex-1 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-[#181210] dark:text-white text-base font-bold leading-snug line-clamp-1">Mazza Mystery Box</p>
+<p class="text-[#181210] dark:text-white font-bold">$4.99</p>
+</div>
+<p class="text-[#8d6a5e] dark:text-gray-400 text-xs font-medium leading-normal mb-1">Assorted Bakery Items</p>
+<!-- Simple Quantity/Edit Row -->
+<div class="flex items-center justify-between mt-1">
+<span class="text-xs text-gray-400 dark:text-gray-500">1 Item selected</span>
+<div class="flex items-center gap-3 bg-background-light dark:bg-black/20 rounded-lg p-1 border border-gray-100 dark:border-white/5">
+<button class="size-6 flex items-center justify-center text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
+<span class="text-sm font-semibold text-[#181210] dark:text-white w-3 text-center">1</span>
+<button class="size-6 flex items-center justify-center text-[#181210] dark:text-white hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pickup Section -->
+<div class="mb-6">
+<h3 class="text-[#181210] dark:text-white text-lg font-bold leading-tight px-1 pb-3 tracking-tight">Pickup Details</h3>
+<!-- Location Card -->
+<div class="bg-white dark:bg-[#2f2b29] rounded-2xl p-4 shadow-[0_2px_12px_rgba(0,0,0,0.04)] mb-4 border border-gray-100 dark:border-transparent group cursor-pointer hover:border-primary/20 transition-colors">
+<div class="flex items-center gap-4 justify-between">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 size-12 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<div>
+<p class="text-[#181210] dark:text-white text-base font-bold">Joe's Bakery</p>
+<p class="text-[#8d6a5e] dark:text-gray-400 text-sm line-clamp-1">123 Main St, Downtown Market</p>
+</div>
+</div>
+<!-- Map Action -->
+<div class="shrink-0">
+<button class="flex items-center justify-center size-10 rounded-full bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">near_me</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Time Slots Selector -->
+<div class="flex gap-3 overflow-x-auto pb-4 pt-1 no-scrollbar -mx-5 px-5 select-none">
+<!-- Active Slot -->
+<button class="shrink-0 group relative rounded-2xl p-0.5 bg-gradient-to-b from-primary to-[#ff8a5e] shadow-lg shadow-primary/25 flex flex-col items-center min-w-[104px] transition-transform active:scale-95">
+<div class="w-full h-full bg-primary rounded-[14px] px-3 py-2.5 flex flex-col items-center justify-center gap-0.5">
+<span class="text-[11px] font-semibold text-white/90 uppercase tracking-wide">Today</span>
+<span class="text-sm font-bold text-white">5:00 PM</span>
+<span class="text-[10px] text-white/80">- 5:30 PM</span>
+</div>
+<div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-primary rotate-45"></div>
+</button>
+<!-- Normal Slot -->
+<button class="shrink-0 rounded-2xl px-3 py-3 bg-white dark:bg-[#2f2b29] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white shadow-sm flex flex-col items-center justify-center min-w-[104px] gap-0.5 hover:border-primary/40 transition-all active:scale-95">
+<span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Today</span>
+<span class="text-sm font-bold">5:30 PM</span>
+<span class="text-[10px] text-gray-400 dark:text-gray-500">- 6:00 PM</span>
+</button>
+<!-- Disabled Slot -->
+<button class="shrink-0 rounded-2xl px-3 py-3 bg-gray-50 dark:bg-white/5 text-gray-300 dark:text-gray-600 border border-transparent flex flex-col items-center justify-center min-w-[104px] gap-0.5 cursor-not-allowed opacity-70">
+<span class="text-[11px] font-medium uppercase tracking-wide">Today</span>
+<span class="text-sm font-bold line-through">6:00 PM</span>
+<span class="text-[10px]">Sold Out</span>
+</button>
+<button class="shrink-0 rounded-2xl px-3 py-3 bg-white dark:bg-[#2f2b29] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white shadow-sm flex flex-col items-center justify-center min-w-[104px] gap-0.5 hover:border-primary/40 transition-all active:scale-95">
+<span class="text-[11px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">Tomorrow</span>
+<span class="text-sm font-bold">9:00 AM</span>
+<span class="text-[10px] text-gray-400 dark:text-gray-500">- 9:30 AM</span>
+</button>
+</div>
+</div>
+<!-- Payment Section -->
+<div class="mb-4">
+<h3 class="text-[#181210] dark:text-white text-lg font-bold leading-tight px-1 pb-3 tracking-tight">Payment Method</h3>
+<div class="flex flex-col gap-3">
+<!-- Saved Card (Selected) -->
+<label class="flex items-center gap-4 bg-white dark:bg-[#2f2b29] p-4 rounded-2xl shadow-md shadow-primary/5 border border-primary cursor-pointer relative overflow-hidden group transition-all">
+<input checked="" class="hidden" name="payment" type="radio"/>
+<!-- Selection Indicator -->
+<div class="absolute right-0 top-0 bg-primary text-white px-3 py-1 rounded-bl-xl text-[10px] font-bold tracking-wider shadow-sm">DEFAULT</div>
+<div class="size-11 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-gray-100 dark:border-transparent">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-300">credit_card</span>
+</div>
+<div class="flex-1">
+<p class="text-[#181210] dark:text-white font-bold text-sm">Visa ending in 4242</p>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Expires 12/25</p>
+</div>
+<div class="text-primary pr-1">
+<span class="material-symbols-outlined filled">check_circle</span>
+</div>
+</label>
+<!-- Apple Pay -->
+<label class="flex items-center gap-4 bg-white dark:bg-[#2f2b29] p-4 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-gray-100 dark:border-transparent cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+<input class="hidden" name="payment" type="radio"/>
+<div class="size-11 bg-black rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-white">phone_iphone</span>
+</div>
+<div class="flex-1">
+<p class="text-[#181210] dark:text-white font-bold text-sm">Apple Pay</p>
+</div>
+<div class="text-gray-300 dark:text-gray-600 pr-1">
+<span class="material-symbols-outlined">radio_button_unchecked</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action Bar -->
+<div class="absolute bottom-0 left-0 w-full bg-white/90 dark:bg-[#23140f]/90 backdrop-blur-md border-t border-gray-100 dark:border-white/10 px-6 py-5 shadow-[0_-4px_30px_rgba(0,0,0,0.06)] z-30">
+<div class="flex items-center justify-between mb-4">
+<div class="flex flex-col">
+<span class="text-xs text-gray-500 dark:text-gray-400 font-medium">Total (incl. tax)</span>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-bold text-[#181210] dark:text-white tracking-tight">$5.45</span>
+<span class="text-sm text-gray-400 line-through">$12.00</span>
+</div>
+</div>
+<!-- Timer Urgency -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-900/30">
+<span class="material-symbols-outlined text-primary text-[16px] animate-pulse">timer</span>
+<span class="text-xs text-primary font-bold tabular-nums">04:59</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-[#e55e2d] text-white font-bold text-lg h-14 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/30 transition-all active:scale-[0.98] group">
+<span>Confirm Reservation</span>
+<span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

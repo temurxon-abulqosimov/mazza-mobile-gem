@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ViewStyle,
   RefreshControl,
+  RefreshControlProps,
 } from 'react-native';
 import { colors, spacing } from '../../theme';
 
@@ -13,7 +14,7 @@ interface ScreenProps {
   backgroundColor?: string;
   padding?: number;
   scrollable?: boolean;
-  refreshControl?: RefreshControl;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
   style?: ViewStyle;
   contentContainerStyle?: ViewStyle;
 }

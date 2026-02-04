@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin KPI Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f99806",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#231b0f",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a1610", // Slightly lighter than background-dark
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#181511] dark:text-white antialiased">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden pb-[90px]">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-20 w-full bg-card-light/95 dark:bg-card-dark/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 transition-colors duration-200">
+<div class="flex items-center justify-between px-4 py-3">
+<h2 class="text-xl font-bold tracking-tight">Admin Overview</h2>
+<button class="relative rounded-full p-2 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-white dark:border-card-dark"></span>
+</button>
+</div>
+<!-- Date Filter Chips -->
+<div class="w-full overflow-x-auto no-scrollbar px-4 pb-3">
+<div class="flex gap-2">
+<button class="flex h-9 shrink-0 items-center gap-2 rounded-full bg-background-light dark:bg-white/5 border border-gray-200 dark:border-white/10 pl-3 pr-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg text-gray-500 dark:text-gray-400">calendar_today</span>
+<span class="text-sm font-medium">Last 7 Days</span>
+<span class="material-symbols-outlined text-lg text-gray-500 dark:text-gray-400">expand_more</span>
+</button>
+<!-- Additional placeholder filters for richer UI -->
+<button class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-transparent border border-gray-200 dark:border-white/10 px-4 active:scale-95 transition-transform">
+<span class="text-sm font-medium text-gray-600 dark:text-gray-300">Compare</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center rounded-full bg-white dark:bg-transparent border border-gray-200 dark:border-white/10 px-4 active:scale-95 transition-transform">
+<span class="text-sm font-medium text-gray-600 dark:text-gray-300">Filter</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Scrollable Area -->
+<main class="flex-1 px-4 py-6 space-y-6">
+<!-- KPI Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1: Revenue -->
+<div class="relative overflow-hidden rounded-2xl bg-card-light dark:bg-card-dark border border-gray-100 dark:border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none p-5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Revenue</p>
+<span class="inline-flex items-center gap-0.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                            +12%
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span>
+</span>
+</div>
+<div class="mb-4">
+<p class="text-3xl font-bold tracking-tight text-[#181511] dark:text-white">$45,231</p>
+</div>
+<!-- Chart Area -->
+<div class="h-16 w-full -mb-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="gradientRevenue" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f99806" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#f99806" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 35 C10 35 10 20 20 20 C30 20 30 30 40 25 C50 20 50 10 60 15 C70 20 70 5 80 5 C90 5 90 25 100 20 V40 H0 Z" fill="url(#gradientRevenue)"></path>
+<path d="M0 35 C10 35 10 20 20 20 C30 20 30 30 40 25 C50 20 50 10 60 15 C70 20 70 5 80 5 C90 5 90 25 100 20" fill="none" stroke="#f99806" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 2: Active Users -->
+<div class="relative overflow-hidden rounded-2xl bg-card-light dark:bg-card-dark border border-gray-100 dark:border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none p-5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Active Users</p>
+<span class="inline-flex items-center gap-0.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                            +5%
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span>
+</span>
+</div>
+<div class="mb-4">
+<p class="text-3xl font-bold tracking-tight text-[#181511] dark:text-white">1,240</p>
+</div>
+<!-- Chart Area -->
+<div class="h-16 w-full -mb-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="gradientUsers" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f99806" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#f99806" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 30 C15 30 20 25 35 25 C50 25 55 15 70 15 C85 15 90 5 100 5 V40 H0 Z" fill="url(#gradientUsers)"></path>
+<path d="M0 30 C15 30 20 25 35 25 C50 25 55 15 70 15 C85 15 90 5 100 5" fill="none" stroke="#f99806" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 3: New Store Approvals -->
+<div class="relative overflow-hidden rounded-2xl bg-card-light dark:bg-card-dark border border-gray-100 dark:border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none p-5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">New Stores</p>
+<span class="inline-flex items-center gap-0.5 rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/10 dark:text-red-400">
+                            -2%
+                            <span class="material-symbols-outlined text-[14px]">trending_down</span>
+</span>
+</div>
+<div class="mb-4">
+<p class="text-3xl font-bold tracking-tight text-[#181511] dark:text-white">8</p>
+</div>
+<!-- Chart Area -->
+<div class="h-16 w-full -mb-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="gradientStores" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f99806" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#f99806" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 10 C10 10 20 15 30 15 C40 15 50 10 60 10 C70 10 80 25 90 25 C95 25 95 35 100 35 V40 H0 Z" fill="url(#gradientStores)"></path>
+<path d="M0 10 C10 10 20 15 30 15 C40 15 50 10 60 10 C70 10 80 25 90 25 C95 25 95 35 100 35" fill="none" stroke="#f99806" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Card 4: Daily Active Rescues -->
+<div class="relative overflow-hidden rounded-2xl bg-card-light dark:bg-card-dark border border-gray-100 dark:border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none p-5 transition-transform active:scale-[0.99]">
+<div class="flex justify-between items-start mb-2">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Active Rescues</p>
+<span class="inline-flex items-center gap-0.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
+                            +18%
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span>
+</span>
+</div>
+<div class="mb-4">
+<p class="text-3xl font-bold tracking-tight text-[#181511] dark:text-white">342</p>
+</div>
+<!-- Chart Area -->
+<div class="h-16 w-full -mb-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="gradientRescues" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f99806" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#f99806" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 35 C15 35 20 30 30 25 C40 20 50 25 60 15 C70 5 80 15 90 10 C95 5 95 0 100 0 V40 H0 Z" fill="url(#gradientRescues)"></path>
+<path d="M0 35 C15 35 20 30 30 25 C40 20 50 25 60 15 C70 5 80 15 90 10 C95 5 95 0 100 0" fill="none" stroke="#f99806" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- System Status Section -->
+<div class="space-y-3">
+<h3 class="text-lg font-bold px-1">System Status</h3>
+<div class="flex items-center justify-between gap-4 rounded-2xl bg-card-light dark:bg-card-dark border border-gray-100 dark:border-white/5 p-4 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
+<span class="material-symbols-outlined text-2xl">check_circle</span>
+</div>
+<div class="flex flex-col">
+<p class="text-base font-semibold text-[#181511] dark:text-white leading-tight">All Systems Operational</p>
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">99.9% Uptime</p>
+</div>
+</div>
+<div class="relative flex h-3 w-3 shrink-0 mr-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+</div>
+</div>
+</div>
+<!-- Extra content filler to show scrolling -->
+<div class="h-8"></div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#1a1610]/95 backdrop-blur-lg border-t border-gray-100 dark:border-white/5 pb-safe pt-2">
+<div class="flex justify-around items-end h-[60px] pb-3">
+<!-- Nav Item: Overview (Active) -->
+<button class="flex flex-col items-center gap-1 group w-16">
+<span class="material-symbols-outlined text-primary text-[28px] transition-transform group-active:scale-90">dashboard</span>
+<span class="text-[10px] font-semibold text-primary">Overview</span>
+</button>
+<!-- Nav Item: Users -->
+<button class="flex flex-col items-center gap-1 group w-16 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[28px] transition-transform group-active:scale-90">group</span>
+<span class="text-[10px] font-medium">Users</span>
+</button>
+<!-- Nav Item: Stores -->
+<button class="flex flex-col items-center gap-1 group w-16 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[28px] transition-transform group-active:scale-90">storefront</span>
+<span class="text-[10px] font-medium">Stores</span>
+</button>
+<!-- Nav Item: System -->
+<button class="flex flex-col items-center gap-1 group w-16 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[28px] transition-transform group-active:scale-90">settings</span>
+<span class="text-[10px] font-medium">System</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

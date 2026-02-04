@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Rescues - Empty State</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee7c2b",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221810",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", // 16px
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#181411] dark:text-white font-display overflow-hidden select-none">
+<div class="relative flex h-screen w-full flex-col group/design-root overflow-hidden">
+<!-- TopAppBar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between shrink-0 z-10">
+<!-- Left placeholder for balance, or hidden back button -->
+<div class="flex size-12 shrink-0 items-center justify-start opacity-0">
+<span class="material-symbols-outlined text-[#181411] dark:text-white" style="font-size: 24px;">arrow_back</span>
+</div>
+<h2 class="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center truncate">
+                My Rescues
+            </h2>
+<div class="flex size-12 shrink-0 items-center justify-end">
+<!-- Right action placeholder if needed, kept empty for layout balance -->
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar flex flex-col items-center justify-center px-6 pb-24 w-full">
+<!-- Empty State Container -->
+<div class="flex flex-col items-center gap-8 w-full max-w-sm animate-in fade-in zoom-in duration-500">
+<!-- Illustration -->
+<!-- Using rounded-DEFAULT (16px) for the container -->
+<div class="w-full aspect-square max-w-[260px] bg-[#f4f2f0] dark:bg-[#2f2219] rounded flex items-center justify-center p-8 relative overflow-hidden group">
+<!-- Decorative circles -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/10 rounded-full blur-2xl"></div>
+<div class="w-full h-full bg-center bg-contain bg-no-repeat relative z-10 transition-transform duration-700 group-hover:scale-105" data-alt="Illustration of a lonely brown paper grocery bag with a simple sad face" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPQ4ixCHl_a1fel-BJ6i1ovCq-hZjBL8CZMrsoSn2K8-8ql4_t-n1KrF6PjPdtSOMSI0jvaHSl41McTL31IKSgZfGtsJ-5qRyo7_7SMh1rI6UtQB-1C5xiPR8tCmgATJSE8S6cjg1jXNq9ZZnCBYY7NJIyiG2kageyhf6PSUMIWTfQiOCvOM_Ut6jUE1qLDk-CjMzkFZIKyAbAznGAWpLZdRRbqt-sKZ578q_Bz5evPv54oykjdmWM7ItMQL_oaIFdwCObFz3iCIZu');">
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex flex-col items-center gap-3 text-center">
+<h1 class="text-[#181411] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">
+                        No active rescues yet
+                    </h1>
+<p class="text-[#897261] dark:text-[#bcaaa0] text-base font-normal leading-relaxed max-w-[280px]">
+                        Be a hero! Save surplus food from your favorite local stores.
+                    </p>
+</div>
+<!-- Primary Action Button -->
+<!-- Using rounded-full as per plan instructions for buttons -->
+<button class="flex w-full max-w-[240px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/30 transition-all hover:bg-orange-600 active:scale-95">
+                    Start Exploring
+                </button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<div class="flex gap-2 border-t border-[#f4f2f0] dark:border-[#2f2219] bg-background-light dark:bg-background-dark px-4 pb-6 pt-3 absolute bottom-0 w-full z-20">
+<!-- Home -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#897261] dark:text-[#897261] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-7 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined" style="font-size: 26px;">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<!-- Search -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#897261] dark:text-[#897261] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-7 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined" style="font-size: 26px;">search</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Search</p>
+</a>
+<!-- Orders (Active) -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#181411] dark:text-primary" href="#">
+<div class="flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-size: 26px; font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<p class="text-primary text-xs font-bold leading-normal tracking-[0.015em]">Orders</p>
+</a>
+<!-- Profile -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#897261] dark:text-[#897261] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-7 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined" style="font-size: 26px;">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

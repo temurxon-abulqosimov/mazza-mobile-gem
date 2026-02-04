@@ -79,7 +79,7 @@ const OrderDetailScreen = () => {
                 </View>
 
                 <View style={styles.pickupCard}>
-                    <Ionicons name="time-outline" size={24} color="#FF7A00" style={{ marginRight: 12 }}/>
+                    <Ionicons name="time-outline" size={24} color="#FF7A00" style={{ marginRight: 12 }} />
                     <View>
                         <Text style={styles.cardTitle}>PICKUP WINDOW</Text>
                         <Text style={styles.pickupTime}>{booking.pickupWindow.label}</Text>
@@ -100,14 +100,14 @@ const OrderDetailScreen = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                
+
                 <TouchableOpacity onPress={() => { /* Contact Support */ }}>
                     <Text style={styles.supportText}>Having trouble? Contact Support</Text>
                 </TouchableOpacity>
 
             </ScrollView>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home' as never)}>
+                <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('MainApp' as never)}>
                     <Text style={styles.homeButtonText}>Back to Home</Text>
                 </TouchableOpacity>
             </View>

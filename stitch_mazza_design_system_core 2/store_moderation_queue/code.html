@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Store Moderation Queue</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d452",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1c3024",
+                        "surface-light": "#f0f4f2",
+                        "surface-dark": "#162b1e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111813] dark:text-white font-display overflow-x-hidden antialiased selection:bg-primary/30">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-100 dark:border-white/5">
+<div class="flex items-center justify-between p-4 pb-2">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center">Store Approvals</h1>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 flex flex-col w-full pb-24">
+<!-- Search & Filter Section -->
+<div class="px-4 py-3 space-y-4">
+<!-- Search Bar -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-500">search</span>
+</div>
+<input class="block w-full p-3 pl-10 text-sm rounded-xl bg-card-light dark:bg-card-dark border-none ring-1 ring-gray-200 dark:ring-white/10 focus:ring-2 focus:ring-primary focus:outline-none placeholder-gray-400 dark:placeholder-gray-500 shadow-sm" placeholder="Search store name or ID..." type="text"/>
+</div>
+<!-- Segmented Control Tabs -->
+<div class="flex p-1 bg-surface-light dark:bg-surface-dark rounded-xl">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="status" type="radio" value="pending"/>
+<div class="py-2 px-3 text-sm font-medium text-center rounded-lg text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-card-dark peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm transition-all">
+                            Pending
+                        </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="status" type="radio" value="verified"/>
+<div class="py-2 px-3 text-sm font-medium text-center rounded-lg text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-card-dark peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm transition-all">
+                            Verified
+                        </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="status" type="radio" value="flagged"/>
+<div class="py-2 px-3 text-sm font-medium text-center rounded-lg text-gray-500 dark:text-gray-400 peer-checked:bg-white dark:peer-checked:bg-card-dark peer-checked:text-black dark:peer-checked:text-white peer-checked:shadow-sm transition-all">
+                            Flagged
+                        </div>
+</label>
+</div>
+<!-- Region Chips -->
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+<button class="flex shrink-0 items-center h-8 px-4 rounded-full bg-black text-white dark:bg-white dark:text-black text-xs font-medium border border-transparent">
+                        All Regions
+                    </button>
+<button class="flex shrink-0 items-center h-8 px-4 rounded-full bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 text-xs font-medium hover:border-primary dark:hover:border-primary transition-colors">
+                        North America
+                    </button>
+<button class="flex shrink-0 items-center h-8 px-4 rounded-full bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 text-xs font-medium hover:border-primary dark:hover:border-primary transition-colors">
+                        Europe
+                    </button>
+<button class="flex shrink-0 items-center h-8 px-4 rounded-full bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 text-xs font-medium hover:border-primary dark:hover:border-primary transition-colors">
+                        Asia Pacific
+                    </button>
+<button class="flex shrink-0 items-center h-8 px-4 rounded-full bg-white dark:bg-card-dark border border-gray-200 dark:border-white/10 text-xs font-medium hover:border-primary dark:hover:border-primary transition-colors">
+                        LatAm
+                    </button>
+</div>
+</div>
+<!-- Meta Stats -->
+<div class="px-4 py-2 flex items-center justify-between">
+<p class="text-sm font-medium text-gray-500 dark:text-gray-400">Queue</p>
+<p class="text-xs font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-2 py-1 rounded-md">15 Awaiting Review</p>
+</div>
+<!-- Cards List -->
+<div class="flex flex-col gap-4 px-4">
+<!-- Card 1 -->
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 relative overflow-hidden group">
+<div class="flex items-start gap-4">
+<div class="size-14 rounded-xl bg-gray-100 dark:bg-gray-800 shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Tech logo with circuit board pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAb_Qs1Z4fsZPvr5X4wxGDoi36Enb4KUB0Av615BFPUGVGDVgGVIB7y_rGkw19Xwvyor4xMjz8SumWYeG72tTxQZpxqdlHkIixLuYyoegI_n8jDfTJhMASk1uCqUvc0CydapBEkv7Y6HIZlEpHNWOn8ENbuTKBGBK-GjxDG6w5V5aOzw3HrHhTnwu0wzoK6M2RtLzQJirI_K1opu05VHQaf9lE0Cy8-DMpK6TlpAUZ4SdtiPL0LyVixVxqpvKXr_vSIFL17bMxU9MF"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white truncate">TechHaven Official</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Retail • Electronics</p>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                    Pending
+                                </span>
+</div>
+<div class="flex items-center gap-1 mt-2 text-xs text-gray-400">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                New York, USA • Applied 2h ago
+                            </div>
+</div>
+</div>
+<div class="mt-4 flex gap-3">
+<button class="flex-1 bg-primary hover:bg-[#0ebf49] active:scale-[0.98] transition-all text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+<span>Review Documents</span>
+</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 relative overflow-hidden group">
+<div class="flex items-start gap-4">
+<div class="size-14 rounded-xl bg-gray-100 dark:bg-gray-800 shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Green leaf organic logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrv_XhzFo-HLtgS-5NOR469XcxERruNLsoLhn3kNzvoodmcvK0zo1RwM_MEB_7VbFQBHYA16E2gN--tS6grG0peJhyhSXqCcYECSBuym0oxw1nanPd-VvHl5wvif7BoBdvgrchOE-eHdYYWsCbnUV8RNiGk1Th_F3YcmMHOEb5uyXO0uG7HGw6835lvbX2IDxEbBxdqA2VpiaVEF3sNYiD6MQgBFJbDm_1gTdGbfyfD4o_Pbs9Gm42l7vnpRw69OmgYKLJOmfCUWKB"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white truncate">GreenSprout Organics</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Groceries • Fresh Produce</p>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                    Pending
+                                </span>
+</div>
+<div class="flex items-center gap-1 mt-2 text-xs text-gray-400">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                London, UK • Applied 5h ago
+                            </div>
+</div>
+</div>
+<div class="mt-4 flex gap-3">
+<button class="flex-1 bg-primary hover:bg-[#0ebf49] active:scale-[0.98] transition-all text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+<span>Review Documents</span>
+</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 relative overflow-hidden group">
+<div class="flex items-start gap-4">
+<div class="size-14 rounded-xl bg-gray-100 dark:bg-gray-800 shrink-0 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Minimalist fashion boutique storefront" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyWh2kMKtK14rpvYlqdWJAM-hbZj12235i6Ef2UIcWC5_lzszSBO_o1FKr_LFYlln4x675Mv2HG4VPzlkvuDHmWYWd8E8lkG1QTbEdHA2ni_3282twt9LDFQWgrqfmFFZqpR2naVgi2u1IyheddZsSNSVHqln6tvJ9LukNRyjQerQrOX1DsOeirWZvGa9TbvxyqZNuF8dq6w6cCSfA-ecBqlRjL1A1m4St68uhfXWb1XgFKDvmV_Hw4LjGjtRsXoNSM9rrTIWJycLC"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white truncate">Urban Threads</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Fashion • Streetwear</p>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                    Pending
+                                </span>
+</div>
+<div class="flex items-center gap-1 mt-2 text-xs text-gray-400">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Tokyo, JP • Applied 1d ago
+                            </div>
+</div>
+</div>
+<div class="mt-4 flex gap-3">
+<button class="flex-1 bg-primary hover:bg-[#0ebf49] active:scale-[0.98] transition-all text-white font-semibold py-2.5 px-4 rounded-xl text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+<span>Review Documents</span>
+</button>
+</div>
+</div>
+<!-- Card 4 (Flagged Example) -->
+<div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 relative overflow-hidden group opacity-80">
+<div class="flex items-start gap-4">
+<div class="size-14 rounded-xl bg-gray-100 dark:bg-gray-800 shrink-0 overflow-hidden relative grayscale">
+<img class="w-full h-full object-cover" data-alt="Circuit board close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQZLyQiTbeHT-JX6LHwVw92sUli6Zm-GXn7hUZOap6J9rwz3MANVHkWqAkfod4UMZiPfGV9P5BSMml60l8W7aKpx0kZhC6CeYGy6H1y6HItuNxG9rwPBxYbGRiLGdFjxBlqGi-Un68IxchOLTuUMg9H5VRGVzboywUD8iEQE0EQ2FTwIYIQSA_rs8tdu2hEm05JVC4VZFc1eJLC-YBedMtX431bO6ck5x998LiAfekuVeZZh9e057MXsr_Fzr0JI0TEocr1bfgq2lA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="text-base font-bold text-gray-900 dark:text-white truncate">Gadget Galaxy</h3>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Electronics • Wholesale</p>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                                    Flagged
+                                </span>
+</div>
+<div class="flex items-center gap-1 mt-2 text-xs text-gray-400">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                Berlin, DE • Suspicious Activity
+                            </div>
+</div>
+</div>
+<div class="mt-4 flex gap-3">
+<button class="flex-1 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 active:scale-[0.98] transition-all text-gray-700 dark:text-gray-200 font-semibold py-2.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2">
+<span>View Details</span>
+</button>
+</div>
+</div>
+</div>
+<!-- End of list state -->
+<div class="flex flex-col items-center justify-center py-8 text-center px-6">
+<div class="size-12 rounded-full bg-surface-light dark:bg-surface-dark flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-gray-400">check</span>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">That's all for now. Great job!</p>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full max-w-md bg-white/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-gray-100 dark:border-white/5 pb-5 pt-3 px-6 z-30">
+<div class="flex justify-between items-center">
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">dashboard</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<div class="relative">
+<span class="material-symbols-outlined text-2xl filled">checklist</span>
+<span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+</div>
+<span class="text-[10px] font-medium">Queue</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">history</span>
+<span class="text-[10px] font-medium">History</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

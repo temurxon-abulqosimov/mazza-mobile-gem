@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
@@ -8,14 +8,14 @@ import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
 
 const OrderHistoryHeader = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<any>();
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Order History</Text>
             <View style={styles.iconsContainer}>
                 <TouchableOpacity onPress={() => { /* Implement search */ }}>
-                    <Ionicons name="search" size={24} color="black" style={styles.icon} />
+                    <Text style={{ fontSize: 24, marginHorizontal: 8 }}>🔍</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                     <View style={styles.avatar}>

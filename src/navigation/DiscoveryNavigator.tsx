@@ -15,10 +15,10 @@ const Stack = createNativeStackNavigator<DiscoveryStackParamList>();
 
 const DiscoveryNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator id="DiscoveryStack" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="DiscoveryFeed" component={DiscoveryScreen} />
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
-      <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} options={{ presentation: 'modal' }}/>
+      <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} options={{ presentation: 'modal' }} />
     </Stack.Navigator>
   );
 };

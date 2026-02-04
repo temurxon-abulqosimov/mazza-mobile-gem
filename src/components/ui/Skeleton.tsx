@@ -64,7 +64,9 @@ export const Skeleton: React.FC<SkeletonProps> = ({
       style={[
         styles.skeleton,
         getVariantStyle(),
-        { width, height, opacity },
+        getVariantStyle(),
+        { width, height, opacity } as any,
+        style,
         style,
       ]}
     />

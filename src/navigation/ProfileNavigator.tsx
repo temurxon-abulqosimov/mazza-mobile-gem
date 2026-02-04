@@ -26,11 +26,11 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 const ProfileNavigator = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator id="ProfileStack" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
-      <Stack.Screen name="BecomeSeller" component={BecomeSellerScreen} options={{ presentation: 'modal' }}/>
+      <Stack.Screen name="BecomeSeller" component={BecomeSellerScreen} options={{ presentation: 'modal' }} />
       <Stack.Screen name="SellerDashboard" component={SellerDashboardScreen} />
       <Stack.Screen name="ManageProducts" component={ManageProductsScreen} />
       <Stack.Screen name="SellerOrders" component={SellerOrdersScreen} />

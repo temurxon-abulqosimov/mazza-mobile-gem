@@ -5,10 +5,10 @@
 
 export const colors = {
   // Primary Colors
-  primary: '#FF6B35',
-  primaryLight: '#FF8555',
-  primaryDark: '#E55420',
-  primaryBackground: '#FFF5F2',
+  primary: '#ff7a33', // Stitch Design match
+  primaryLight: '#ff9e66',
+  primaryDark: '#cc6129',
+  primaryBackground: '#fff5f2',
 
   // Secondary Colors
   secondary: '#4CAF50',

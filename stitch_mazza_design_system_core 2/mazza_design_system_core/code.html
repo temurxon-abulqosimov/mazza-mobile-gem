@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAZZA Design System Core</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#ff6933",
+              "background-light": "#f8f6f5",
+              "background-dark": "#23140f",
+              "mazza-dark": "#1F2933",
+              "mazza-green": "#22C55E",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            boxShadow: {
+              'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+              'glow': '0 0 15px rgba(255, 105, 51, 0.3)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-mazza-dark dark:text-white font-display min-h-screen flex justify-center w-full antialiased selection:bg-primary/20 selection:text-primary">
+<!-- Mobile Device Container -->
+<div class="w-full max-w-[480px] bg-white dark:bg-[#1a0f0b] min-h-screen shadow-2xl relative flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-white/90 dark:bg-[#1a0f0b]/90 backdrop-blur-md border-b border-gray-100 dark:border-white/5 px-5 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+</div>
+<h1 class="text-lg font-bold tracking-tight text-mazza-dark dark:text-white leading-none">
+                    MAZZA<br/>
+<span class="text-xs font-medium text-gray-500 font-display">Design System</span>
+</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors text-mazza-dark dark:text-white">
+<span class="material-symbols-outlined">ios_share</span>
+</button>
+</header>
+<!-- Main Scrollable Content -->
+<main class="flex-1 overflow-y-auto overflow-x-hidden px-5 py-6 space-y-10 pb-16">
+<!-- 1. Color Palette -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded flex items-center justify-center text-xs font-bold">1</span>
+<h2 class="text-lg font-bold text-mazza-dark dark:text-white">Color Palette</h2>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Primary Color Card -->
+<div class="group cursor-pointer">
+<div class="h-28 rounded-lg bg-primary shadow-soft mb-2 flex items-end p-3 relative overflow-hidden transition-transform group-hover:scale-[1.02]">
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+<span class="relative z-10 text-white font-bold text-lg">Aa</span>
+</div>
+<div class="flex flex-col px-1">
+<span class="text-sm font-bold text-mazza-dark dark:text-white">Mazza Orange</span>
+<span class="text-xs text-gray-400 font-mono uppercase">#FF6933</span>
+</div>
+</div>
+<!-- Dark Color Card -->
+<div class="group cursor-pointer">
+<div class="h-28 rounded-lg bg-mazza-dark shadow-soft mb-2 flex items-end p-3 relative overflow-hidden transition-transform group-hover:scale-[1.02]">
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+<span class="relative z-10 text-white font-bold text-lg">Aa</span>
+</div>
+<div class="flex flex-col px-1">
+<span class="text-sm font-bold text-mazza-dark dark:text-white">Charcoal</span>
+<span class="text-xs text-gray-400 font-mono uppercase">#1F2933</span>
+</div>
+</div>
+<!-- Success Color Card -->
+<div class="group cursor-pointer">
+<div class="h-20 rounded-lg bg-mazza-green shadow-soft mb-2 flex items-end p-3 relative overflow-hidden transition-transform group-hover:scale-[1.02]">
+<div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+</div>
+<div class="flex flex-col px-1">
+<span class="text-sm font-bold text-mazza-dark dark:text-white">Fresh Green</span>
+<span class="text-xs text-gray-400 font-mono uppercase">#22C55E</span>
+</div>
+</div>
+<!-- Neutral Color Card -->
+<div class="group cursor-pointer">
+<div class="h-20 rounded-lg bg-background-light border border-gray-100 dark:border-white/10 shadow-soft mb-2 flex items-end p-3 relative overflow-hidden transition-transform group-hover:scale-[1.02]">
+</div>
+<div class="flex flex-col px-1">
+<span class="text-sm font-bold text-mazza-dark dark:text-white">Off White</span>
+<span class="text-xs text-gray-400 font-mono uppercase">#F8F6F5</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Typography Scale -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded flex items-center justify-center text-xs font-bold">2</span>
+<h2 class="text-lg font-bold text-mazza-dark dark:text-white">Typography Scale</h2>
+</div>
+<div class="space-y-6 border-l-2 border-primary/20 dark:border-primary/40 pl-5">
+<div class="group">
+<p class="text-[10px] font-bold tracking-wider text-primary mb-1 uppercase">Display H1 • Bold • 32px</p>
+<h1 class="text-[32px] font-bold leading-tight text-mazza-dark dark:text-white group-hover:text-primary transition-colors">Food Rescue</h1>
+</div>
+<div class="group">
+<p class="text-[10px] font-bold tracking-wider text-gray-400 mb-1 uppercase">Heading H2 • Semibold • 24px</p>
+<h2 class="text-2xl font-semibold leading-tight text-mazza-dark dark:text-white group-hover:text-primary transition-colors">Fresh Today</h2>
+</div>
+<div class="group">
+<p class="text-[10px] font-bold tracking-wider text-gray-400 mb-1 uppercase">Heading H3 • Medium • 18px</p>
+<h3 class="text-lg font-medium leading-tight text-mazza-dark dark:text-white">Order Summary</h3>
+</div>
+<div>
+<p class="text-[10px] font-bold tracking-wider text-gray-400 mb-1 uppercase">Body Regular • Regular • 16px</p>
+<p class="text-base text-gray-600 dark:text-gray-300 leading-relaxed">Join thousands of others in the food rescue revolution. Every meal saved makes a difference.</p>
+</div>
+<div>
+<p class="text-[10px] font-bold tracking-wider text-gray-400 mb-1 uppercase">Caption • Medium • 12px</p>
+<p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Ends in 2 hours</p>
+</div>
+</div>
+</section>
+<!-- 3. Button Components -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded flex items-center justify-center text-xs font-bold">3</span>
+<h2 class="text-lg font-bold text-mazza-dark dark:text-white">Buttons</h2>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Primary -->
+<div class="space-y-2">
+<span class="text-xs font-medium text-gray-400 ml-1">Primary</span>
+<button class="w-full bg-primary hover:bg-[#e65a28] active:scale-[0.98] text-white font-bold h-14 rounded-lg transition-all shadow-glow flex items-center justify-center gap-2">
+<span>Save Food Now</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<!-- Secondary -->
+<div class="space-y-2">
+<span class="text-xs font-medium text-gray-400 ml-1">Secondary</span>
+<button class="w-full bg-transparent border-[2px] border-primary text-primary hover:bg-primary/5 active:scale-[0.98] font-bold h-14 rounded-lg transition-all flex items-center justify-center gap-2">
+<span>Learn More</span>
+</button>
+</div>
+<div class="flex gap-4">
+<!-- Ghost -->
+<div class="flex-1 space-y-2">
+<span class="text-xs font-medium text-gray-400 ml-1">Ghost</span>
+<button class="w-full bg-transparent text-gray-500 hover:text-primary hover:bg-gray-100 dark:hover:bg-white/5 active:scale-[0.98] font-semibold h-14 rounded-lg transition-all flex items-center justify-center">
+                                Skip
+                            </button>
+</div>
+<!-- Icon Only -->
+<div class="space-y-2 flex flex-col items-center">
+<span class="text-xs font-medium text-gray-400">Icon</span>
+<button class="h-14 w-14 bg-primary text-white rounded-lg flex items-center justify-center shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all active:scale-90">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Input Fields -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded flex items-center justify-center text-xs font-bold">4</span>
+<h2 class="text-lg font-bold text-mazza-dark dark:text-white">Input Fields</h2>
+</div>
+<div class="space-y-6">
+<!-- Default State -->
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-mazza-dark dark:text-gray-200 ml-1">Default State</label>
+<div class="relative group">
+<input class="w-full h-14 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5 px-4 pl-12 text-mazza-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400 group-hover:bg-white dark:group-hover:bg-white/10" placeholder="user@example.com" type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-4 text-gray-400 group-hover:text-primary transition-colors">mail</span>
+</div>
+</div>
+<!-- Active State -->
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-primary ml-1">Focused State</label>
+<div class="relative">
+<input class="w-full h-14 rounded-lg border border-primary bg-white dark:bg-white/10 px-4 pl-12 text-mazza-dark dark:text-white focus:outline-none ring-4 ring-primary/10 transition-all" type="text" value="Active input field"/>
+<span class="material-symbols-outlined absolute left-4 top-4 text-primary">edit</span>
+</div>
+</div>
+<!-- Error State -->
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-red-600 ml-1">Error State</label>
+<div class="relative">
+<input class="w-full h-14 rounded-lg border border-red-500 bg-red-50 dark:bg-red-900/10 px-4 pl-12 text-red-900 dark:text-red-200 focus:outline-none focus:border-red-500 transition-all" type="text" value="Invalid entry"/>
+<span class="material-symbols-outlined absolute left-4 top-4 text-red-500">error</span>
+<span class="material-symbols-outlined absolute right-4 top-4 text-red-500 text-xl">warning</span>
+</div>
+<p class="text-xs text-red-600 mt-1 ml-1 font-medium flex items-center gap-1">
+                             Please enter a valid email address
+                        </p>
+</div>
+</div>
+</section>
+<!-- 5. UI Components -->
+<section>
+<div class="flex items-center gap-2 mb-4">
+<span class="bg-primary/10 text-primary w-6 h-6 rounded flex items-center justify-center text-xs font-bold">5</span>
+<h2 class="text-lg font-bold text-mazza-dark dark:text-white">UI Components</h2>
+</div>
+<div class="space-y-8">
+<!-- Badges -->
+<div class="bg-white dark:bg-white/5 p-4 rounded-lg border border-gray-100 dark:border-white/5">
+<h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Badges &amp; Status</h4>
+<div class="flex flex-wrap gap-3">
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+                                50% OFF
+                            </span>
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-mazza-green/10 text-mazza-green border border-mazza-green/20">
+<span class="w-1.5 h-1.5 rounded-full bg-mazza-green mr-2 animate-pulse"></span>
+                                Rescued
+                            </span>
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
+                                Sold Out
+                            </span>
+<span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-mazza-dark text-white">
+                                New
+                            </span>
+</div>
+</div>
+<!-- Toasts -->
+<div>
+<h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 ml-1">Toast Notifications</h4>
+<!-- Success Toast -->
+<div class="relative overflow-hidden rounded-lg bg-mazza-dark text-white p-4 shadow-xl flex items-start gap-4 mb-3">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-mazza-green"></div>
+<div class="w-8 h-8 rounded-full bg-mazza-green/20 flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-mazza-green text-lg">check_circle</span>
+</div>
+<div class="flex-1">
+<h5 class="text-sm font-bold mb-0.5">Order Confirmed!</h5>
+<p class="text-xs text-gray-300 leading-snug">You rescued 2kg of food today. Check your email for details.</p>
+</div>
+<button class="text-gray-500 hover:text-white transition-colors"><span class="material-symbols-outlined text-lg">close</span></button>
+</div>
+</div>
+<!-- Progress -->
+<div>
+<h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 ml-1">Progress Bar</h4>
+<div class="bg-white dark:bg-white/5 p-5 rounded-lg border border-gray-100 dark:border-white/5 shadow-sm">
+<div class="flex justify-between mb-2 text-xs font-medium">
+<span class="text-mazza-dark dark:text-white">Goal Progress</span>
+<span class="text-primary font-bold">65%</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-white/10 rounded-full h-3 overflow-hidden">
+<div class="bg-primary h-3 rounded-full w-[65%] relative overflow-hidden" style="box-shadow: 0 0 10px rgba(255, 105, 51, 0.5)">
+<div class="absolute top-0 left-0 bottom-0 w-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+<div class="mt-2 text-[10px] text-gray-400 text-right">Target: $500.00</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Navigation bar simulation -->
+<div class="h-16 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-[#1a0f0b] flex justify-around items-center px-2 shrink-0 z-50">
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">home</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-1">grid_view</span>
+<span class="text-[10px] font-bold">System</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">person</span>
+</div>
+</div>
+</div>
+<style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</body></html>

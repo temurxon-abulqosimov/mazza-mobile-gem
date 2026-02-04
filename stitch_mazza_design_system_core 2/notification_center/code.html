@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAZZA Notification Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f47b25",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221710",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col items-center">
+<!-- Mobile Container -->
+<div class="w-full max-w-md bg-white dark:bg-background-dark min-h-screen shadow-xl relative flex flex-col overflow-hidden">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-10 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-colors duration-300">
+<div class="flex items-center p-4 justify-between h-16">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-900 dark:text-white group">
+<span class="material-symbols-outlined text-2xl group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+</button>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Notification Center</h1>
+<button class="flex items-center justify-end h-10 px-2 rounded-lg hover:bg-primary/5 active:bg-primary/10 transition-colors">
+<span class="text-primary text-sm font-semibold leading-normal tracking-wide">Mark read</span>
+</button>
+</div>
+</header>
+<!-- Main Content Feed -->
+<main class="flex-1 flex flex-col pb-6">
+<!-- Section: Recent -->
+<div class="flex flex-col">
+<div class="px-5 pt-6 pb-2">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Recent</h3>
+</div>
+<!-- Notification Item 1: Order Confirmed (Unread) -->
+<div class="relative group cursor-pointer overflow-hidden transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.99]">
+<div class="flex gap-4 px-5 py-4 items-start">
+<!-- Icon -->
+<div class="shrink-0">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col gap-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-tight truncate">Order Confirmed</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium leading-tight whitespace-nowrap pt-0.5">2m ago</p>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-sm font-normal leading-snug line-clamp-2">
+                                Your order #4829 for the Spicy Tuna Roll is being prepared. Hang tight!
+                            </p>
+</div>
+<!-- Unread Dot -->
+<div class="shrink-0 self-center pl-2">
+<div class="size-2.5 rounded-full bg-primary shadow-sm shadow-primary/50 animate-pulse"></div>
+</div>
+</div>
+<!-- Separator -->
+<div class="absolute bottom-0 left-[4.5rem] right-0 h-px bg-slate-100 dark:bg-white/5 group-hover:bg-transparent"></div>
+</div>
+<!-- Notification Item 2: Pick-up Reminder (Unread) -->
+<div class="relative group cursor-pointer overflow-hidden transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.99]">
+<div class="flex gap-4 px-5 py-4 items-start">
+<!-- Icon -->
+<div class="shrink-0">
+<div class="flex items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined text-2xl">schedule</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col gap-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<p class="text-slate-900 dark:text-white text-base font-semibold leading-tight truncate">Pick-up Reminder</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium leading-tight whitespace-nowrap pt-0.5">15m ago</p>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-sm font-normal leading-snug line-clamp-2">
+                                Your food will be ready in 5 minutes at the Downtown branch.
+                            </p>
+</div>
+<!-- Unread Dot -->
+<div class="shrink-0 self-center pl-2">
+<div class="size-2.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
+</div>
+</div>
+<!-- Separator -->
+<div class="absolute bottom-0 left-[4.5rem] right-0 h-px bg-slate-100 dark:bg-white/5 group-hover:bg-transparent"></div>
+</div>
+</div>
+<!-- Section: Earlier -->
+<div class="flex flex-col mt-4">
+<div class="px-5 pt-4 pb-2">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Earlier</h3>
+</div>
+<!-- Notification Item 3: New Deals (Read) -->
+<div class="relative group cursor-pointer overflow-hidden transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.99]">
+<div class="flex gap-4 px-5 py-4 items-start opacity-80 group-hover:opacity-100 transition-opacity">
+<!-- Icon -->
+<div class="shrink-0">
+<div class="flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0 size-12 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">local_offer</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col gap-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<p class="text-slate-800 dark:text-slate-200 text-base font-medium leading-tight truncate group-hover:text-primary transition-colors">New Deals Nearby</p>
+<p class="text-slate-400 dark:text-slate-500 text-xs font-medium leading-tight whitespace-nowrap pt-0.5">2h ago</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug line-clamp-2">
+                                Save 20% on all Ramen bowls this weekend only! Don't miss out.
+                            </p>
+</div>
+<!-- No Unread Dot -->
+<div class="shrink-0 self-center pl-2 w-2.5"></div>
+</div>
+<!-- Separator -->
+<div class="absolute bottom-0 left-[4.5rem] right-0 h-px bg-slate-100 dark:bg-white/5 group-hover:bg-transparent"></div>
+</div>
+<!-- Notification Item 4: Rate Experience (Read) -->
+<div class="relative group cursor-pointer overflow-hidden transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.99]">
+<div class="flex gap-4 px-5 py-4 items-start opacity-80 group-hover:opacity-100 transition-opacity">
+<!-- Icon -->
+<div class="shrink-0">
+<div class="flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0 size-12 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">thumb_up</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col gap-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<p class="text-slate-800 dark:text-slate-200 text-base font-medium leading-tight truncate group-hover:text-primary transition-colors">Order Delivered</p>
+<p class="text-slate-400 dark:text-slate-500 text-xs font-medium leading-tight whitespace-nowrap pt-0.5">Yesterday</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug line-clamp-2">
+                                How was your meal? Rate your experience to help us improve.
+                            </p>
+</div>
+<!-- No Unread Dot -->
+<div class="shrink-0 self-center pl-2 w-2.5"></div>
+</div>
+<!-- Separator -->
+<div class="absolute bottom-0 left-[4.5rem] right-0 h-px bg-slate-100 dark:bg-white/5 group-hover:bg-transparent"></div>
+</div>
+<!-- Notification Item 5: Promo (Read) -->
+<div class="relative group cursor-pointer overflow-hidden transition-all duration-300 hover:bg-slate-50 dark:hover:bg-white/5 active:scale-[0.99]">
+<div class="flex gap-4 px-5 py-4 items-start opacity-80 group-hover:opacity-100 transition-opacity">
+<!-- Icon -->
+<div class="shrink-0">
+<div class="flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0 size-12 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">celebration</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex flex-1 flex-col gap-1 min-w-0">
+<div class="flex justify-between items-start gap-2">
+<p class="text-slate-800 dark:text-slate-200 text-base font-medium leading-tight truncate group-hover:text-primary transition-colors">Happy Birthday!</p>
+<p class="text-slate-400 dark:text-slate-500 text-xs font-medium leading-tight whitespace-nowrap pt-0.5">2d ago</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-snug line-clamp-2">
+                                Here is a free dessert voucher for your special day. Valid for 7 days.
+                            </p>
+</div>
+<!-- No Unread Dot -->
+<div class="shrink-0 self-center pl-2 w-2.5"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Illustration of Modal Action (Not functional, just visual cue) -->
+<!-- This section represents the detail modal that would slide up -->
+<div class="hidden absolute inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-end justify-center opacity-0 pointer-events-none">
+<!-- Modal Content would go here -->
+</div>
+</div>
+</body></html>

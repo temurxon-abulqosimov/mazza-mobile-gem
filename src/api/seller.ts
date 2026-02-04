@@ -13,7 +13,7 @@ interface SellerApplicationPayload {
 
 export const apply = async (payload: SellerApplicationPayload): Promise<ApiResponse<any>> => {
     const { data } = await apiClient.post('/seller/apply', payload);
-    return data.data;
+    return data;
 };
 
 export interface DashboardStats {
@@ -24,7 +24,7 @@ export interface DashboardStats {
     isOpen: boolean;
 }
 
-export const getDashboardStats = async (): Promise<DashboardStats> => {
+export const getDashboardStats = async (): Promise<ApiResponse<DashboardStats>> => {
     const { data } = await apiClient.get('/seller/dashboard/stats');
     return data;
 };
@@ -33,7 +33,7 @@ export interface StoreStatus {
     isOpen: boolean;
 }
 
-export const toggleStoreStatus = async (isOpen: boolean): Promise<StoreStatus> => {
+export const toggleStoreStatus = async (isOpen: boolean): Promise<ApiResponse<StoreStatus>> => {
     const { data } = await apiClient.put('/seller/store/status', { isOpen });
     return data;
 };
@@ -62,7 +62,12 @@ export interface LiveOrder {
     };
 }
 
-export const getLiveOrders = async (): Promise<LiveOrder[]> => {
+export const getLiveOrders = async (): Promise<ApiResponse<LiveOrder[]>> => {
     const { data } = await apiClient.get('/seller/orders/live');
+    return data;
+};
+
+export const completeOrder = async (orderId: string, qrCodeData: string): Promise<ApiResponse<LiveOrder>> => {
+    const { data } = await apiClient.post(`/seller/orders/${orderId}/complete`, { qrCodeData });
     return data;
 };

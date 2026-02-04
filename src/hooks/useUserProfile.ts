@@ -15,7 +15,7 @@ export const useUserProfile = () => {
   });
 
   return {
-    userProfile: data?.user,
+    userProfile: data?.data.user,
     isLoading: isAuthenticated ? isLoading : false,
     isError: isAuthenticated ? isError : false,
     error,

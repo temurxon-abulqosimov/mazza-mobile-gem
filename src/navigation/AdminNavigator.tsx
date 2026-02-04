@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator<AdminStackParamList>();
 
 const AdminNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator id="AdminStack">
       <Stack.Screen
         name="AdminDashboard"
         component={AdminDashboardScreen}

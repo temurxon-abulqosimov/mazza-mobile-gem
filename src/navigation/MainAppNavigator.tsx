@@ -1,15 +1,15 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform, Text } from 'react-native';
+import { Platform, Text, View, ActivityIndicator } from 'react-native';
 import DiscoveryNavigator from './DiscoveryNavigator';
 import OrdersNavigator from './OrdersNavigator';
 import FavoritesScreen from '../screens/favorites/FavoritesScreen';
 import ProfileNavigator from './ProfileNavigator';
 import AdminNavigator from './AdminNavigator';
+import SellerNavigator from './SellerNavigator';
 import { useAuthStore } from '../state/authStore';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { UserRole } from '../domain/enums/UserRole';
-import { ActivityIndicator, View } from 'react-native';
 import { colors } from '../theme';
 
 export type MainTabParamList = {
@@ -18,6 +18,7 @@ export type MainTabParamList = {
   Favorites: undefined;
   Profile: undefined;
   Admin: undefined;
+  Seller: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -30,7 +31,7 @@ const MainAppNavigator = () => {
   // Show loading while checking user role
   if (isAuthenticated && isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -40,6 +41,7 @@ const MainAppNavigator = () => {
   if (isAuthenticated && userProfile?.role === UserRole.ADMIN) {
     return (
       <Tab.Navigator
+        id="AdminTabs"
         screenOptions={{
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.text.tertiary,
@@ -72,9 +74,15 @@ const MainAppNavigator = () => {
     );
   }
 
-  // Show regular consumer/seller tabs
+  // Show seller dashboard if user is seller
+  if (isAuthenticated && userProfile?.role === UserRole.SELLER) {
+    return <SellerNavigator />;
+  }
+
+  // Show regular consumer tabs
   return (
     <Tab.Navigator
+      id="AdminTabs"
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.text.tertiary,
@@ -108,9 +116,9 @@ const MainAppNavigator = () => {
         component={OrdersNavigator}
         options={{
           headerShown: false,
-          tabBarLabel: 'Map',
+          tabBarLabel: 'Orders',
           tabBarIcon: ({ size }) => (
-            <Text style={{ fontSize: size }}>🗺️</Text>
+            <Text style={{ fontSize: size }}>📄</Text>
           ),
         }}
       />

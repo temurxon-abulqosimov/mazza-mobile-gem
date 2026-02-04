@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAZZA Home Discovery Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23140f",
+                        "success": "#10B981",
+                        "text-main": "#1F2937",
+                        "text-sub": "#6B7280"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-gray-100 transition-colors duration-200">
+<div class="relative mx-auto flex h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header: Location & Search -->
+<header class="sticky top-0 z-20 w-full bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md pt-safe-top pb-2 border-b border-gray-100 dark:border-gray-800">
+<!-- Location Pill -->
+<div class="flex justify-center px-4 pt-4 pb-2">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-gray-800 px-4 shadow-sm active:scale-95 transition-transform border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+<p class="text-sm font-semibold text-text-main dark:text-white max-w-[150px] truncate">123 Main St, New York</p>
+<span class="material-symbols-outlined text-text-sub text-[20px]">expand_more</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-2">
+<label class="flex flex-col w-full">
+<div class="relative flex w-full items-center rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 h-12 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-primary/20">
+<div class="flex items-center justify-center pl-4 text-text-sub">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 border-none bg-transparent px-3 py-2 text-base text-text-main dark:text-white placeholder:text-text-sub focus:outline-none focus:ring-0" placeholder="Search for sushi, bagels, etc." value=""/>
+</div>
+</label>
+</div>
+</header>
+<!-- Main Content (Scrollable) -->
+<main class="flex-1 overflow-y-auto hide-scrollbar pb-24">
+<!-- Categories Carousel -->
+<div class="pt-4 pb-2">
+<div class="flex w-full overflow-x-auto hide-scrollbar px-4 pb-2 snap-x snap-mandatory">
+<div class="flex flex-row items-start justify-start gap-4">
+<!-- Item: All (Active) -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary shadow-md shadow-primary/20 transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-white text-[32px]">grid_view</span>
+</div>
+<span class="text-xs font-semibold text-primary">All</span>
+</button>
+<!-- Item: Meals -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-text-main dark:text-gray-300 text-[28px]">restaurant</span>
+</div>
+<span class="text-xs font-medium text-text-sub dark:text-gray-400">Meals</span>
+</button>
+<!-- Item: Bakery -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-text-main dark:text-gray-300 text-[28px]">bakery_dining</span>
+</div>
+<span class="text-xs font-medium text-text-sub dark:text-gray-400">Bakery</span>
+</button>
+<!-- Item: Groceries -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-text-main dark:text-gray-300 text-[28px]">grocery</span>
+</div>
+<span class="text-xs font-medium text-text-sub dark:text-gray-400">Groceries</span>
+</button>
+<!-- Item: Vegan -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-text-main dark:text-gray-300 text-[28px]">spa</span>
+</div>
+<span class="text-xs font-medium text-text-sub dark:text-gray-400">Vegan</span>
+</button>
+<!-- Item: Dessert -->
+<button class="flex flex-col items-center gap-2 snap-start group min-w-[64px]">
+<div class="flex items-center justify-center w-16 h-16 rounded-2xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-transform group-active:scale-95">
+<span class="material-symbols-outlined text-text-main dark:text-gray-300 text-[28px]">icecream</span>
+</div>
+<span class="text-xs font-medium text-text-sub dark:text-gray-400">Dessert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<div class="flex items-center justify-between px-4 pt-4 pb-2">
+<h3 class="text-xl font-bold tracking-tight text-text-main dark:text-white">Surplus Near You</h3>
+<a class="text-sm font-semibold text-primary hover:text-primary/80" href="#">See All</a>
+</div>
+<!-- Store Cards List -->
+<div class="flex flex-col gap-4 px-4 pb-4">
+<!-- Card 1 -->
+<div class="group relative flex w-full flex-col overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md active:scale-[0.99]">
+<div class="relative aspect-video w-full bg-gray-200">
+<!-- Badge -->
+<div class="absolute left-3 top-3 z-10 rounded-lg bg-primary px-2.5 py-1 shadow-sm">
+<p class="text-xs font-bold text-white uppercase tracking-wide">3 bags left</p>
+</div>
+<!-- Fav Icon -->
+<button class="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/40">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="h-full w-full bg-cover bg-center" data-alt="Fresh golden croissants and artisan bread on a wooden shelf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_pgAWcZ2MX7IWuYZ6M0z_Ng9Vw56C3LCtaZjmyDJDpinJl0ui9vzMlDDnY97ukxYcKfxtzEbw83urqmkH7fPUFaEznFYAekCV66v_Qb9klWJojlbw2BUVxNmikRWzPgRcqaM_My0j5PU3fEpu66iNF1yWfV0j5R-aigfcUqDmXDlXuECyb7p1J-JGu1NYvHieOdUXqNzIPOZYrTO2w2gCS-dwhZXB7S7k0S5Gwc0nWpJnScSd6iFvEKjRCni89dvrERJJNrfYGuc2");'></div>
+</div>
+<div class="flex flex-col p-4">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-lg font-bold text-text-main dark:text-white leading-tight mb-1">Joe's Bakery</h4>
+<div class="flex items-center gap-1 text-sm text-text-sub dark:text-gray-400">
+<span class="material-symbols-outlined text-yellow-400 text-[16px] filled" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-medium text-text-main dark:text-gray-200">4.8</span>
+<span>•</span>
+<span>0.4 mi away</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-success">$3.99</span>
+<span class="text-sm text-text-sub dark:text-gray-500 line-through decoration-text-sub">$12.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group relative flex w-full flex-col overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md active:scale-[0.99]">
+<div class="relative aspect-video w-full bg-gray-200">
+<div class="absolute left-3 top-3 z-10 rounded-lg bg-primary px-2.5 py-1 shadow-sm">
+<p class="text-xs font-bold text-white uppercase tracking-wide">1 bag left</p>
+</div>
+<button class="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/40">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="h-full w-full bg-cover bg-center" data-alt="Variety of colorful sushi rolls on a black plate" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmbOvhh81bpa4x1BQEYPSA1N7_dkmvvT6ZB-h6inXxwskDcjAQu1AIpsvZWHWHqXOpbJ3skTSY8mAqDc2lsT7wTPc1yoVRigthqu28xFxrSx5c6rbkuFapAiShn0-yO2WD-prQweFSapbsYrupG5Wb2c4jPIHoKC1nRQODuFvQmRaMlhTTHbwGdoehd6kcCthskaUNQuNlKH85dqGAJWmltZcAwDCiRtSpJ4i4zgMJag30QFPV0kjWeLy55Bt6P5rBOO5piUq2yJC8");'></div>
+</div>
+<div class="flex flex-col p-4">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-lg font-bold text-text-main dark:text-white leading-tight mb-1">Sushi Zen</h4>
+<div class="flex items-center gap-1 text-sm text-text-sub dark:text-gray-400">
+<span class="material-symbols-outlined text-yellow-400 text-[16px] filled" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-medium text-text-main dark:text-gray-200">4.5</span>
+<span>•</span>
+<span>1.2 mi away</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-success">$5.99</span>
+<span class="text-sm text-text-sub dark:text-gray-500 line-through decoration-text-sub">$15.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group relative flex w-full flex-col overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md active:scale-[0.99]">
+<div class="relative aspect-video w-full bg-gray-200">
+<div class="absolute left-3 top-3 z-10 rounded-lg bg-yellow-500 px-2.5 py-1 shadow-sm">
+<p class="text-xs font-bold text-white uppercase tracking-wide">Pickup 5-7PM</p>
+</div>
+<button class="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white hover:bg-white/40">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<div class="h-full w-full bg-cover bg-center" data-alt="Assorted fresh vegetables including tomatoes, lettuce, and carrots" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDNe7iIjKas843q9IR-mDX8QF8z0PjcdDewGKzzLEd6DlibIZXjCwBZjc1RIOnMvNszAPiVhrE3_boBmtXmMSnxr6ij4qXsamIGCuDUzaUrtPEFxRgG_-X5Vh4YMEYYAoEgc-RRhaL7t5Q-phz8ZboPbDNS4Ezy4fE1y63225p8HRCrJiuHtvFPjQXMYoIaMptcAohAzkGmsRr7Ia4ROzFp1_fkaoUZaSrGHCcGxhrmbHefhfgeJctO50DOA0UBgntF6mSUUPqEbd6t");'></div>
+</div>
+<div class="flex flex-col p-4">
+<div class="flex items-start justify-between">
+<div>
+<h4 class="text-lg font-bold text-text-main dark:text-white leading-tight mb-1">Green Grocer Market</h4>
+<div class="flex items-center gap-1 text-sm text-text-sub dark:text-gray-400">
+<span class="material-symbols-outlined text-yellow-400 text-[16px] filled" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-medium text-text-main dark:text-gray-200">4.9</span>
+<span>•</span>
+<span>0.8 mi away</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-success">$4.50</span>
+<span class="text-sm text-text-sub dark:text-gray-500 line-through decoration-text-sub">$10.00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Illustration Placeholder (if needed in future logic, but shown here as part of feed for demo) -->
+<!-- <div class="flex flex-col items-center justify-center py-10 opacity-60">
+                     <span class="material-symbols-outlined text-primary text-[64px] mb-2">sentiment_satisfied</span>
+                     <p class="text-sm font-medium text-text-sub">That's all for now!</p>
+                </div> -->
+</div>
+<div class="h-8"></div> <!-- Spacer for bottom nav -->
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="absolute bottom-0 z-30 w-full bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 pb-safe-bottom">
+<div class="flex h-16 items-center justify-around px-2">
+<!-- Tab: Discover (Active) -->
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-primary">
+<span class="material-symbols-outlined text-[24px] filled" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="text-[10px] font-medium">Discover</span>
+</button>
+<!-- Tab: Map -->
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">map</span>
+<span class="text-[10px] font-medium">Map</span>
+</button>
+<!-- Tab: Favorites -->
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">favorite</span>
+<span class="text-[10px] font-medium">Favorites</span>
+</button>
+<!-- Tab: Profile -->
+<button class="flex flex-1 flex-col items-center justify-center gap-1 py-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

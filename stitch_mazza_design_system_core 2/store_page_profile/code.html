@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Store Page Profile - MAZZA</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#fa6c38",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23150f",
+                        "text-main": "#181311",
+                        "text-secondary": "#8c6b5f",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-gray-100 overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col pb-24 max-w-md mx-auto bg-white dark:bg-[#1a1a1a] shadow-2xl">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-md px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-text-main dark:text-white">arrow_back</span>
+</button>
+<h1 class="text-base font-bold text-text-main dark:text-white opacity-0 transition-opacity duration-300 pointer-events-none" id="header-title">The Daily Bagel</h1>
+<div class="flex items-center gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-text-main dark:text-white">ios_share</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-text-main dark:text-white">favorite_border</span>
+</button>
+</div>
+</header>
+<!-- Hero Section: Split Image & Map -->
+<section class="px-4 py-4">
+<div class="grid grid-cols-3 gap-3 h-48">
+<!-- Main Store Image (2/3 width) -->
+<div class="col-span-2 h-full w-full rounded-xl bg-gray-200 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform hover:scale-105 duration-700" data-alt="Fresh bagels and pastries on a wooden display" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuByF5ViXOtZq-u2KBvoKXeedCC-goAlG7rp1apg6FhNaZEgBPlNg5l5l6Lh88ANI2Uv7CfHe5KrkdYY61WwdBCKJznnKdO9mS2prnFu8XH4KRq27its_-DNU2yh_jq_u0Wm5iHy6dn6erVuSimul2Ptqu6Ji6Z4NMH1bF4VY0AYcnl7ZI7XahoBDTUd4Gv1VkAL3tS9s_uwhs_BMy26645MDFpmSD2MhpTcXRA2Bz0o4CiXYpyBs6pu1B8VAq6FfmLNp3xQZRUlZtqw');"></div>
+<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-2 py-1 rounded-md">
+                        1.2 km away
+                    </div>
+</div>
+<!-- Mini Map (1/3 width) -->
+<div class="col-span-1 h-full w-full rounded-xl overflow-hidden relative border border-gray-100 dark:border-gray-800">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Map showing downtown streets" data-location="Downtown City Map" style="background-image: url('https://placeholder.pics/svg/300');"></div>
+<!-- Map Pin Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-lg animate-bounce">
+<span class="material-symbols-outlined text-[18px]">storefront</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Store Info Block -->
+<section class="px-4 pb-2">
+<div class="flex items-start gap-4">
+<div class="h-16 w-16 shrink-0 rounded-full bg-gray-100 border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden">
+<div class="h-full w-full bg-cover bg-center" data-alt="The Daily Bagel logo featuring a stylized wheat sheaf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCm7gk0SB2lR2VBHksJlmJDdvYk0mrVaqz9If6JYLYKoiZDzSNqyjQHSPowvEK7-Mz7OdceUEUSUqo85Ko9evZ2sIxEcFaQYz6bAwersjsSvxyalw370On9w6Glgojm5sMc3pjV5BvszaEZCLPsM-BqIy0MTvQtQzoZP_qkUU81ua6OsSk9pY22xEgCLOwez6U5jSl13f__jcvcOEcqBdwiUI7Vs_zXzabjWPYe33x8Rr7D6X1LTHUZNHh-VFQHEIHwFMBLJbwagzqz');"></div>
+</div>
+<div class="flex flex-col pt-1">
+<h1 class="text-2xl font-bold text-text-main dark:text-white leading-tight">The Daily Bagel</h1>
+<div class="flex items-center gap-1 mt-1 text-sm text-text-secondary dark:text-gray-400">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>123 Baker Street, Downtown</span>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px] text-yellow-500 fill-current">star</span>
+<span class="text-sm font-bold text-text-main dark:text-white">4.8</span>
+<span class="text-sm text-text-secondary dark:text-gray-400">(340 reviews)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Tabs -->
+<div class="sticky top-[65px] z-40 bg-white dark:bg-[#1a1a1a] pt-2">
+<div class="flex border-b border-gray-200 dark:border-gray-800 px-4">
+<button class="relative flex-1 pb-3 text-center text-sm font-bold text-primary">
+                    Available Now (3)
+                    <span class="absolute bottom-0 left-0 h-0.5 w-full bg-primary rounded-t-full"></span>
+</button>
+<button class="relative flex-1 pb-3 text-center text-sm font-medium text-text-secondary dark:text-gray-400 hover:text-text-main dark:hover:text-gray-200 transition-colors">
+                    Reviews
+                </button>
+</div>
+</div>
+<!-- Scrollable Content: Available Now -->
+<main class="flex flex-col gap-4 p-4 min-h-[400px]">
+<!-- Alert Banner -->
+<div class="flex items-center gap-3 rounded-lg bg-primary/10 p-3 text-primary border border-primary/20">
+<span class="material-symbols-outlined">schedule</span>
+<p class="text-sm font-medium">Pickup window: <span class="font-bold">4:00 PM - 6:00 PM today</span></p>
+</div>
+<!-- Item Card 1 -->
+<div class="group relative flex overflow-hidden rounded-xl bg-white dark:bg-[#252525] border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+<div class="h-32 w-32 shrink-0 bg-cover bg-center" data-alt="Assorted bagels in a brown paper bag" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuACmXSYWnl4MxI7BTRgwcM4xvAa4VfdyPRzMoHXUDtLt-y8s1GbvDLD4Y2aU2oiLy385K9oFqUkEJyo3EhBK3WwGwiUsf_Pvir94kfrgO81nfmcD--to1NX0FxBBscHii97Ohl_f7KmPMkzLz5Vs0K5B_ksaRwxV5Shqt9ldqvrSWqsJkw-IRSe2_EV7-rArYkrqC_Mp-i9FOaxZOaJXUeTjGNMqnK_XayBjhJWfxcD0ZOruNazUqW-RcRRbZmGlCzl0g2jOedVY9Xx');">
+</div>
+<div class="flex flex-1 flex-col justify-between p-3">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-base font-bold text-text-main dark:text-white line-clamp-1">Surplus Bagel Bag</h3>
+<span class="bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">2 Left!</span>
+</div>
+<p class="mt-1 text-xs text-text-secondary dark:text-gray-400 line-clamp-2">A mix of today's fresh bagels. May include sesame, plain, or poppy seed.</p>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex items-baseline gap-2">
+<span class="text-lg font-bold text-primary">$4.99</span>
+<span class="text-sm text-gray-400 line-through">$15.00</span>
+</div>
+<button class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card 2 -->
+<div class="group relative flex overflow-hidden rounded-xl bg-white dark:bg-[#252525] border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+<div class="h-32 w-32 shrink-0 bg-cover bg-center" data-alt="Chocolate cake slice on a plate" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_ha1SXGGy1lOu_WhQ6zfUez6sqc8ietRJyiGPaJnKfSJKK1dxuUaEE0_Hbe9iVHIw3gux9Dfw5k8hlQEQKFZt5u0Z8CIjxbi7KGmcmupAuxBEAllG8VrtvkeRTIzt1lXDu_ha4dZX5CHULElqHWc1axJJzVNcTWwxVuPQpFiM4-qSMF_7ZI8UHRJP4E-mVG0Ub9eYBEFmR88hUoUxEF5DbAboq2nUjX5lV_xhv4FqzUMsv0TrrA1pAt9--tuJG0PchIrDUClHZr2h');">
+</div>
+<div class="flex flex-1 flex-col justify-between p-3">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-base font-bold text-text-main dark:text-white line-clamp-1">Pastry Surprise Box</h3>
+</div>
+<p class="mt-1 text-xs text-text-secondary dark:text-gray-400 line-clamp-2">Delicious assorted pastries. Could be muffins, scones, or croissants.</p>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex items-baseline gap-2">
+<span class="text-lg font-bold text-primary">$6.99</span>
+<span class="text-sm text-gray-400 line-through">$22.00</span>
+</div>
+<button class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card 3 -->
+<div class="group relative flex overflow-hidden rounded-xl bg-white dark:bg-[#252525] border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:shadow-md opacity-60">
+<div class="h-32 w-32 shrink-0 bg-cover bg-center grayscale" data-alt="Loaf of sourdough bread" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBrUMyaWXhMXLeqspxSv-PUV2rofbcs_9OH2RxQYYgZY93DOkq9de9I17VLv86Z86_GGSjN7MPj6QHvSKtjnUQqAbjNwtuV4HZdUwgc2YJ6eZv7lbMMytmdmxpy-QqyKEaTAGEFs8s7kAA8KLaADW62i4xkvWe9kvLc9TJpJdFGW5Mk8GfEDaf-_xYuoeodub5fi2OwI0ER7zAsqMXNUDlEYhzhfRdTtX5_kpbVHbSkiN27Xn6pdP7kGHQKP5ML0px41QfKejWuejLa');">
+</div>
+<div class="flex flex-1 flex-col justify-between p-3">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="text-base font-bold text-text-main dark:text-white line-clamp-1">Yesterday's Sourdough</h3>
+<span class="bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-300 text-[10px] font-bold px-1.5 py-0.5 rounded ml-2 whitespace-nowrap">Sold Out</span>
+</div>
+<p class="mt-1 text-xs text-text-secondary dark:text-gray-400 line-clamp-2">Perfect for toast or bread pudding. Still delicious!</p>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex items-baseline gap-2">
+<span class="text-lg font-bold text-primary">$2.50</span>
+<span class="text-sm text-gray-400 line-through">$6.00</span>
+</div>
+<!-- Disabled button for sold out -->
+<button class="h-8 w-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center cursor-not-allowed">
+<span class="material-symbols-outlined text-[20px]">block</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Info Sections -->
+<div class="mt-4 space-y-6">
+<!-- Hours -->
+<div class="rounded-xl bg-gray-50 dark:bg-[#252525] p-4">
+<h3 class="flex items-center gap-2 text-sm font-bold text-text-main dark:text-white mb-3">
+<span class="material-symbols-outlined text-primary">store</span>
+                        Opening Hours
+                    </h3>
+<div class="space-y-2 text-sm text-text-secondary dark:text-gray-400">
+<div class="flex justify-between">
+<span>Monday - Friday</span>
+<span class="font-medium text-text-main dark:text-gray-200">7:00 AM - 7:00 PM</span>
+</div>
+<div class="flex justify-between">
+<span>Saturday</span>
+<span class="font-medium text-text-main dark:text-gray-200">8:00 AM - 6:00 PM</span>
+</div>
+<div class="flex justify-between text-primary font-medium">
+<span>Sunday</span>
+<span>8:00 AM - 4:00 PM</span>
+</div>
+</div>
+</div>
+<!-- About -->
+<div class="pb-6">
+<h3 class="text-lg font-bold text-text-main dark:text-white mb-2">About Us</h3>
+<p class="text-sm leading-relaxed text-text-secondary dark:text-gray-400">
+                        We bake fresh daily using organic flour and time-honored traditions. We hate waste, so help us rescue our delicious leftovers at a fraction of the price! Every bag saved helps the planet.
+                    </p>
+<button class="mt-3 text-sm font-bold text-primary flex items-center gap-1">
+                        Read more
+                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-[#1a1a1a] p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<div class="mx-auto flex w-full max-w-md items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="text-xs text-text-secondary dark:text-gray-400">Total</span>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-bold text-text-main dark:text-white">$11.98</span>
+<span class="text-xs text-gray-400 line-through">$37.00</span>
+</div>
+</div>
+<button class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-bold text-white shadow-lg shadow-primary/30 transition-transform active:scale-95">
+                    Reserve for Pickup
+                    <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

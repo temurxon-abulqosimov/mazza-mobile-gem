@@ -8,7 +8,7 @@ import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
 
 const FavoritesHeader = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation<any>();
 
     return (
         <View style={styles.container}>

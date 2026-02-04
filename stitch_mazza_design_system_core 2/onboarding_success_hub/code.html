@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding Success Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#ee7c2b",
+              "background-light": "#f8f7f6",
+              "background-dark": "#221810",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col justify-between max-w-md mx-auto px-5 py-10 transition-colors duration-200">
+<!-- Hero / Success Section -->
+<div class="flex flex-col items-center text-center gap-8 mt-6">
+<!-- Success Animation/Icon -->
+<div class="relative group">
+<div class="absolute inset-0 bg-green-200/50 dark:bg-green-900/40 rounded-full blur-xl transform scale-150 animate-pulse"></div>
+<div class="relative w-24 h-24 rounded-full bg-white dark:bg-[#2f251e] flex items-center justify-center shadow-lg ring-4 ring-green-100 dark:ring-green-900/20">
+<span class="material-symbols-outlined text-green-500 text-[48px] font-bold">check_circle</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<h1 class="text-[#181411] dark:text-white tracking-tight text-3xl font-black leading-tight">
+                Welcome to the MAZZA Family!
+            </h1>
+<p class="text-[#897261] dark:text-[#c4b5a8] text-base font-normal leading-relaxed max-w-[320px] mx-auto">
+                Your account is ready. You're one step closer to saving your first meal from the landfill.
+            </p>
+</div>
+</div>
+<!-- Action Cards Section -->
+<div class="flex flex-col gap-4 mt-8 w-full flex-1 justify-center">
+<!-- Card 1: Set Up Profile -->
+<div class="cursor-pointer group flex items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-[#2a2018] p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(238,124,43,0.15)] transition-all border border-transparent hover:border-primary/30">
+<div class="flex flex-col justify-center gap-1 flex-[2_2_0px]">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[16px]">storefront</span>
+</div>
+<p class="text-[#181411] dark:text-white text-base font-bold leading-tight">Set Up Store Profile</p>
+</div>
+<p class="text-[#897261] dark:text-[#9e8c7e] text-sm font-normal leading-normal">Add logo, hours, and location.</p>
+</div>
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg shrink-0 shadow-inner" data-alt="Blurred background of a coffee shop interior" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCbZ1wn7zR3CPY1Tn8mdoK7LOSEgUBbfCOxspPyGt7ATolxeY3xS0kAf4jXETOCNDLpKHx4Muf2A25xDcTwvxEiry_847n2MSv7B5ciTbuQfuljrJODAVZU1-efYqfadXWdMsZkpob0Jtsxqsnvm6RvoSMXFs-wr5MVw3oN5FLCxobU71TC_o8PIIz0I0USuSz1VsnCeQLDtyUQu9S9eDPfp3Mz6LGd1KuqhkBXMF2JPDiO5lE5ANgjL9jgRgLAkfbu5jNp4ZrSJC-W");'></div>
+</div>
+<!-- Card 2: Add Surplus Bag (Primary Action) -->
+<div class="cursor-pointer group flex items-stretch justify-between gap-4 rounded-xl bg-white dark:bg-[#2a2018] p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(238,124,43,0.15)] transition-all border border-l-4 border-l-primary border-y-transparent border-r-transparent hover:border-y-primary/30 hover:border-r-primary/30 relative overflow-hidden">
+<div class="flex flex-col justify-center gap-1 flex-[2_2_0px] z-10">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-white text-[16px]">add</span>
+</div>
+<p class="text-[#181411] dark:text-white text-base font-bold leading-tight">Add First Surplus Bag</p>
+</div>
+<p class="text-[#897261] dark:text-[#9e8c7e] text-sm font-normal leading-normal">List items available for rescue.</p>
+</div>
+<div class="w-20 h-20 bg-center bg-no-repeat bg-cover rounded-lg shrink-0 shadow-inner z-10" data-alt="Fresh bakery items in a paper bag" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDqLXxpizSZITU88Ux5PldGSg10U5lII1MKfq-PHXODpgdzKsx8AkWBr8Z-g2MCsWDGKzICGEvW_4qxiua7hS5diOCbV3VDqp8WP7MGRldozxpWnlgGkxk4iXVP9mpw4gW7syaF2GxchWu9IPrgrqmiggywLQhV2DtQ6Icjn_e8Si-AqEDOA1iVbtvNe-vUk-etdIeru49cdRk2ZuZADE538FnUQA0G57qyz-eM6jd7ync-Qyt7mccPC-UVpLQ_mEDNSgWmdn9NUUag");'></div>
+<!-- Subtle decoration -->
+<div class="absolute right-0 bottom-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-10 -mb-10"></div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="mt-8 mb-2 flex justify-center">
+<button class="flex items-center gap-2 px-6 py-3 rounded-full text-[#897261] dark:text-[#8a7a6e] hover:text-primary dark:hover:text-primary transition-colors text-sm font-bold tracking-wide">
+<span>Go to Dashboard</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

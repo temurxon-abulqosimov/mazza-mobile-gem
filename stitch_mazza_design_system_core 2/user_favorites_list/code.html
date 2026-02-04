@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Favorites - MAZZA</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d452",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a2e22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-100 dark:bg-gray-900 font-display min-h-screen flex items-center justify-center p-4 lg:p-10 gap-10 flex-wrap">
+<!-- Screen 1: Populated List (Products Tab) -->
+<div class="relative flex h-[812px] w-full max-w-[375px] flex-col bg-background-light dark:bg-background-dark overflow-hidden rounded-2xl shadow-2xl border-[8px] border-gray-900 dark:border-gray-800 group/design-root">
+<!-- Header -->
+<div class="flex items-center bg-surface-light dark:bg-surface-dark p-4 pb-2 justify-between z-10 sticky top-0 shadow-sm">
+<button class="text-gray-900 dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Favorites</h2>
+</div>
+<!-- Tabs -->
+<div class="bg-surface-light dark:bg-surface-dark pt-2 shadow-sm z-10">
+<div class="flex border-b border-gray-200 dark:border-gray-700 px-4 justify-between">
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 dark:text-gray-400 pb-3 pt-2 flex-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Stores</p>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-gray-900 dark:text-white pb-3 pt-2 flex-1">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Products</p>
+</button>
+</div>
+</div>
+<!-- Content List -->
+<div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+<!-- Item 1 -->
+<div class="flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex gap-4">
+<!-- Image -->
+<div class="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+<div class="w-full h-full bg-center bg-cover" data-alt="Fresh sourdough loaf close up" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkyGsy4h72dZ0EnenxpYEO7r1ynIm1NvRC8nLTuvx32CAxsPhtuMI1URnJ4HnwIKMnNMBKGBWuQxdEGqD_Ls0ba5HesYkOV7K8xIEzzHRA5seNhLAZ4iYsMmGiNScChhPdIXBdhaer4k-6vfZOf9202w5IfDDI5nV-yCbFUUCoEmcV9_gQm3YxZP5YU6Rd-NO__7bN3tNjSYp6SVNz4NliMVQAHBZG0eoBUxxkgY0d3yjJAyHUNIfjIJca6Gurpthv6WHHVDYA3WIJ");'></div>
+<div class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">Low Stock</div>
+</div>
+<!-- Content -->
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div class="flex justify-between items-start gap-2">
+<div>
+<h3 class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-2">Fresh Sourdough Loaf</h3>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium mt-1">Bakery Downtown</p>
+</div>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-end justify-between mt-2">
+<p class="text-primary text-base font-bold">$6.50</p>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 active:scale-95 transition-transform">
+                                Reserve
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex gap-4">
+<!-- Image -->
+<div class="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+<div class="w-full h-full bg-center bg-cover" data-alt="Organic green avocados pile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBhOylMAO9K_YvlaVXdkST9UjubwyV1v1mWhBeY5NTy67e5fAEmpErOcE8raR9aECa__M-IwzzhWZJueaTKeWa8Qqbs0WqgwT8tpsw0toz1s4XZ_oIIKIKGWW6_OtpRJAQRnQFEnfg9E0jwYHl57_DWU-8Qfba-9BSQW7AHUaAWbQfNHoN9YOAdcJ88oy0cdDMxjjU6Nc8Y5GfMZdgHvUUbhMrINuSq7pcX2UKtg3FP_QHyK7In3yfQH1xgfBvVZGRU3LXuTP2mtfqr");'></div>
+</div>
+<!-- Content -->
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div class="flex justify-between items-start gap-2">
+<div>
+<h3 class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-2">Organic Hass Avocados (Pack of 4)</h3>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium mt-1">Green Earth Organics</p>
+</div>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-end justify-between mt-2">
+<p class="text-primary text-base font-bold">$4.99</p>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 active:scale-95 transition-transform">
+                                Reserve
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex gap-4">
+<!-- Image -->
+<div class="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+<div class="w-full h-full bg-center bg-cover" data-alt="Bottle of cold pressed juice" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBy8MqfoulDDXmCCxi_6cu5hmp2NpJtCV_urvu6ycutbzvfJqZYU8mRr1dYasp9u52jlswXLRoVRC7-MaMLDY3Ls20nNqnyHfMC6MruqTFSVLXlUirGS5og5bvqLIB-Dv8vUlTdCIbh0zLrw0fCB56E-KF6rbClszcINRpkSeKTIbsDVwm6YzEhIUIuh4ZbF69T2aWhqcIIIGPxgDKilh-aflQLGWhesvGiEJGCcMmnmhmmrh6LMDXw1XI4ciPgPWztMAbyT3m2J8Kn");'></div>
+</div>
+<!-- Content -->
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div class="flex justify-between items-start gap-2">
+<div>
+<h3 class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-2">Cold Pressed Green Juice</h3>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium mt-1">Juice Bar Collective</p>
+</div>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-end justify-between mt-2">
+<p class="text-primary text-base font-bold">$8.50</p>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 active:scale-95 transition-transform">
+                                Reserve
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex flex-col gap-3 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex gap-4">
+<!-- Image -->
+<div class="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+<div class="w-full h-full bg-center bg-cover" data-alt="Box of artisan chocolates" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB6B4Cx3TVheKg4UJS7oP79diNjoBjRjb-x93DJo6pQPTbyLTmiCAzsL8e7PGzkvXOAW4nUDoNOye1CYjJWI7uxZcBjwGbUmj1gk2yObU7PYlFohRIZu9m2kIf5QsufqhGrRzKEQo7Qw9lgUL_JqYv_I4h7aT5Vzf_2nEKnWzGSB2fTPmmdu5bhJsigHRQLpDRlsWac07FKInXxev1YWVAtM4SqdlkCDVHDkV3RUoCMQBCo9waC5hL9h_7aDoBGNaV1P96S6e5wwrXV");'></div>
+<div class="absolute top-1 right-1 bg-gray-800/80 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">Closed</div>
+</div>
+<!-- Content -->
+<div class="flex flex-col flex-1 justify-between py-0.5">
+<div class="flex justify-between items-start gap-2">
+<div>
+<h3 class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-2">Artisan Dark Chocolate Box</h3>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium mt-1">Sweet Tooth &amp; Co.</p>
+</div>
+<button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-end justify-between mt-2">
+<p class="text-primary text-base font-bold">$22.00</p>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-sm font-bold cursor-not-allowed" disabled="">
+                                Closed
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<div class="h-20"></div> <!-- Bottom Spacer -->
+</div>
+<!-- Bottom Nav (Decorative) -->
+<div class="bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 p-2 pb-6 flex justify-around items-center absolute bottom-0 w-full">
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">home</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-current">favorite</span>
+<div class="w-1 h-1 rounded-full bg-primary"></div>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">person</span>
+</div>
+</div>
+</div>
+<!-- Screen 2: Empty State (Stores Tab) -->
+<div class="relative flex h-[812px] w-full max-w-[375px] flex-col bg-background-light dark:bg-background-dark overflow-hidden rounded-2xl shadow-2xl border-[8px] border-gray-900 dark:border-gray-800 group/design-root">
+<!-- Header -->
+<div class="flex items-center bg-surface-light dark:bg-surface-dark p-4 pb-2 justify-between z-10 sticky top-0 shadow-sm">
+<button class="text-gray-900 dark:text-white flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">Favorites</h2>
+</div>
+<!-- Tabs -->
+<div class="bg-surface-light dark:bg-surface-dark pt-2 shadow-sm z-10">
+<div class="flex border-b border-gray-200 dark:border-gray-700 px-4 justify-between">
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-gray-900 dark:text-white pb-3 pt-2 flex-1">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Stores</p>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 dark:text-gray-400 pb-3 pt-2 flex-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Products</p>
+</button>
+</div>
+</div>
+<!-- Empty State Content -->
+<div class="flex-1 flex flex-col items-center justify-center p-8 text-center pb-24">
+<!-- Illustration Area -->
+<div class="relative mb-6">
+<div class="w-40 h-40 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-primary text-[64px]">shopping_bag</span>
+</div>
+<!-- Cute decoration: A small bite mark or element -->
+<div class="absolute -bottom-2 -right-2 bg-surface-light dark:bg-surface-dark p-2 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-yellow-500 text-2xl">sentiment_dissatisfied</span>
+</div>
+</div>
+<h3 class="text-gray-900 dark:text-white text-xl font-bold mb-2">Your wishlist is looking empty!</h3>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-8 max-w-[260px]">
+                Looks like you haven't saved any stores yet. Save places you love to find them easily later.
+            </p>
+<button class="flex w-full cursor-pointer items-center justify-center rounded-xl h-12 px-6 bg-primary hover:bg-green-600 text-white text-base font-bold transition-all shadow-lg shadow-primary/30 active:scale-95">
+                Start Exploring
+            </button>
+</div>
+<!-- Bottom Nav (Decorative) -->
+<div class="bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 p-2 pb-6 flex justify-around items-center absolute bottom-0 w-full">
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">home</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">search</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined fill-current">favorite</span>
+<div class="w-1 h-1 rounded-full bg-primary"></div>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined">person</span>
+</div>
+</div>
+</div>
+</body></html>

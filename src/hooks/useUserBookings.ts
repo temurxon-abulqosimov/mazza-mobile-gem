@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { bookingApi } from '../api';
 import { useAuthStore } from '../state/authStore';
 
@@ -16,28 +16,24 @@ export const useUserBookings = ({ status }: UseUserBookingsParams) => {
     data,
     isLoading,
     isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
     refetch,
-  } = useInfiniteQuery({
+  } = useQuery({
     queryKey,
-    queryFn: ({ pageParam }) => bookingApi.getUserBookings(status, pageParam),
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) => lastPage.meta.pagination.cursor,
+    queryFn: () => bookingApi.getUserBookings(status),
     enabled: isAuthenticated, // Only fetch if authenticated
   });
 
-  // Flatten the pages array into a single array of bookings
-  const bookings = data?.pages.flatMap(page => page.data.bookings) ?? [];
+  // Data structure is now { bookings: [...] }
+  const bookings = data?.bookings ?? [];
 
   return {
     bookings,
     isLoading,
     isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    // Add dummy pagination props to maintain component compatibility if needed, else remove
+    fetchNextPage: () => { },
+    hasNextPage: false,
+    isFetchingNextPage: false,
     refetch,
   };
 };

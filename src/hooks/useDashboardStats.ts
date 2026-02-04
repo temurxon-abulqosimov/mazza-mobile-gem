@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDashboardStats, DashboardStats } from '../api/seller';
+import { ApiResponse } from '../domain/Common';
 
 export const useDashboardStats = () => {
-  const { data, isLoading, error, refetch } = useQuery<DashboardStats>({
+  const { data, isLoading, error, refetch } = useQuery<ApiResponse<DashboardStats>>({
     queryKey: ['seller', 'dashboard', 'stats'],
     queryFn: getDashboardStats,
     staleTime: 1000 * 60 * 2, // 2 minutes - fresh data
@@ -10,7 +11,7 @@ export const useDashboardStats = () => {
   });
 
   return {
-    stats: data,
+    stats: data?.data,
     isLoading,
     error,
     refetch,

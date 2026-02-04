@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Verification Status Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d452",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111813] dark:text-gray-100 antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl">
+<!-- Top App Bar -->
+<div class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+<div class="text-[#111813] dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-[#111813] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Verification Status</h2>
+</div>
+<!-- Hero Status Section -->
+<div class="flex flex-col items-center pt-8 pb-6 px-6 text-center">
+<div class="size-24 rounded-full bg-primary/10 flex items-center justify-center mb-6 relative">
+<span class="material-symbols-outlined text-primary text-5xl">manage_search</span>
+<div class="absolute -bottom-1 -right-1 bg-white dark:bg-background-dark rounded-full p-1">
+<span class="material-symbols-outlined text-primary text-2xl icon-filled">hourglass_top</span>
+</div>
+</div>
+<h1 class="text-[#111813] dark:text-white tracking-tight text-[28px] font-bold leading-tight mb-2">Application Under Review</h1>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal max-w-xs">
+                Thanks for applying to join MAZZA! We are currently checking your details.
+            </p>
+</div>
+<!-- Timeline -->
+<div class="px-6 py-4">
+<div class="bg-white dark:bg-[#152e1d] rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800">
+<!-- Step 1: Completed -->
+<div class="grid grid-cols-[32px_1fr] gap-x-4">
+<div class="flex flex-col items-center">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary text-white z-10">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+<div class="w-[2px] bg-primary h-full min-h-[40px]"></div>
+</div>
+<div class="flex flex-col pb-8 pt-1">
+<div class="flex justify-between items-start">
+<p class="text-[#111813] dark:text-white text-base font-semibold leading-none">Application Submitted</p>
+<span class="text-xs font-medium text-gray-400">Oct 24</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-1">We've received your details.</p>
+</div>
+</div>
+<!-- Step 2: In Progress -->
+<div class="grid grid-cols-[32px_1fr] gap-x-4">
+<div class="flex flex-col items-center">
+<div class="flex items-center justify-center size-8 rounded-full bg-white dark:bg-[#152e1d] border-2 border-primary z-10 relative">
+<div class="size-2.5 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="w-[2px] bg-gray-200 dark:bg-gray-700 h-full min-h-[40px]"></div>
+</div>
+<div class="flex flex-col pb-8 pt-1">
+<div class="flex justify-between items-start">
+<p class="text-[#111813] dark:text-white text-base font-semibold leading-none">Document Verification</p>
+<span class="bg-primary/15 text-primary-dark dark:text-primary text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">In Progress</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Checking business license and hygiene rating.</p>
+</div>
+</div>
+<!-- Step 3: Pending -->
+<div class="grid grid-cols-[32px_1fr] gap-x-4">
+<div class="flex flex-col items-center">
+<div class="flex items-center justify-center size-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-400 z-10">
+<span class="material-symbols-outlined text-sm">lock</span>
+</div>
+</div>
+<div class="flex flex-col pt-1">
+<div class="flex justify-between items-start">
+<p class="text-gray-400 dark:text-gray-500 text-base font-medium leading-none">Account Activation</p>
+<span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">Pending</span>
+</div>
+<p class="text-gray-400 dark:text-gray-600 text-sm mt-1">Final approval and store setup.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- FAQ Section -->
+<div class="px-6 pt-4 pb-20">
+<h3 class="text-[#111813] dark:text-white text-lg font-bold mb-4">Common Questions</h3>
+<div class="flex flex-col gap-3">
+<!-- FAQ Item 1 -->
+<div class="bg-white dark:bg-[#152e1d] rounded-xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm cursor-pointer group">
+<div class="flex justify-between items-center w-full">
+<div class="flex gap-3 items-center">
+<div class="size-8 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+<span class="material-symbols-outlined text-lg">schedule</span>
+</div>
+<span class="text-sm font-semibold text-[#111813] dark:text-white">How long does it take?</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">expand_more</span>
+</div>
+<div class="mt-2 pl-11 text-sm text-gray-500 dark:text-gray-400">
+                        Reviews typically take 24-48 hours. We'll notify you as soon as it's done.
+                    </div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="bg-white dark:bg-[#152e1d] rounded-xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm cursor-pointer group">
+<div class="flex justify-between items-center w-full">
+<div class="flex gap-3 items-center">
+<div class="size-8 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+</div>
+<span class="text-sm font-semibold text-[#111813] dark:text-white">Need to update docs?</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 p-4">
+<button class="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-transparent border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-300">support_agent</span>
+<span class="text-gray-700 dark:text-gray-300 font-semibold">Contact Support</span>
+</button>
+</div>
+</div>
+</body></html>
