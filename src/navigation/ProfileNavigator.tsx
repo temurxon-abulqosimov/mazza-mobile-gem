@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import SettingsScreen from '../screens/profile/SettingsScreen';
+import NotificationsScreen from '../screens/profile/NotificationsScreen';
 import BecomeSellerScreen from '../screens/profile/BecomeSellerScreen';
 import SellerDashboardScreen from '../screens/seller/SellerDashboardScreen';
 import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
@@ -12,6 +13,7 @@ import AddProductScreen from '../screens/seller/AddProductScreen';
 export type ProfileStackParamList = {
   ProfileHome: undefined;
   Settings: undefined;
+  Notifications: undefined;
   BecomeSeller: undefined;
   SellerDashboard: undefined;
   ManageProducts: undefined;
@@ -27,6 +29,7 @@ const ProfileNavigator = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="BecomeSeller" component={BecomeSellerScreen} options={{ presentation: 'modal' }}/>
       <Stack.Screen name="SellerDashboard" component={SellerDashboardScreen} />
       <Stack.Screen name="ManageProducts" component={ManageProductsScreen} />

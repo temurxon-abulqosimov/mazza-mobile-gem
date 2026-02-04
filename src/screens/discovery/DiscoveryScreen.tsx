@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, FlatList, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -7,14 +7,24 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useDiscovery } from '../../hooks/useDiscovery';
 import ProductCard from '../../components/discovery/ProductCard';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
+import { LocationSelector } from '../../components/discovery/LocationSelector';
+import { CategoryFilter, Category } from '../../components/discovery/CategoryFilter';
+import { SearchBar } from '../../components/ui/SearchBar';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { LoadingScreen } from '../../components/ui/LoadingScreen';
+import { ProductCardSkeleton } from '../../components/discovery/ProductCardSkeleton';
+import { SellerCard } from '../../components/discovery/SellerCard';
+import { SellerCardSkeleton } from '../../components/discovery/SellerCardSkeleton';
+import { colors, spacing, typography } from '../../theme';
 
 type DiscoveryScreenNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'DiscoveryFeed'>;
 
-const CATEGORIES = [
+const CATEGORIES: Category[] = [
   { id: 'all', label: 'All', icon: '🍽️' },
+  { id: 'market', label: 'Market', icon: '🛒' },
   { id: 'bakery', label: 'Bakery', icon: '🥖' },
-  { id: 'cafe', label: 'Cafe', icon: '☕' },
-  { id: 'grocery', label: 'Grocery', icon: '🛒' },
+  { id: 'restaurant', label: 'Restaurant', icon: '🍽️' },
+  { id: 'cafe', label: 'Café', icon: '☕' },
 ];
 
 const DiscoveryScreen = () => {
@@ -26,10 +36,9 @@ const DiscoveryScreen = () => {
 
   useEffect(() => {
     (async () => {
-      let { status} = await Location.requestForegroundPermissionsAsync();
+      let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setLocationError('Permission to access location was denied');
-        // Don't block - use default location for guests
         return;
       }
 
@@ -43,107 +52,201 @@ const DiscoveryScreen = () => {
   }, []);
 
   const { products, isLoading, isError, refetch } = useDiscovery({
-    lat: location?.coords.latitude ?? 40.7128, // Default to NYC
-    lng: location?.coords.longitude ?? -74.0060,
-    enabled: true, // Always enabled
+    lat: location?.coords.latitude ?? 37.7858, // Default to San Francisco (where test store is)
+    lng: location?.coords.longitude ?? -122.4064,
+    enabled: true,
   });
 
   const handleProductPress = (productId: string) => {
     navigation.navigate('ProductDetail', { productId });
   };
 
+  const handleLocationPress = () => {
+    // TODO: Implement location picker
+    console.log('Location picker pressed');
+  };
+
+  // Get unique sellers from products (deduplicate by store ID)
+  const mockSellers = useMemo(() => {
+    const uniqueStores = new Map();
+    products.forEach((product) => {
+      if (!uniqueStores.has(product.store.id)) {
+        uniqueStores.set(product.store.id, {
+          id: product.store.id,
+          name: product.store.name,
+          imageUrl: product.store.imageUrl || product.images[0]?.thumbnailUrl || product.images[0]?.url,
+          category: product.category?.name || 'Market',
+          rating: product.store.rating || 4.5,
+          distance: product.distance || 0,
+        });
+      }
+    });
+    return Array.from(uniqueStores.values()).slice(0, 5);
+  }, [products]);
+
   const renderHeader = () => (
     <View style={styles.header}>
       {/* Location Selector */}
-      <TouchableOpacity style={styles.locationSelector}>
-        <Text style={styles.locationIcon}>📍</Text>
-        <Text style={styles.locationText}>Downtown Area</Text>
-        <Text style={styles.locationArrow}>▼</Text>
+      <LocationSelector
+        location="San Francisco"
+        onPress={handleLocationPress}
+      />
+
+      {/* Notification Icon */}
+      <TouchableOpacity
+        style={styles.notificationButton}
+        onPress={() => {/* TODO: Navigate to notifications from discovery */}}
+      >
+        <Text style={styles.notificationIcon}>🔔</Text>
+        <View style={styles.notificationBadge}>
+          <Text style={styles.notificationBadgeText}>2</Text>
+        </View>
       </TouchableOpacity>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Text style={styles.searchIcon}>🔍</Text>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search food, bags or businesses"
-          placeholderTextColor="#999"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <TouchableOpacity style={styles.voiceButton}>
-          <Text style={styles.voiceIcon}>🎤</Text>
-        </TouchableOpacity>
-      </View>
+      <SearchBar
+        placeholder="Search for food..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        showVoice={false}
+        style={styles.searchBar}
+      />
 
-      {/* Category Chips */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.categoriesContainer}
-        contentContainerStyle={styles.categoriesContent}
-      >
-        {CATEGORIES.map((category) => (
-          <TouchableOpacity
-            key={category.id}
-            style={[
-              styles.categoryChip,
-              selectedCategory === category.id && styles.categoryChipActive,
-            ]}
-            onPress={() => setSelectedCategory(category.id)}
-          >
-            <Text style={styles.categoryIcon}>{category.icon}</Text>
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === category.id && styles.categoryTextActive,
-              ]}
-            >
-              {category.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {/* Category Filter */}
+      <CategoryFilter
+        categories={CATEGORIES}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
     </View>
   );
 
-  const renderContent = () => {
-    if (isLoading && products.length === 0) {
+  const renderNearbySellers = () => {
+    if (isLoading) {
       return (
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#FF6B35" />
-          <Text style={styles.loadingText}>Finding great deals near you...</Text>
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+          >
+            {[1, 2, 3].map((key) => (
+              <SellerCardSkeleton key={key} />
+            ))}
+          </ScrollView>
         </View>
       );
     }
 
-    if (isError) {
-      return (
-        <View style={styles.centered}>
-          <Text style={styles.emptyIcon}>🍱</Text>
-          <Text style={styles.emptyTitle}>No products available yet</Text>
-          <Text style={styles.emptySubtitle}>
-            Check back soon for amazing deals on surplus food!
-          </Text>
-          <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
-            <Text style={styles.retryButtonText}>Retry</Text>
+    if (mockSellers.length === 0) {
+      return null;
+    }
+
+    return (
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAllLink}>See all ›</Text>
           </TouchableOpacity>
         </View>
-      );
-    }
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.horizontalList}
+        >
+          {mockSellers.map((seller) => (
+            <SellerCard
+              key={seller.id}
+              seller={seller}
+              onPress={() => console.log('Seller pressed:', seller.id)}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
 
-    if (products.length === 0) {
+  const renderAvailableNow = () => {
+    return (
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Available Now</Text>
+          <View style={styles.offersIndicator}>
+            <View style={styles.offersIndicatorDot} />
+            <Text style={styles.offersIndicatorText}>{products.length} offers</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderContent = () => {
+    // Initial loading state
+    if (isLoading && products.length === 0) {
       return (
-        <View style={styles.centered}>
-          <Text style={styles.emptyIcon}>🔍</Text>
-          <Text style={styles.emptyTitle}>No products found</Text>
-          <Text style={styles.emptySubtitle}>
-            Try adjusting your filters or check back later
-          </Text>
+        <View style={styles.loadingContainer}>
+          {renderHeader()}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.horizontalList}
+            >
+              {[1, 2, 3].map((key) => (
+                <SellerCardSkeleton key={key} />
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Available Now</Text>
+            {[1, 2, 3].map((key) => (
+              <ProductCardSkeleton key={key} />
+            ))}
+          </View>
         </View>
       );
     }
 
+    // Error state
+    if (isError) {
+      return (
+        <View style={styles.container}>
+          {renderHeader()}
+          <EmptyState
+            icon="🍱"
+            title="No products available yet"
+            subtitle="Check back soon for amazing deals on surplus food!"
+            action={{
+              label: 'Retry',
+              onPress: () => refetch(),
+            }}
+          />
+        </View>
+      );
+    }
+
+    // Empty state
+    if (products.length === 0) {
+      return (
+        <View style={styles.container}>
+          {renderHeader()}
+          <EmptyState
+            icon="🔍"
+            title="No products found"
+            subtitle="Try adjusting your filters or check back later"
+          />
+        </View>
+      );
+    }
+
+    // Main content with data
     return (
       <FlatList
         data={products}
@@ -153,14 +256,21 @@ const DiscoveryScreen = () => {
         keyExtractor={(item) => item.id}
         onRefresh={refetch}
         refreshing={isLoading}
+        ListHeaderComponent={() => (
+          <>
+            {renderHeader()}
+            {renderNearbySellers()}
+            {renderAvailableNow()}
+          </>
+        )}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
     );
   };
 
   return (
     <View style={styles.container}>
-      {renderHeader()}
       {renderContent()}
     </View>
   );
@@ -169,133 +279,93 @@ const DiscoveryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
   },
   header: {
-    backgroundColor: 'white',
-    paddingTop: 8,
-    paddingBottom: 12,
+    backgroundColor: colors.card,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.divider,
+    position: 'relative',
   },
-  locationSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  notificationButton: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.lg,
+    padding: spacing.sm,
+    zIndex: 10,
   },
-  locationIcon: {
-    fontSize: 16,
-    marginRight: 6,
+  notificationIcon: {
+    fontSize: 20,
   },
-  locationText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    flex: 1,
-  },
-  locationArrow: {
-    fontSize: 12,
-    color: '#666',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    marginHorizontal: 16,
-    marginTop: 8,
-    paddingHorizontal: 12,
-    height: 44,
-  },
-  searchIcon: {
-    fontSize: 18,
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: '#333',
-  },
-  voiceButton: {
-    padding: 4,
-  },
-  voiceIcon: {
-    fontSize: 18,
-  },
-  categoriesContainer: {
-    marginTop: 12,
-  },
-  categoriesContent: {
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  categoryChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
-    marginRight: 8,
-  },
-  categoryChipActive: {
-    backgroundColor: '#FF6B35',
-  },
-  categoryIcon: {
-    fontSize: 14,
-    marginRight: 6,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
-  },
-  categoryTextActive: {
-    color: 'white',
-  },
-  listContent: {
-    padding: 16,
-  },
-  centered: {
-    flex: 1,
+  notificationBadge: {
+    position: 'absolute',
+    top: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: colors.primary,
+    borderRadius: spacing.radiusFull,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: spacing.xxs,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
   },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#666',
+  notificationBadgeText: {
+    color: colors.text.inverse,
+    fontSize: 10,
+    fontWeight: 'bold',
   },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
+  searchBar: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
   },
-  emptyTitle: {
+  section: {
+    marginTop: spacing.sectionMargin,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  sectionTitle: {
+    ...typography.h3,
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-    textAlign: 'center',
+    color: colors.text.primary,
   },
-  emptySubtitle: {
+  seeAllLink: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  retryButton: {
-    marginTop: 24,
-    backgroundColor: '#FF6B35',
-    paddingHorizontal: 32,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: colors.primary,
     fontWeight: '600',
+  },
+  offersIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  offersIndicatorDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.success,
+    marginRight: spacing.xs,
+  },
+  offersIndicatorText: {
+    fontSize: 14,
+    color: colors.success,
+    fontWeight: '600',
+  },
+  horizontalList: {
+    paddingHorizontal: spacing.lg,
+  },
+  listContent: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xxl,
   },
 });
 

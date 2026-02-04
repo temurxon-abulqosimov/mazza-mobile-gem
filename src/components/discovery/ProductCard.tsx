@@ -21,7 +21,7 @@ interface ProductCardProps {
  */
 const ProductCard = ({ product, onPress }: ProductCardProps) => {
   const getCategoryIcon = () => {
-    const category = product.category?.toLowerCase() || '';
+    const category = product.category?.name?.toLowerCase() || '';
     if (category.includes('bakery')) return '🥖';
     if (category.includes('cafe')) return '☕';
     if (category.includes('grocery')) return '🛒';
@@ -42,7 +42,7 @@ const ProductCard = ({ product, onPress }: ProductCardProps) => {
         <View style={styles.categoryBadge}>
           <Text style={styles.categoryIcon}>{getCategoryIcon()}</Text>
           <Text style={styles.categoryText}>
-            {product.category || 'Food'}
+            {product.category?.name || 'Food'}
           </Text>
         </View>
 

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Inventory Management</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec7f13",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                        "card-light": "#ffffff",
+                        "card-dark": "#2d241b",
+                        "text-main-light": "#181411",
+                        "text-main-dark": "#f4f2f0",
+                        "text-sec-light": "#897561",
+                        "text-sec-dark": "#d0c3b9",
+                        "border-light": "#e6e0db",
+                        "border-dark": "#3e3226",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main-light dark:text-text-main-dark transition-colors duration-200">
+<div class="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark px-4 py-3 flex items-center justify-between transition-colors">
+<div class="w-10"></div> <!-- Spacer for centering title -->
+<h1 class="text-lg font-bold leading-tight tracking-[-0.015em] text-center">My Inventory</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-text-main-light dark:text-text-main-dark">filter_list</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-24 p-4 space-y-4">
+<!-- Inventory Summary Widget -->
+<div class="flex gap-3">
+<div class="flex-1 flex flex-col gap-1 rounded-xl p-4 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[20px]">inventory_2</span>
+<p class="text-sm font-medium text-text-sec-light dark:text-text-sec-dark">Active Items</p>
+</div>
+<p class="text-2xl font-bold leading-tight">15</p>
+</div>
+<div class="flex-1 flex flex-col gap-1 rounded-xl p-4 bg-card-light dark:bg-card-dark border border-border-light dark:border-border-dark shadow-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-green-600 dark:text-green-400 text-[20px]">payments</span>
+<p class="text-sm font-medium text-text-sec-light dark:text-text-sec-dark">Est. Value</p>
+</div>
+<p class="text-2xl font-bold leading-tight">$124.50</p>
+</div>
+</div>
+<!-- Product List -->
+<div class="flex flex-col gap-3">
+<h3 class="text-sm font-semibold text-text-sec-light dark:text-text-sec-dark uppercase tracking-wider ml-1 mt-2">Current Stock</h3>
+<!-- Item 1: Active -->
+<div class="group flex gap-3 bg-card-light dark:bg-card-dark p-3 rounded-xl border border-transparent shadow-sm hover:border-primary/20 transition-all">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg w-[72px] h-[72px]" data-alt="Close up of a pastry box with croissants and muffins" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBaPaQHHXihg-t0qhW9hRuyoVtQBFPN96h1nB5XHm6AJAy7Sx2z9g13jrenjJhomk6mUbYw52jfd3UqF43Sc4mE4S_v-S9pMr2_aS5b60-1QEq8bVm6K_4PJLSmROjsLL9TM3e4eQ3yL985GSKSuSN04OMltC7XFER3e8bRFPOlRk9AGitIpku4CfuoRqOb_-FmMvtDwrNhaXyTKlXlvXVvrVbF20Rs9q7kZ8cr41shb497lp-Eo5Wl12mO-iBhDWuzRIYQmYowOJio");'></div>
+<div class="absolute -top-1 -right-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-green-200 dark:border-green-800 shadow-sm">
+                            12 left
+                        </div>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-semibold leading-tight truncate pr-2">Morning Pastry Box</h4>
+</div>
+<p class="text-primary font-bold mt-1">$4.99</p>
+<p class="text-xs text-text-sec-light dark:text-text-sec-dark mt-0.5 truncate">Pick up: 8:00 AM - 10:00 AM</p>
+</div>
+<div class="shrink-0 flex flex-col items-end justify-center gap-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+<span class="text-[10px] font-medium text-green-600 dark:text-green-400">Active</span>
+</div>
+</div>
+<!-- Item 2: Inactive (Out of Stock) -->
+<div class="group flex gap-3 bg-card-light dark:bg-card-dark p-3 rounded-xl border border-transparent opacity-80 hover:opacity-100 transition-all">
+<div class="relative shrink-0 grayscale">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg w-[72px] h-[72px]" data-alt="Wooden crate filled with assorted fresh vegetables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBPGT8H432smZGbrKBzEKBrzG4xT_R6GI0H6DVdrjQQsotriVgflNmED6pogHwXICOtUHmaEUX-544A6bgZPgimp7F7fAZh6mP9X7eixpg4-ZwvJ2VgzcN8CKxBJ7aBik4kaFkvdTMcOfB1Eu_mbnu9LbzCZ4LPGkfWRCjmdqFUrvAsb7kzttFJ_AvH_H4_6p0DohyvrsRUkPTz10pjc-s-hH2hIyapd6p2RxWsrGYEyv0wWl05atup-9jp9jqARsW8-xMHvto81Tc_");'></div>
+<div class="absolute -top-1 -right-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-gray-200 dark:border-gray-600 shadow-sm">
+                            0 left
+                        </div>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-semibold leading-tight text-text-sec-light dark:text-text-sec-dark truncate pr-2">Vegetable Crate</h4>
+</div>
+<p class="text-text-sec-light dark:text-text-sec-dark font-medium mt-1">$8.50</p>
+<p class="text-xs text-text-sec-light dark:text-text-sec-dark mt-0.5 truncate">Pick up: 4:00 PM - 6:00 PM</p>
+</div>
+<div class="shrink-0 flex flex-col items-end justify-center gap-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+<span class="text-[10px] font-medium text-text-sec-light dark:text-text-sec-dark">Inactive</span>
+</div>
+</div>
+<!-- Item 3: Active (Low Stock) -->
+<div class="group flex gap-3 bg-card-light dark:bg-card-dark p-3 rounded-xl border border-transparent shadow-sm hover:border-primary/20 transition-all">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg w-[72px] h-[72px]" data-alt="Brown paper bag with lunch surprise text" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBBPF-go221vXr9rgSQnYV4Iv5cxLXrkqi28o3ejNfej1Oqf_FI0mwhEwOUD1WhNwsYIDEz2OitcgHf05DdEUi2IxUFbauHQLjBXaAlKCSjlGN6bueI5DMOEpwQ7hC_RlT8tmzNppIQA7DrNjvuCGXvudqDVXG7U-sqd-fXsQJNuvWM2QcC_iwMy77Q7bUntz0FiZSldBzJ9_9r47nSMVfQ-aLF2aoO5xtJwcQXf9-tySWKv24GHhhTTVfzXkFW-jXunIFz-4NsNEtD");'></div>
+<div class="absolute -top-1 -right-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-orange-200 dark:border-orange-800 shadow-sm animate-pulse">
+                            3 left
+                        </div>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-semibold leading-tight truncate pr-2">Lunch Special Surprise</h4>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<p class="text-primary font-bold">$6.00</p>
+<span class="text-[10px] bg-red-100 text-red-600 px-1.5 rounded dark:bg-red-900 dark:text-red-300">Low Stock</span>
+</div>
+<p class="text-xs text-text-sec-light dark:text-text-sec-dark mt-0.5 truncate">Pick up: 12:00 PM - 2:00 PM</p>
+</div>
+<div class="shrink-0 flex flex-col items-end justify-center gap-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+<span class="text-[10px] font-medium text-green-600 dark:text-green-400">Active</span>
+</div>
+</div>
+<!-- Item 4: Active -->
+<div class="group flex gap-3 bg-card-light dark:bg-card-dark p-3 rounded-xl border border-transparent shadow-sm hover:border-primary/20 transition-all">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-lg w-[72px] h-[72px]" data-alt="Delicious looking cupcakes in a box" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQbRUkK_vsnsG5o02eECBEymIx-7mwl8GaS4RhBJCQN3Q64LLybK7owwUEB_bvJYOhoRs6GOx1e2g_T8O9cXKd68jadWakIJmCqurs4EJFs7e1py6LxVh0lxZ7MrtQINCsQYFGkAdqwFtEf-xU647ksCXGZ5wF3Ik9wY-4gVBBsUehrCtR5JLUBbrT1X5KMEoWTS0b4orPBRv8xXu8Sy0QwuNPm9HFHSw-saSSuIa73uCIzuppobR1fN9tMqrdxemrnHCluwU2yQnm");'></div>
+<div class="absolute -top-1 -right-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-green-200 dark:border-green-800 shadow-sm">
+                            24 left
+                        </div>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-semibold leading-tight truncate pr-2">Cupcake Variety Pack</h4>
+</div>
+<p class="text-primary font-bold mt-1">$9.99</p>
+<p class="text-xs text-text-sec-light dark:text-text-sec-dark mt-0.5 truncate">Pick up: All day</p>
+</div>
+<div class="shrink-0 flex flex-col items-end justify-center gap-1">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/40 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+<span class="text-[10px] font-medium text-green-600 dark:text-green-400">Active</span>
+</div>
+</div>
+</div>
+<!-- Empty State Illustration Placeholder (Hidden if items exist, shown for logic demonstration) -->
+<!-- 
+            <div class="flex flex-col items-center justify-center py-10 opacity-50 hidden">
+                <div class="w-32 h-32 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-gray-400 text-5xl">inventory_2</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">No items yet</h3>
+                <p class="text-sm text-gray-500 text-center max-w-xs mt-1">Add your first surplus product to start selling.</p>
+            </div> 
+            -->
+</main>
+<!-- Floating Action Button (FAB) -->
+<div class="absolute bottom-20 right-4 z-20">
+<button aria-label="Add New Product" class="flex items-center justify-center w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 z-10 bg-card-light dark:bg-card-dark border-t border-border-light dark:border-border-dark px-2 pb-5 pt-2">
+<div class="flex justify-around items-center">
+<button class="flex flex-col items-center gap-1 p-2 text-primary">
+<span class="material-symbols-outlined fill-1">inventory_2</span>
+<span class="text-[10px] font-medium">Inventory</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-text-sec-light dark:text-text-sec-dark hover:text-text-main-light dark:hover:text-text-main-dark transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-medium">Orders</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-text-sec-light dark:text-text-sec-dark hover:text-text-main-light dark:hover:text-text-main-dark transition-colors">
+<span class="material-symbols-outlined">storefront</span>
+<span class="text-[10px] font-medium">Profile</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Dashboard Overview</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff7a33", // Mazza Orange
+                        "success": "#22C55E", // Success Green
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#23160f",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#2d1f18",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for horizontal stats if needed */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#181310] dark:text-gray-100 font-display transition-colors duration-200">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Header Section -->
+<header class="sticky top-0 z-20 bg-surface-light/95 dark:bg-surface-dark/95 backdrop-blur-sm shadow-sm transition-colors">
+<div class="flex items-center justify-between p-4 pb-2">
+<div class="flex items-center gap-3">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<div>
+<h1 class="text-xl font-bold leading-tight tracking-tight text-[#181310] dark:text-white">Joe's Bagels</h1>
+<p class="text-xs text-gray-500 dark:text-gray-400">Downtown Branch</p>
+</div>
+</div>
+<button class="flex size-10 items-center justify-center rounded-full text-[#181310] dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<!-- Store Status Toggle -->
+<div class="px-4 pb-4">
+<div class="flex items-center justify-between rounded-xl bg-background-light dark:bg-black/20 p-3 border border-gray-100 dark:border-white/5">
+<div class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-success/10 text-success">
+<span class="material-symbols-outlined text-[20px]">door_open</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-[#181310] dark:text-white">Store Status</span>
+<span class="text-xs font-medium text-success">Currently Open</span>
+</div>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-gray-200 dark:bg-gray-700 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-success transition-all duration-300">
+<input checked="" class="peer invisible absolute" type="checkbox"/>
+<div class="h-full w-[27px] rounded-full bg-white shadow-sm transition-all peer-checked:mr-0"></div>
+</label>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-col gap-6 p-4">
+<!-- KPI Section -->
+<section class="grid grid-cols-2 gap-3">
+<!-- Main Earnings Card (Full Width) -->
+<div class="col-span-2 flex flex-col gap-2 rounded-xl p-5 bg-surface-light dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Today's Earnings</p>
+<span class="material-symbols-outlined text-primary text-[20px]">payments</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-bold tracking-tight text-[#181310] dark:text-white">$142.50</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-success text-[16px]">trending_up</span>
+<p class="text-success text-xs font-semibold">+15% vs yesterday</p>
+</div>
+</div>
+<!-- Secondary Metric Cards -->
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-surface-light dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[20px]">volunteer_activism</span>
+</div>
+<p class="text-2xl font-bold text-[#181310] dark:text-white">12</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">Orders Rescued</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-surface-light dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-white/5">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-[20px]">shopping_bag</span>
+</div>
+<p class="text-2xl font-bold text-[#181310] dark:text-white">5</p>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">Active Listings</p>
+</div>
+</section>
+<!-- Live Orders Section -->
+<section>
+<div class="flex items-center justify-between mb-3 px-1">
+<h3 class="text-lg font-bold text-[#181310] dark:text-white">Live Orders</h3>
+<a class="text-primary text-sm font-semibold hover:text-primary/80" href="#">View All</a>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Order Card 1 -->
+<div class="group relative flex gap-4 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-xl"></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg h-[64px] w-[64px] shrink-0" data-alt="Abstract colorful food pattern representing a surprise bag" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGm4kXOL3KW_hJw06Q9pr1A8cAYGr2nFL_ENwoWpsYbHSPKsxQfwSlNTcK5edtJcniioIEcjS60qoKiFEea6GlVsU3vtr7aC_FQdzfa5jl09uyTC_0CEUEB1tQo6EG7jx_cRY1kaxQBmda6GMBVcIniHoJPdqQkp7cnT4zap9TchckV7YI-Fxx6gcBxi88qEVml_ErQ7GTiqG1lFVeZGs4txtfHOHYwefekWrQ12rk28GqsFGSK3E-bT0tiQAl8sWVvkFGwS3NrQyZ");'>
+</div>
+<div class="flex flex-1 flex-col justify-center gap-0.5">
+<div class="flex justify-between items-start">
+<p class="text-[#181310] dark:text-white text-base font-semibold">Alice M.</p>
+<span class="bg-success/10 text-success text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Paid</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Pickup: 4:00 PM
+                            </p>
+<p class="text-[#181310] dark:text-gray-300 text-sm font-medium mt-1">Surprise Bag x2 • #1023</p>
+</div>
+</div>
+<!-- Order Card 2 -->
+<div class="group relative flex gap-4 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 dark:bg-gray-600 rounded-l-xl"></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg h-[64px] w-[64px] shrink-0" data-alt="Close up of assorted pastries in a box" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDFUKd8iXAut0-OgwVH4QFwYZWwxf511LrfJFjM6j_v-OtA5zzm3f_2ByOwFaIUMey6RM4tZ8WgZ9CrLmWNpets6xQzRBK-BAI52TxS9zMGzE9wa1bqw0wJIqfOCULV6VoeieR14SQUR5qniV9_4YoyE96qCM-asw42-BDhXG7lcnhcyn-7Z4Wuw2us4b5K8yn2uqCsJl_BjlTfWktPr8ce7zts81jGAcsN6tzUdHx90OaFmHuZ_T_rA8SuVECZFwD1VK1NR8v1no0w");'>
+</div>
+<div class="flex flex-1 flex-col justify-center gap-0.5">
+<div class="flex justify-between items-start">
+<p class="text-[#181310] dark:text-white text-base font-semibold">Bob D.</p>
+<span class="bg-success/10 text-success text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Paid</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Pickup: 4:15 PM
+                            </p>
+<p class="text-[#181310] dark:text-gray-300 text-sm font-medium mt-1">Pastry Box x1 • #1024</p>
+</div>
+</div>
+<!-- Order Card 3 -->
+<div class="group relative flex gap-4 rounded-xl bg-surface-light dark:bg-surface-dark p-3 shadow-sm border border-gray-100 dark:border-white/5 overflow-hidden opacity-80">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-gray-300 dark:bg-gray-600 rounded-l-xl"></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg h-[64px] w-[64px] shrink-0 grayscale" data-alt="Bag of bagels on a wooden table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAoj8VshJR3Trs-v9QIN8oTkxyEQ0byChNEj5xnMPFvGX6RR4Q8oZGJErIansx9pUQO1Y6dOCETxqUQVY3yQZ_ofC4GhCuMGszfEdlkDHanCbFKynE2fLKEQq9VOJnCz59pL7cheUEKskmyRIeIJhZK8IXgJLuOU796z5vcTUdQfHD2lQGCI-8ehW1kIAtjdJkPYSS2ZTHEBe5bSnMJ6sVXifUZFx6_s0GgP9YiStJoXFksnYqEsDoZxg9_GfNKufn5KlBJTUByxW0W");'>
+</div>
+<div class="flex flex-1 flex-col justify-center gap-0.5">
+<div class="flex justify-between items-start">
+<p class="text-[#181310] dark:text-white text-base font-semibold">Charlie K.</p>
+<span class="bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Pending</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Pickup: 4:30 PM
+                            </p>
+<p class="text-[#181310] dark:text-gray-300 text-sm font-medium mt-1">Lunch Combo x1 • #1025</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button (Verify QR) -->
+<button class="fixed bottom-[90px] right-4 z-30 flex items-center gap-2 rounded-full bg-primary pl-4 pr-5 py-3 shadow-lg shadow-primary/30 text-white font-bold transition-transform hover:scale-105 active:scale-95">
+<span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+<span>Verify Order</span>
+</button>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 z-40 w-full bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-white/10 pb-safe">
+<div class="flex h-16 items-center justify-around px-2">
+<a class="flex flex-col items-center justify-center gap-1 px-3 py-1 text-primary w-16" href="#">
+<span class="material-symbols-outlined text-[24px] fill-current">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 px-3 py-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 w-16 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">inventory_2</span>
+<span class="text-[10px] font-medium">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 px-3 py-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 w-16 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+<span class="text-[10px] font-medium">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 px-3 py-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 w-16 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="text-[10px] font-medium">Account</span>
+</a>
+</div>
+</nav>
+<!-- Safe area spacing for bottom nav -->
+<div class="h-6 w-full"></div>
+</div>
+</body></html>

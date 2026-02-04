@@ -29,5 +29,6 @@ export interface Product {
   images: ProductImage[];
   store: Store;
   category: Category;
+  distance?: number;
   createdAt?: string;
 }

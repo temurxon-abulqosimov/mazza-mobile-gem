@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, ActivityIndicator, ScrollView, Image, Alert, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Alert, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -9,6 +9,12 @@ import { useAuthStore } from '../../state/authStore';
 import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
 import { MainTabParamList } from '../../navigation/MainAppNavigator';
 import { UserRole } from '../../domain/enums/UserRole';
+import { MenuItem } from '../../components/ui/MenuItem';
+import { Section } from '../../components/layout/Section';
+import { LoadingScreen } from '../../components/ui/LoadingScreen';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Button } from '../../components/ui/Button';
+import { colors, spacing, typography } from '../../theme';
 
 type ProfileNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<ProfileStackParamList, 'ProfileHome'>,
@@ -31,11 +37,11 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to log out?", [
-        { text: "Cancel", style: "cancel" },
-        { text: "OK", onPress: () => logout() }
+    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Sign Out", onPress: () => logout(), style: "destructive" }
     ]);
-  }
+  };
 
   // Guest State View
   if (!isAuthenticated) {
@@ -43,48 +49,53 @@ const ProfileScreen = () => {
   }
 
   if (isLoading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" /></View>;
+    return <LoadingScreen message="Loading your profile..." />;
   }
 
   if (isError || !userProfile) {
     return (
-      <View style={styles.centered}>
-        <Text>Could not load profile.</Text>
-        <Button title="Retry" onPress={() => refetch()} />
-      </View>
+      <EmptyState
+        icon="⚠️"
+        title="Could not load profile"
+        subtitle="Please check your connection and try again"
+        action={{
+          label: "Retry",
+          onPress: () => refetch(),
+        }}
+      />
     );
   }
 
   const canBecomeSeller = userProfile.role === UserRole.CONSUMER;
   const isSeller = userProfile.role === UserRole.SELLER;
 
-  // Debug: Log the role to console
-  console.log('User Profile Role:', userProfile.role);
-  console.log('Is Seller?', isSeller);
-  console.log('Can Become Seller?', canBecomeSeller);
-
   return (
     <ScrollView
       style={styles.container}
+      contentContainerStyle={styles.content}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          tintColor={colors.primary}
+        />
       }
     >
-      {/* DEBUG: Show current role */}
-      <View style={styles.debugBanner}>
-        <Text style={styles.debugText}>
-          Current Role: {userProfile.role} | Is Seller: {isSeller ? 'YES' : 'NO'}
-        </Text>
-      </View>
-
+      {/* User Header */}
       <View style={styles.header}>
-        <Image source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }} style={styles.avatar} />
+        <Image
+          source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }}
+          style={styles.avatar}
+        />
         <Text style={styles.fullName}>{userProfile.fullName}</Text>
         <Text style={styles.email}>{userProfile.email}</Text>
-        <Text style={styles.memberSince}>Member since {new Date(userProfile.memberSince).toLocaleDateString()}</Text>
+        <Text style={styles.memberSince}>
+          Member since {new Date(userProfile.memberSince).toLocaleDateString()}
+        </Text>
         {isSeller && <Text style={styles.sellerBadge}>🏪 Seller</Text>}
       </View>
 
+      {/* Gamification Section */}
       <View style={styles.gamificationSection}>
         <Text style={styles.levelName}>{userProfile.level.name} Food Saver</Text>
         <View style={styles.progressBarContainer}>
@@ -92,399 +103,291 @@ const ProfileScreen = () => {
         </View>
       </View>
 
+      {/* Stats Cards */}
       <View style={styles.statsContainer}>
-          <StatCard label="Meals Saved" value={userProfile.stats.mealsSaved} />
-          <StatCard label="CO2 Prevented (kg)" value={userProfile.stats.co2Prevented.toFixed(1)} />
-          <StatCard label="Money Saved" value={`$${userProfile.stats.moneySaved.toFixed(2)}`} />
+        <StatCard label="Meals Saved" value={userProfile.stats.mealsSaved} />
+        <StatCard label="CO2 (kg)" value={userProfile.stats.co2Prevented.toFixed(1)} />
+        <StatCard label="Saved" value={`$${userProfile.stats.moneySaved.toFixed(0)}`} />
       </View>
 
-      {/* Seller Dashboard Section - Shown for SELLER role */}
-      {isSeller && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>SELLER DASHBOARD</Text>
+      {/* HISTORY Section */}
+      <Section title="HISTORY" style={styles.section}>
+        <MenuItem
+          icon="❤️"
+          label="Saved Deals"
+          subtitle="Your favorite picks"
+          onPress={() => navigation.navigate('Favorites' as never)}
+        />
+        <MenuItem
+          icon="🔔"
+          label="Notifications"
+          subtitle="Manage your alerts"
+          onPress={() => navigation.navigate('Notifications')}
+          badge={2}
+        />
+      </Section>
 
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate('SellerDashboard' as never)}
-          >
-            <Text style={styles.menuItemIcon}>📊</Text>
-            <Text style={styles.menuItemText}>Dashboard & Analytics</Text>
-            <Text style={styles.menuItemArrow}>›</Text>
-          </TouchableOpacity>
+      {/* SELLER Section */}
+      <Section title="SELLER" style={styles.section}>
+        {canBecomeSeller ? (
+          <MenuItem
+            icon="🏪"
+            label="Become a Seller"
+            subtitle="Start selling surplus food"
+            onPress={() => navigation.navigate('BecomeSeller')}
+            showBorder={false}
+          />
+        ) : isSeller ? (
+          <>
+            <MenuItem
+              icon="📊"
+              label="Dashboard & Analytics"
+              onPress={() => navigation.navigate('SellerDashboard' as never)}
+            />
+            <MenuItem
+              icon="📦"
+              label="Manage Products"
+              onPress={() => navigation.navigate('ManageProducts' as never)}
+            />
+            <MenuItem
+              icon="📋"
+              label="View Orders"
+              onPress={() => navigation.navigate('SellerOrders' as never)}
+            />
+            <MenuItem
+              icon="⚙️"
+              label="Store Settings"
+              onPress={() => navigation.navigate('StoreSettings' as never)}
+              showBorder={false}
+            />
+          </>
+        ) : null}
+      </Section>
 
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate('ManageProducts' as never)}
-          >
-            <Text style={styles.menuItemIcon}>📦</Text>
-            <Text style={styles.menuItemText}>Manage Products</Text>
-            <Text style={styles.menuItemArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate('SellerOrders' as never)}
-          >
-            <Text style={styles.menuItemIcon}>📋</Text>
-            <Text style={styles.menuItemText}>View Orders</Text>
-            <Text style={styles.menuItemArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => navigation.navigate('StoreSettings' as never)}
-          >
-            <Text style={styles.menuItemIcon}>⚙️</Text>
-            <Text style={styles.menuItemText}>Store Settings</Text>
-            <Text style={styles.menuItemArrow}>›</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Become a Seller CTA - Prominent Card - Only for CONSUMERS */}
-      {canBecomeSeller && (
-        <TouchableOpacity
-          style={styles.becomeSellerCard}
-          onPress={() => navigation.navigate('BecomeSeller')}
-        >
-          <View style={styles.becomeSellerIcon}>
-            <Text style={styles.becomeSellerIconText}>🏪</Text>
-          </View>
-          <View style={styles.becomeSellerContent}>
-            <Text style={styles.becomeSellerTitle}>Become a Seller</Text>
-            <Text style={styles.becomeSellerSubtitle}>Own a food business? Sell on Mazza</Text>
-          </View>
-          <Text style={styles.becomeSellerArrow}>›</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* My Activity Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>MY ACTIVITY</Text>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Orders')}>
-          <Text style={styles.menuItemIcon}>📦</Text>
-          <Text style={styles.menuItemText}>My Orders</Text>
-          <Text style={styles.menuItemArrow}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemIcon}>❤️</Text>
-          <Text style={styles.menuItemText}>Saved Places</Text>
-          <Text style={styles.menuItemArrow}>›</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemIcon}>💳</Text>
-          <Text style={styles.menuItemText}>Payment Methods</Text>
-          <Text style={styles.menuItemArrow}>›</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Settings Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>SETTINGS</Text>
-
-        <TouchableOpacity
-          style={styles.menuItem}
+      {/* SETTINGS Section */}
+      <Section title="SETTINGS" style={styles.section}>
+        <MenuItem
+          icon="⚙️"
+          label="Settings"
+          subtitle="App preferences"
           onPress={() => navigation.navigate('Settings')}
-        >
-          <Text style={styles.menuItemIcon}>🔔</Text>
-          <Text style={styles.menuItemText}>Notifications</Text>
-          <Text style={styles.menuItemArrow}>›</Text>
-        </TouchableOpacity>
+        />
+        <MenuItem
+          icon="❓"
+          label="Help & Support"
+          subtitle="Get help with the app"
+          onPress={() => {/* TODO: Navigate to help */}}
+          showBorder={false}
+        />
+      </Section>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemIcon}>❓</Text>
-          <Text style={styles.menuItemText}>Help & Support</Text>
-          <Text style={styles.menuItemArrow}>›</Text>
+      {/* Sign Out Button */}
+      <View style={styles.signOutSection}>
+        <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
+          <Text style={styles.signOutIcon}>🚪</Text>
+          <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Logout Button */}
-      <View style={styles.logoutSection}>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-        >
-          <Text style={styles.logoutButtonText}>Log Out</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Bottom spacing */}
+      <View style={styles.bottomSpacing} />
     </ScrollView>
   );
 };
 
 const StatCard = ({ label, value }: { label: string; value: string | number }) => (
-    <View style={styles.statCard}>
-        <Text style={styles.statValue}>{value}</Text>
-        <Text style={styles.statLabel}>{label}</Text>
-    </View>
+  <View style={styles.statCard}>
+    <Text style={styles.statValue}>{value}</Text>
+    <Text style={styles.statLabel}>{label}</Text>
+  </View>
 );
 
 /**
  * Guest Profile View
  * Shown when user is not authenticated
- * Based on Stitch design "GUEST STATE PREVIEW"
  */
 const GuestProfileView = () => {
-  const navigation = useNavigation<any>(); // Use any for now to avoid type issues
+  const navigation = useNavigation<any>();
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.guestContainer}>
-        {/* Hero Section */}
-        <View style={styles.guestHero}>
-          <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400' }}
-            style={styles.guestHeroImage}
-          />
-          <View style={styles.guestHeroOverlay}>
-            <Text style={styles.guestHeroText}>Join thousands of food savers.</Text>
-          </View>
-        </View>
-
-        {/* CTA Section */}
-        <View style={styles.guestCTA}>
-          <Text style={styles.guestTitle}>Join the fight against food waste</Text>
-          <Text style={styles.guestSubtitle}>
-            Save money and save the planet by rescuing delicious food nearby.
-          </Text>
-
-          <TouchableOpacity
-            style={styles.createAccountButton}
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text style={styles.createAccountButtonText}>Create Account</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.loginButtonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* About Mazza Section */}
-        <View style={styles.guestAboutSection}>
-          <Text style={styles.guestAboutTitle}>ABOUT MAZZA</Text>
-
-          <TouchableOpacity style={styles.guestAboutItem}>
-            <Text style={styles.guestAboutItemText}>How it Works</Text>
-            <Text style={styles.guestAboutItemArrow}>›</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.guestAboutItem}>
-            <Text style={styles.guestAboutItemText}>Support</Text>
-            <Text style={styles.guestAboutItemArrow}>›</Text>
-          </TouchableOpacity>
+    <ScrollView style={styles.container} contentContainerStyle={styles.guestContent}>
+      {/* Hero Section */}
+      <View style={styles.guestHero}>
+        <Image
+          source={{ uri: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400' }}
+          style={styles.guestHeroImage}
+        />
+        <View style={styles.guestHeroOverlay}>
+          <Text style={styles.guestHeroText}>Join thousands of food savers</Text>
         </View>
       </View>
+
+      {/* CTA Section */}
+      <View style={styles.guestCTA}>
+        <Text style={styles.guestTitle}>Join the fight against food waste</Text>
+        <Text style={styles.guestSubtitle}>
+          Save money and save the planet by rescuing delicious food nearby.
+        </Text>
+
+        <Button
+          title="Create Account"
+          onPress={() => navigation.navigate('Register')}
+          fullWidth
+          style={styles.createAccountButton}
+        />
+
+        <Button
+          title="Login"
+          onPress={() => navigation.navigate('Login')}
+          variant="secondary"
+          fullWidth
+          style={styles.loginButton}
+        />
+      </View>
+
+      {/* About Mazza Section */}
+      <Section title="ABOUT MAZZA" style={styles.guestAboutSection}>
+        <MenuItem
+          icon="ℹ️"
+          label="How it Works"
+          onPress={() => {/* TODO */}}
+        />
+        <MenuItem
+          icon="💬"
+          label="Support"
+          onPress={() => {/* TODO */}}
+          showBorder={false}
+        />
+      </Section>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  debugBanner: {
-    backgroundColor: '#FFE5E5',
-    borderBottomWidth: 2,
-    borderBottomColor: '#FF0000',
-    padding: 12,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  debugText: {
-    color: '#CC0000',
-    fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontFamily: 'monospace',
+  content: {
+    paddingBottom: spacing.xxl,
   },
   header: {
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'white',
+    padding: spacing.xl,
+    backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.divider,
   },
   avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   fullName: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    ...typography.h2,
+    color: colors.text.primary,
   },
   email: {
-    fontSize: 16,
-    color: '#666',
+    ...typography.body,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
   },
   memberSince: {
-    fontSize: 12,
-    color: '#999',
-    marginTop: 4,
+    ...typography.caption,
+    color: colors.text.tertiary,
+    marginTop: spacing.xs,
   },
   sellerBadge: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FF6B35',
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    backgroundColor: '#FFF5F2',
-    borderRadius: 12,
-    overflow: 'hidden',
+    color: colors.primary,
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    backgroundColor: colors.primaryBackground,
+    borderRadius: spacing.radiusMd,
   },
   gamificationSection: {
-      padding: 20,
-      alignItems: 'center',
+    padding: spacing.xl,
+    alignItems: 'center',
+    backgroundColor: colors.card,
   },
   levelName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 8,
+    ...typography.h3,
+    marginBottom: spacing.sm,
   },
   progressBarContainer: {
-      height: 20,
-      width: '80%',
-      backgroundColor: '#e0e0e0',
-      borderRadius: 10,
+    height: 20,
+    width: '80%',
+    backgroundColor: colors.backgroundDark,
+    borderRadius: spacing.radiusLg,
+    overflow: 'hidden',
   },
   progressBar: {
-      height: '100%',
-      backgroundColor: '#4CAF50',
-      borderRadius: 10,
+    height: '100%',
+    backgroundColor: colors.success,
+    borderRadius: spacing.radiusLg,
   },
   statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: spacing.lg,
+    backgroundColor: colors.card,
+    marginTop: spacing.sm,
   },
   statCard: {
-      backgroundColor: 'white',
-      padding: 15,
-      borderRadius: 10,
-      alignItems: 'center',
-      width: '30%',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
+    backgroundColor: colors.background,
+    padding: spacing.lg,
+    borderRadius: spacing.radiusLg,
+    alignItems: 'center',
+    width: '30%',
   },
   statValue: {
-      fontSize: 20,
-      fontWeight: 'bold',
+    ...typography.h2,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: colors.primary,
   },
   statLabel: {
-      fontSize: 12,
-      color: '#666',
-      marginTop: 4,
-      textAlign: 'center',
+    ...typography.caption,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
+    textAlign: 'center',
   },
-  // Become a Seller Card
-  becomeSellerCard: {
-    backgroundColor: '#FFF5F2',
-    borderColor: '#FF6B35',
-    borderWidth: 2,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  becomeSellerIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#FF6B35',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  becomeSellerIconText: {
-    fontSize: 24,
-  },
-  becomeSellerContent: {
-    flex: 1,
-  },
-  becomeSellerTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 2,
-  },
-  becomeSellerSubtitle: {
-    fontSize: 13,
-    color: '#666',
-  },
-  becomeSellerArrow: {
-    fontSize: 24,
-    color: '#FF6B35',
-    fontWeight: 'bold',
-  },
-  // Menu Sections
   section: {
-    backgroundColor: 'white',
-    marginTop: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    backgroundColor: colors.card,
+    marginTop: spacing.sm,
   },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#999',
-    marginTop: 12,
-    marginBottom: 8,
-    letterSpacing: 1,
+  signOutSection: {
+    padding: spacing.lg,
+    marginTop: spacing.xl,
   },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  menuItemIcon: {
-    fontSize: 20,
-    marginRight: 12,
-    width: 28,
-  },
-  menuItemText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1a1a1a',
-  },
-  menuItemArrow: {
-    fontSize: 20,
-    color: '#ccc',
-  },
-  // Logout
-  logoutSection: {
-    padding: 16,
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  logoutButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    borderRadius: 8,
+  signOutButton: {
+    backgroundColor: colors.card,
+    paddingVertical: spacing.lg,
+    borderRadius: spacing.radiusSm,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#FF3B30',
+    borderColor: colors.error,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  logoutButtonText: {
-    color: '#FF3B30',
-    fontSize: 16,
-    fontWeight: '600',
+  signOutIcon: {
+    fontSize: 20,
+    marginRight: spacing.sm,
   },
+  signOutText: {
+    color: colors.error,
+    ...typography.button,
+  },
+  bottomSpacing: {
+    height: spacing.xxxl,
+  },
+
   // Guest Profile Styles
-  guestContainer: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
+  guestContent: {
+    flexGrow: 1,
   },
   guestHero: {
     height: 300,
@@ -497,90 +400,45 @@ const styles = StyleSheet.create({
   },
   guestHeroOverlay: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: spacing.xl,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   guestHeroText: {
-    color: 'white',
-    fontSize: 24,
+    color: colors.text.inverse,
+    ...typography.h2,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   guestCTA: {
-    backgroundColor: 'white',
-    padding: 24,
+    backgroundColor: colors.card,
+    padding: spacing.xxl,
     alignItems: 'center',
   },
   guestTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    ...typography.h2,
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   guestSubtitle: {
-    fontSize: 14,
-    color: '#666',
+    ...typography.body,
+    color: colors.text.secondary,
     textAlign: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 20,
+    marginBottom: spacing.xxl,
+    paddingHorizontal: spacing.lg,
   },
   createAccountButton: {
-    backgroundColor: '#FF6B35',
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  createAccountButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginBottom: spacing.md,
   },
   loginButton: {
-    backgroundColor: 'white',
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 8,
-    width: '100%',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  loginButtonText: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: '600',
+    marginBottom: 0,
   },
   guestAboutSection: {
-    backgroundColor: 'white',
-    marginTop: 20,
-    padding: 20,
-  },
-  guestAboutTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#999',
-    marginBottom: 16,
-    letterSpacing: 1,
-  },
-  guestAboutItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  guestAboutItemText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  guestAboutItemArrow: {
-    fontSize: 24,
-    color: '#999',
+    backgroundColor: colors.card,
+    marginTop: spacing.xl,
   },
 });
 

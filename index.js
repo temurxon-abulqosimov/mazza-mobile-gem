@@ -1,3 +1,4 @@
+import 'react-native-get-random-values'; // Must be first import for uuid polyfill
 import { registerRootComponent } from 'expo';
 
 import App from './App.tsx';

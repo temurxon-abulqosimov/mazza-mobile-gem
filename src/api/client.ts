@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Config } from '../config/environment';
+import { config } from '../config/environment';
 import { useAuthStore } from '../state/authStore';
 
 let isRefreshing = false;
@@ -18,7 +18,7 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 export const apiClient = axios.create({
-  baseURL: Config.API_BASE_URL,
+  baseURL: config.apiUrl,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -72,7 +72,7 @@ apiClient.interceptors.response.use(
       }
 
       try {
-        const { data } = await axios.post(`${Config.API_BASE_URL}/auth/refresh`, { refreshToken });
+        const { data } = await axios.post(`${config.apiUrl}/auth/refresh`, { refreshToken });
         const newTokens = {
             accessToken: data.data.tokens.accessToken,
             refreshToken: data.data.tokens.refreshToken,
