@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, TouchableO
 import * as Location from 'expo-location';
 import { useFavorites } from '../../hooks/useFavorites';
 import FavoriteStoreCard from '../../components/favorites/FavoriteStoreCard';
+import FavoriteProductCard from '../../components/favorites/FavoriteProductCard';
 import FavoritesHeader from '../../components/navigation/FavoritesHeader';
 import FavoriteStoreCardSkeleton from '../../components/favorites/FavoriteStoreCardSkeleton';
 
@@ -29,6 +30,7 @@ const FavoritesScreen = () => {
     refetch,
     isRefetching
   } = useFavorites({
+    type: activeTab === 'Stores' ? 'STORE' : 'PRODUCT',
     lat: location?.coords.latitude,
     lng: location?.coords.longitude,
   });
@@ -56,8 +58,12 @@ const FavoritesScreen = () => {
 
   const ListEmptyComponent = () => (
     <View style={styles.centered}>
-      <Text style={styles.emptyText}>No favorite stores yet</Text>
-      <Text style={styles.emptySubText}>Tap the heart icon on a store to save it here.</Text>
+      <Text style={styles.emptyText}>
+        No favorite {activeTab.toLowerCase()} yet
+      </Text>
+      <Text style={styles.emptySubText}>
+        Tap the heart icon on {activeTab === 'Stores' ? 'a store' : 'a product'} to save it here.
+      </Text>
     </View>
   );
 
@@ -73,10 +79,10 @@ const FavoritesScreen = () => {
           <Text style={[styles.tabText, activeTab === 'Stores' && styles.activeTabText]}>Stores</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, styles.disabledTab]}
-          disabled={true}
+          style={[styles.tab, activeTab === 'Products' && styles.activeTab]}
+          onPress={() => setActiveTab('Products')}
         >
-          <Text style={[styles.tabText, styles.disabledTabText]}>Products</Text>
+          <Text style={[styles.tabText, activeTab === 'Products' && styles.activeTabText]}>Products</Text>
         </TouchableOpacity>
       </View>
 
@@ -90,9 +96,13 @@ const FavoritesScreen = () => {
       ) : (
         <FlatList
           data={favorites.filter(item => item && item.id)}
-          renderItem={({ item }) => (
-            <FavoriteStoreCard store={item} onPress={() => { /* TODO: Navigate to store detail */ }} />
-          )}
+          renderItem={({ item }) =>
+            activeTab === 'Stores' ? (
+              <FavoriteStoreCard store={item as any} onPress={() => { /* TODO: Navigate to store detail */ }} />
+            ) : (
+              <FavoriteProductCard product={item as any} onPress={() => { /* TODO: Navigate to product detail */ }} />
+            )
+          }
           keyExtractor={(item, index) => item?.id || `favorite-${index}`}
           ListEmptyComponent={ListEmptyComponent}
           ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={{ margin: 20 }} color="#FF7A00" /> : null}

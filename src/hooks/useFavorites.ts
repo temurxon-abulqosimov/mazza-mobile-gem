@@ -3,15 +3,16 @@ import { favoriteApi } from '../api';
 import { useAuthStore } from '../state/authStore';
 
 interface UseFavoritesParams {
+  type?: 'STORE' | 'PRODUCT';
   lat?: number;
   lng?: number;
 }
 
-export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
+export const useFavorites = ({ type, lat, lng }: UseFavoritesParams) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const isAuthenticated = !!accessToken;
 
-  const queryKey = ['favorites', { lat, lng }];
+  const queryKey = ['favorites', { type, lat, lng }];
 
   const {
     data,
@@ -24,7 +25,7 @@ export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
     isRefetching,
   } = useInfiniteQuery({
     queryKey,
-    queryFn: ({ pageParam }) => favoriteApi.getFavorites({ cursor: pageParam, lat, lng }),
+    queryFn: ({ pageParam }) => favoriteApi.getFavorites({ type, cursor: pageParam, lat, lng }),
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: isAuthenticated, // Only requires authentication, location is optional for distance calculation
