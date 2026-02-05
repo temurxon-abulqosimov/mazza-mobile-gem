@@ -16,10 +16,19 @@ export const createBooking = async (payload: CreateBookingPayload, idempotencyKe
 };
 
 export const getUserBookings = async (status: 'active' | 'past'): Promise<{ bookings: Booking[], summary: { activeCount: number } }> => {
-  const { data } = await apiClient.get('/bookings', { params: { status } });
-  console.log('getUserBookings raw response:', JSON.stringify(data, null, 2));
-  console.log('getUserBookings bookings array:', data?.bookings);
-  return data; // Backend returns { bookings: [...], summary: {...} } directly
+  try {
+    console.log('📱 getUserBookings API call - status:', status);
+    const { data } = await apiClient.get('/bookings', { params: { status } });
+    console.log('📱 getUserBookings raw response:', JSON.stringify(data, null, 2));
+    console.log('📱 getUserBookings bookings array:', data?.bookings);
+    console.log('📱 getUserBookings bookings count:', data?.bookings?.length);
+    return data; // Backend returns { bookings: [...], summary: {...} } directly
+  } catch (error) {
+    console.error('❌ getUserBookings API error:', error);
+    console.error('❌ Error response:', error.response?.data);
+    console.error('❌ Error status:', error.response?.status);
+    throw error;
+  }
 };
 
 export const getBookingById = async (id: string): Promise<ApiResponse<{ booking: Booking }>> => {

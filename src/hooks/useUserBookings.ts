@@ -27,11 +27,15 @@ export const useUserBookings = ({ status }: UseUserBookingsParams) => {
   // Data structure is now { bookings: [...] }
   const bookings = data?.bookings ?? [];
 
-  console.log('useUserBookings - isAuthenticated:', isAuthenticated);
-  console.log('useUserBookings - data:', data);
-  console.log('useUserBookings - bookings:', bookings);
-  console.log('useUserBookings - isLoading:', isLoading);
-  console.log('useUserBookings - isError:', isError);
+  console.log('🪝 useUserBookings Hook State:');
+  console.log('  - status:', status);
+  console.log('  - isAuthenticated:', isAuthenticated);
+  console.log('  - accessToken exists:', !!accessToken);
+  console.log('  - isLoading:', isLoading);
+  console.log('  - isError:', isError);
+  console.log('  - data:', data);
+  console.log('  - bookings:', bookings);
+  console.log('  - bookings count:', bookings.length);
 
   return {
     bookings,
