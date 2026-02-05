@@ -26,7 +26,7 @@ export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
     queryFn: ({ pageParam }) => favoriteApi.getFavorites({ cursor: pageParam, lat, lng }),
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled: isAuthenticated && !!lat && !!lng, // Only run if authenticated AND location is available
+    enabled: isAuthenticated, // Only requires authentication, location is optional for distance calculation
   });
 
   const favorites = data?.pages.flatMap(page => page.favorites) ?? [];

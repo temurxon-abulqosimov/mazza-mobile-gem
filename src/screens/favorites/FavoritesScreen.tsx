@@ -88,11 +88,11 @@ const FavoritesScreen = () => {
         </View>
       ) : (
         <FlatList
-            data={favorites}
+            data={favorites.filter(item => item && item.id)}
             renderItem={({ item }) => (
             <FavoriteStoreCard store={item} onPress={() => { /* TODO: Navigate to store detail */ }} />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => item?.id || `favorite-${index}`}
             ListEmptyComponent={ListEmptyComponent}
             ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={{ margin: 20 }} color="#FF7A00" /> : null}
             onEndReached={() => {
