@@ -20,9 +20,9 @@ export const getUserBookings = async (status: 'active' | 'past'): Promise<{ book
     console.log('📱 getUserBookings API call - status:', status);
     const { data } = await apiClient.get('/bookings', { params: { status } });
     console.log('📱 getUserBookings raw response:', JSON.stringify(data, null, 2));
-    console.log('📱 getUserBookings bookings array:', data?.bookings);
-    console.log('📱 getUserBookings bookings count:', data?.bookings?.length);
-    return data; // Backend returns { bookings: [...], summary: {...} } directly
+    console.log('📱 getUserBookings bookings array:', data?.data?.bookings);
+    console.log('📱 getUserBookings bookings count:', data?.data?.bookings?.length);
+    return data.data; // Response is wrapped in ApiResponse { success, data, meta }
   } catch (error) {
     console.error('❌ getUserBookings API error:', error);
     console.error('❌ Error response:', error.response?.data);
