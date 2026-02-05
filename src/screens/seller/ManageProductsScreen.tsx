@@ -50,8 +50,9 @@ const ManageProductsScreen = () => {
   };
 
   const handleProductPress = (productId: string) => {
-    // Navigate to product detail or edit screen
-    navigation.navigate('EditProduct', { productId });
+    // Navigation to edit screen temporarily disabled as the screen does not exist
+    // navigation.navigate('EditProduct', { productId });
+    Alert.alert('Info', 'Edit feature coming soon');
   };
 
   const renderEmpty = () => (

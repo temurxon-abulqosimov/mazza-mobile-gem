@@ -17,6 +17,7 @@ export const useUserBookings = ({ status }: UseUserBookingsParams) => {
     isLoading,
     isError,
     refetch,
+    isRefetching,
   } = useQuery({
     queryKey,
     queryFn: () => bookingApi.getUserBookings(status),
@@ -25,6 +26,12 @@ export const useUserBookings = ({ status }: UseUserBookingsParams) => {
 
   // Data structure is now { bookings: [...] }
   const bookings = data?.bookings ?? [];
+
+  console.log('useUserBookings - isAuthenticated:', isAuthenticated);
+  console.log('useUserBookings - data:', data);
+  console.log('useUserBookings - bookings:', bookings);
+  console.log('useUserBookings - isLoading:', isLoading);
+  console.log('useUserBookings - isError:', isError);
 
   return {
     bookings,
@@ -35,5 +42,6 @@ export const useUserBookings = ({ status }: UseUserBookingsParams) => {
     hasNextPage: false,
     isFetchingNextPage: false,
     refetch,
+    isRefetching,
   };
 };

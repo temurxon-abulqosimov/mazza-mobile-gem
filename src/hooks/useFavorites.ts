@@ -21,6 +21,7 @@ export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
     hasNextPage,
     isFetchingNextPage,
     refetch,
+    isRefetching,
   } = useInfiniteQuery({
     queryKey,
     queryFn: ({ pageParam }) => favoriteApi.getFavorites({ cursor: pageParam, lat, lng }),
@@ -39,5 +40,6 @@ export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
     hasNextPage,
     isFetchingNextPage,
     refetch,
+    isRefetching,
   };
 };

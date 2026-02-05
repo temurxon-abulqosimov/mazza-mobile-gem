@@ -51,7 +51,7 @@ const DiscoveryScreen = () => {
     })();
   }, []);
 
-  const { products, isLoading, isError, refetch } = useDiscovery({
+  const { products, isLoading, isError, refetch, isRefetching } = useDiscovery({
     lat: location?.coords.latitude ?? 37.7858, // Default to San Francisco (where test store is)
     lng: location?.coords.longitude ?? -122.4064,
     enabled: true,
@@ -95,7 +95,7 @@ const DiscoveryScreen = () => {
       {/* Notification Icon */}
       <TouchableOpacity
         style={styles.notificationButton}
-        onPress={() => {/* TODO: Navigate to notifications from discovery */}}
+        onPress={() => {/* TODO: Navigate to notifications from discovery */ }}
       >
         <Text style={styles.notificationIcon}>🔔</Text>
         <View style={styles.notificationBadge}>
@@ -255,7 +255,7 @@ const DiscoveryScreen = () => {
         )}
         keyExtractor={(item) => item.id}
         onRefresh={refetch}
-        refreshing={isLoading}
+        refreshing={isRefetching}
         ListHeaderComponent={() => (
           <>
             {renderHeader()}

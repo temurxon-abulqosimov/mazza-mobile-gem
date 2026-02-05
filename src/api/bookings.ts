@@ -17,6 +17,8 @@ export const createBooking = async (payload: CreateBookingPayload, idempotencyKe
 
 export const getUserBookings = async (status: 'active' | 'past'): Promise<{ bookings: Booking[], summary: { activeCount: number } }> => {
   const { data } = await apiClient.get('/bookings', { params: { status } });
+  console.log('getUserBookings raw response:', JSON.stringify(data, null, 2));
+  console.log('getUserBookings bookings array:', data?.bookings);
   return data; // Backend returns { bookings: [...], summary: {...} } directly
 };
 

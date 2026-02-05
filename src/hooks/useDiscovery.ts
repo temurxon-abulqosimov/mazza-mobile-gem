@@ -13,7 +13,7 @@ interface DiscoveryParams {
 export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryParams) => {
   const queryKey = ['discovery', { lat, lng, radius }];
 
-  const { data, isLoading, isError, error, refetch } = useQuery<PaginatedResponse<{ products: Product[] }>>({
+  const { data, isLoading, isError, error, refetch, isRefetching } = useQuery<PaginatedResponse<{ products: Product[] }>>({
     queryKey,
     queryFn: () => discoveryApi.discoverProducts({ lat, lng, radius }),
     enabled: enabled && !!lat && !!lng, // Only run if enabled and lat/lng are available
@@ -27,5 +27,6 @@ export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryPara
     isError,
     error,
     refetch,
+    isRefetching,
   };
 };
