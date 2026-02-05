@@ -1,5 +1,4 @@
 import { apiClient } from './client';
-import { PaginatedResponse } from '../domain/Common';
 import { FavoriteStore } from '../domain/Favorite';
 
 interface GetFavoritesParams {
@@ -9,7 +8,13 @@ interface GetFavoritesParams {
     lng?: number;
 }
 
-export const getFavorites = async (params: GetFavoritesParams): Promise<PaginatedResponse<{ favorites: FavoriteStore[] }>> => {
+interface FavoritesResponse {
+    favorites: FavoriteStore[];
+    total: number;
+    nextCursor?: string;
+}
+
+export const getFavorites = async (params: GetFavoritesParams): Promise<FavoritesResponse> => {
     const { data } = await apiClient.get('/favorites', { params });
     return data;
 }

@@ -25,11 +25,11 @@ export const useFavorites = ({ lat, lng }: UseFavoritesParams) => {
     queryKey,
     queryFn: ({ pageParam }) => favoriteApi.getFavorites({ cursor: pageParam, lat, lng }),
     initialPageParam: undefined,
-    getNextPageParam: (lastPage) => lastPage.meta.pagination.cursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: isAuthenticated && !!lat && !!lng, // Only run if authenticated AND location is available
   });
 
-  const favorites = data?.pages.flatMap(page => page.data.favorites) ?? [];
+  const favorites = data?.pages.flatMap(page => page.favorites) ?? [];
 
   return {
     favorites,
