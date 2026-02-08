@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+// import i18n from '../../localization/i18n'; // Assuming initialized instance or useTranslation hook
+
 import { Header } from '../../components/layout/Header';
 import { Section } from '../../components/layout/Section';
 import { MenuItem } from '../../components/ui/MenuItem';
@@ -9,6 +12,7 @@ import { colors, spacing } from '../../theme';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  const { i18n } = useTranslation();
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
@@ -26,10 +30,10 @@ const SettingsScreen = () => {
           <View style={styles.toggleItem}>
             <View style={styles.toggleItemContent}>
               <MenuItem
-                icon="📍"
+                icon="location"
                 label="Location Services"
                 subtitle="Find deals near you"
-                onPress={() => {}}
+                onPress={() => { }}
                 showBorder={false}
                 style={styles.toggleMenuItem}
               />
@@ -45,10 +49,10 @@ const SettingsScreen = () => {
           <View style={styles.toggleItem}>
             <View style={styles.toggleItemContent}>
               <MenuItem
-                icon="🌙"
+                icon="moon"
                 label="Dark Mode"
                 subtitle="Coming soon"
-                onPress={() => {}}
+                onPress={() => { }}
                 showBorder={false}
                 style={styles.toggleMenuItem}
               />
@@ -63,10 +67,17 @@ const SettingsScreen = () => {
           <View style={styles.divider} />
 
           <MenuItem
-            icon="🌐"
+            icon="globe"
             label="Language"
-            subtitle="English"
-            onPress={() => {/* TODO: Language picker */}}
+            subtitle={i18n.language === 'ru' ? 'Russian' : i18n.language === 'uz' ? 'Uzbek' : 'English'}
+            onPress={() => {
+              Alert.alert('Select Language', 'Choose your preferred language', [
+                { text: 'English', onPress: () => i18n.changeLanguage('en') },
+                { text: 'Русский', onPress: () => i18n.changeLanguage('ru') },
+                { text: 'O\'zbekcha', onPress: () => i18n.changeLanguage('uz') },
+                { text: 'Cancel', style: 'cancel' }
+              ])
+            }}
             showBorder={false}
           />
         </Section>
@@ -74,14 +85,14 @@ const SettingsScreen = () => {
         {/* SUPPORT Section */}
         <Section title="SUPPORT" style={styles.section}>
           <MenuItem
-            icon="❓"
+            icon="help-circle"
             label="Help Center"
-            onPress={() => {/* TODO */}}
+            onPress={() => {/* TODO */ }}
           />
           <MenuItem
-            icon="📄"
+            icon="file-text"
             label="Terms of Service"
-            onPress={() => {/* TODO */}}
+            onPress={() => {/* TODO */ }}
             showBorder={false}
           />
         </Section>

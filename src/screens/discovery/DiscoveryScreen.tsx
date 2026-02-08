@@ -1,83 +1,186 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity } from 'react-native';
-import * as Location from 'expo-location';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Image,
+  RefreshControl,
+  StatusBar,
+  ActivityIndicator
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as Location from 'expo-location';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useDiscovery } from '../../hooks/useDiscovery';
+import { useCategories } from '../../hooks/useCategories';
+import { useLocation } from '../../hooks/useLocation';
+import { favoriteApi } from '../../api';
 import ProductCard from '../../components/discovery/ProductCard';
-import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
+import { DiscoveryStackParamList } from '../../navigation/types';
 import { LocationSelector } from '../../components/discovery/LocationSelector';
 import { CategoryFilter, Category } from '../../components/discovery/CategoryFilter';
 import { SearchBar } from '../../components/ui/SearchBar';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { LoadingScreen } from '../../components/ui/LoadingScreen';
 import { ProductCardSkeleton } from '../../components/discovery/ProductCardSkeleton';
 import { SellerCard } from '../../components/discovery/SellerCard';
 import { SellerCardSkeleton } from '../../components/discovery/SellerCardSkeleton';
 import { colors, spacing, typography } from '../../theme';
+import Icon from '../../components/ui/Icon';
+import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
 
-type DiscoveryScreenNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'DiscoveryFeed'>;
+type DiscoveryScreenNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList>;
+
+// Assets
+const MOCK_BANNER = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
 
 const CATEGORIES: Category[] = [
-  { id: 'all', label: 'All', icon: '🍽️' },
-  { id: 'market', label: 'Market', icon: '🛒' },
-  { id: 'bakery', label: 'Bakery', icon: '🥖' },
-  { id: 'restaurant', label: 'Restaurant', icon: '🍽️' },
-  { id: 'cafe', label: 'Café', icon: '☕' },
+  { id: 'all', label: 'All', icon: 'grid' },
+  { id: 'market', label: 'Market', icon: 'cart' },
+  { id: 'bakery', label: 'Bakery', icon: 'bread' },
+  { id: 'restaurant', label: 'Restaurant', icon: 'utensils' },
+  { id: 'cafe', label: 'Café', icon: 'coffee' },
 ];
 
 const DiscoveryScreen = () => {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<DiscoveryScreenNavigationProp>();
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setLocationError('Permission to access location was denied');
-        return;
-      }
+  // Custom Location Hook
+  const {
+    location: deviceLocation,
+    isLoading: isLocationLoading,
+    error: locationError,
+    getLocation,
+    requestPermissions,
+    permissionStatus
+  } = useLocation();
 
-      try {
-        let currentLocation = await Location.getCurrentPositionAsync({});
-        setLocation(currentLocation);
-      } catch (error) {
-        setLocationError('Could not fetch location.');
-      }
-    })();
-  }, []);
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const { products, isLoading, isError, refetch, isRefetching } = useDiscovery({
-    lat: location?.coords.latitude ?? 37.7858, // Default to San Francisco (where test store is)
-    lng: location?.coords.longitude ?? -122.4064,
-    enabled: true,
+  // Discovery Hook - Only enabled when we have location
+  const {
+    products,
+    isLoading: isDiscoveryLoading,
+    refetch: refetchDiscovery,
+    isRefetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useDiscovery({
+    lat: deviceLocation?.coords.latitude || 0,
+    lng: deviceLocation?.coords.longitude || 0,
+    radius: 50, // 50 km radius (backend expects km, not meters)
+    enabled: !!deviceLocation,
   });
 
+  // Initial Location Check
+  useEffect(() => {
+    const initLocation = async () => {
+      const { status } = await Location.getForegroundPermissionsAsync();
+      if (status === 'granted') {
+        const hasLocation = await getLocation();
+      }
+    };
+    initLocation();
+  }, [getLocation]);
+
+  // Sync location state
+  useEffect(() => {
+    if (deviceLocation) {
+      setLocation(deviceLocation);
+    }
+  }, [deviceLocation]);
+
+
+  const handleRefresh = async () => {
+    if (deviceLocation) {
+      refetchDiscovery();
+    } else {
+      getLocation();
+    }
+  };
+
   const handleProductPress = (productId: string) => {
+    // @ts-ignore - ProductDetail expects productId
     navigation.navigate('ProductDetail', { productId });
   };
 
-  const handleLocationPress = () => {
-    // TODO: Implement location picker
-    console.log('Location picker pressed');
+  const handleStorePress = (store: any) => {
+    // @ts-ignore - StoreProfile params
+    navigation.navigate('StoreProfile', {
+      storeId: store.id,
+      storeName: store.name,
+      storeImage: store.imageUrl,
+      storeAddress: store.location?.address || 'Unknown Address',
+      storeRating: store.rating,
+    });
   };
 
-  // Get unique sellers from products (deduplicate by store ID)
-  const mockSellers = useMemo(() => {
+  const handleRequestLocation = async () => {
+    Alert.alert(
+      "Location Permission",
+      "We need your location to show stores nearby.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "OK",
+          onPress: async () => {
+            const granted = await requestPermissions();
+            if (granted) {
+              getLocation();
+            } else {
+              Alert.alert('Permission Denied', 'Unable to find nearby stores without location.');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const handleLocationPress = () => {
+    getLocation();
+  };
+
+  const handleToggleFavorite = async (product: any) => {
+    try {
+      if (product.isFavorited) {
+        await favoriteApi.removeFavoriteProduct(product.id);
+      } else {
+        await favoriteApi.addFavoriteProduct(product.id);
+      }
+      refetchDiscovery();
+    } catch (e) {
+      console.error('Failed to toggle favorite', e);
+      Alert.alert('Error', 'Could not update favorites');
+    }
+  };
+
+  // Get unique sellers directly from useDiscovery hook if it returns them, 
+  // otherwise extract from products
+  const uniqueSellers = useMemo(() => {
+    if (!products) return [];
     const uniqueStores = new Map();
     products.forEach((product) => {
+      if (!product.store) return;
       if (!uniqueStores.has(product.store.id)) {
         uniqueStores.set(product.store.id, {
           id: product.store.id,
           name: product.store.name,
-          imageUrl: product.store.imageUrl || product.images[0]?.thumbnailUrl || product.images[0]?.url,
-          category: product.category?.name || 'Market',
-          rating: product.store.rating || 4.5,
+          imageUrl: product.store.imageUrl,
+          category: 'Store',
+          rating: product.store.rating || 0,
           distance: product.distance || 0,
+          address: product.store.location?.address || 'Unknown Address',
+          location: product.store.location, // Keep full location object if needed
         });
       }
     });
@@ -88,16 +191,16 @@ const DiscoveryScreen = () => {
     <View style={styles.header}>
       {/* Location Selector */}
       <LocationSelector
-        location="San Francisco"
-        onPress={handleLocationPress}
+        location={location ? "Current Location" : "Set Location"}
+        onPress={location ? handleLocationPress : handleRequestLocation}
       />
 
       {/* Notification Icon */}
       <TouchableOpacity
         style={styles.notificationButton}
-        onPress={() => {/* TODO: Navigate to notifications from discovery */ }}
+        onPress={() => {/* TODO: Navigate to notifications */ }}
       >
-        <Text style={styles.notificationIcon}>🔔</Text>
+        <Icon name="notification" size={24} color={colors.text.primary} />
         <View style={styles.notificationBadge}>
           <Text style={styles.notificationBadgeText}>2</Text>
         </View>
@@ -122,7 +225,7 @@ const DiscoveryScreen = () => {
   );
 
   const renderNearbySellers = () => {
-    if (isLoading) {
+    if (isDiscoveryLoading && !isRefetching) {
       return (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -141,7 +244,7 @@ const DiscoveryScreen = () => {
       );
     }
 
-    if (mockSellers.length === 0) {
+    if (uniqueSellers.length === 0) {
       return null;
     }
 
@@ -158,11 +261,11 @@ const DiscoveryScreen = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.horizontalList}
         >
-          {mockSellers.map((seller) => (
+          {uniqueSellers.map((seller: any) => (
             <SellerCard
               key={seller.id}
               seller={seller}
-              onPress={() => console.log('Seller pressed:', seller.id)}
+              onPress={() => handleStorePress(seller)}
             />
           ))}
         </ScrollView>
@@ -170,99 +273,111 @@ const DiscoveryScreen = () => {
     );
   };
 
-  const renderAvailableNow = () => {
+  const renderAvailableNowHeader = () => {
     return (
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Available Now</Text>
-          <View style={styles.offersIndicator}>
-            <View style={styles.offersIndicatorDot} />
-            <Text style={styles.offersIndicatorText}>{products.length} offers</Text>
-          </View>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Available Now</Text>
+        <View style={styles.offersIndicator}>
+          <View style={styles.offersIndicatorDot} />
+          <Text style={styles.offersIndicatorText}>{products ? products.length : 0} offers</Text>
         </View>
       </View>
     );
   };
 
   const renderContent = () => {
-    // Initial loading state
-    if (isLoading && products.length === 0) {
-      return (
-        <View style={styles.loadingContainer}>
-          {renderHeader()}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Nearby Sellers</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalList}
-            >
-              {[1, 2, 3].map((key) => (
-                <SellerCardSkeleton key={key} />
-              ))}
-            </ScrollView>
-          </View>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Available Now</Text>
-            {[1, 2, 3].map((key) => (
-              <ProductCardSkeleton key={key} />
-            ))}
-          </View>
-        </View>
-      );
-    }
-
-    // Error state
-    if (isError) {
+    // 1. Initial State (No Location)
+    if (!deviceLocation && !isLocationLoading) {
       return (
         <View style={styles.container}>
           {renderHeader()}
           <EmptyState
-            icon="🍱"
-            title="No products available yet"
-            subtitle="Check back soon for amazing deals on surplus food!"
+            icon="location"
+            title="Location Required"
+            subtitle="Please enable location to see nearby stores and products."
             action={{
-              label: 'Retry',
-              onPress: () => refetch(),
+              label: "Enable Location",
+              onPress: handleRequestLocation
             }}
           />
         </View>
       );
     }
 
-    // Empty state
-    if (products.length === 0) {
+    // 2. Loading State (Location found but query loading)
+    if ((isDiscoveryLoading || isLocationLoading) && (!products || products.length === 0)) {
       return (
-        <View style={styles.container}>
+        <View style={styles.loadingContainer}>
           {renderHeader()}
-          <EmptyState
-            icon="🔍"
-            title="No products found"
-            subtitle="Try adjusting your filters or check back later"
-          />
+          {/* Banner Skeleton */}
+          <View style={[styles.bannerContainer, { backgroundColor: '#f0f0f0' }]} />
+
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
+              {[1, 2, 3].map((key) => <SellerCardSkeleton key={key} />)}
+            </ScrollView>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Available Now</Text>
+            {[1, 2, 3].map((key) => <ProductCardSkeleton key={key} />)}
+          </View>
         </View>
       );
     }
 
-    // Main content with data
+    // 3. Error State
+    // if (isError) { ... } -> handled by empty state on list empty component if desired, or explicitly here
+
+    // 4. Data Content
     return (
       <FlatList
         data={products}
         renderItem={({ item }) => (
-          <ProductCard product={item} onPress={() => handleProductPress(item.id)} />
+          <ProductCard
+            product={item}
+            onPress={() => handleProductPress(item.id)}
+            onToggleFavorite={() => handleToggleFavorite(item)}
+          />
         )}
         keyExtractor={(item) => item.id}
-        onRefresh={refetch}
-        refreshing={isRefetching}
+        refreshControl={
+          <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} tintColor={colors.primary} />
+        }
+        onEndReached={() => {
+          if (hasNextPage) fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" color={colors.primary} style={{ padding: 16 }} /> : null}
         ListHeaderComponent={() => (
           <>
             {renderHeader()}
+
+            {/* Banner */}
+            <View style={styles.bannerContainer}>
+              <Image source={{ uri: MOCK_BANNER }} style={styles.bannerImage} />
+              <View style={styles.bannerContent}>
+                <Text style={styles.bannerTitle}>Fresh Halal Meat</Text>
+                <Text style={styles.bannerSubtitle}>Up to 20% off this week</Text>
+              </View>
+            </View>
+
             {renderNearbySellers()}
-            {renderAvailableNow()}
+
+            <View style={styles.section}>
+              {renderAvailableNowHeader()}
+            </View>
           </>
         )}
+        ListEmptyComponent={
+          <EmptyState
+            icon="search"
+            title="No products found"
+            subtitle="Try adjusting your filters or check back later"
+          />
+        }
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
@@ -270,9 +385,10 @@ const DiscoveryScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaWrapper>
+      <StatusBar barStyle="dark-content" />
       {renderContent()}
-    </View>
+    </SafeAreaWrapper>
   );
 };
 
@@ -286,8 +402,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: colors.card,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
+    paddingVertical: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.divider,
     position: 'relative',
@@ -299,18 +414,14 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
     zIndex: 10,
   },
-  notificationIcon: {
-    fontSize: 20,
-  },
   notificationBadge: {
     position: 'absolute',
     top: spacing.sm,
     right: spacing.sm,
     backgroundColor: colors.primary,
-    borderRadius: spacing.radiusFull,
+    borderRadius: 8,
     minWidth: 18,
     height: 18,
-    paddingHorizontal: spacing.xxs,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -364,8 +475,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   listContent: {
-    paddingHorizontal: spacing.lg,
     paddingBottom: spacing.xxl,
+  },
+  bannerContainer: {
+    height: 180,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  bannerImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  bannerContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: spacing.md,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  bannerTitle: {
+    ...typography.h3,
+    color: 'white',
+    marginBottom: 4,
+  },
+  bannerSubtitle: {
+    ...typography.caption,
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 13,
   },
 });
 

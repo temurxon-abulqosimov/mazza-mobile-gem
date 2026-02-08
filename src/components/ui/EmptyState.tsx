@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { colors, spacing, typography } from '../../theme';
 import { Button } from './Button';
+import Icon from './Icon';
+import { IconName } from '../../theme/icons';
 
 interface EmptyStateProps {
-  icon: string;
+  icon: IconName;
   title: string;
   subtitle?: string;
   action?: {
@@ -23,7 +25,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.icon}>{icon}</Text>
+      <Icon name={icon} size={64} color={colors.text.tertiary} style={styles.icon} />
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       {action && (
@@ -45,7 +47,6 @@ const styles = StyleSheet.create({
     padding: spacing.xxxl,
   },
   icon: {
-    fontSize: 64,
     marginBottom: spacing.lg,
   },
   title: {

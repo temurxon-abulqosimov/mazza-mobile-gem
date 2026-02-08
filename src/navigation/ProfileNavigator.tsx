@@ -9,11 +9,13 @@ import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
 import SellerOrdersScreen from '../screens/seller/SellerOrdersScreen';
 import StoreSettingsScreen from '../screens/seller/StoreSettingsScreen';
 import AddProductScreen from '../screens/seller/AddProductScreen';
+import FollowedStoresScreen from '../screens/favorites/FollowedStoresScreen';
 
 export type ProfileStackParamList = {
   ProfileHome: undefined;
   Settings: undefined;
   Notifications: undefined;
+  FollowedStores: undefined;
   BecomeSeller: undefined;
   SellerDashboard: undefined;
   ManageProducts: undefined;
@@ -30,6 +32,7 @@ const ProfileNavigator = () => {
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="FollowedStores" component={FollowedStoresScreen} />
       <Stack.Screen name="BecomeSeller" component={BecomeSellerScreen} options={{ presentation: 'modal' }} />
       <Stack.Screen name="SellerDashboard" component={SellerDashboardScreen} />
       <Stack.Screen name="ManageProducts" component={ManageProductsScreen} />

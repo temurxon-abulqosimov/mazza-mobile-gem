@@ -10,6 +10,8 @@ export const useCreateProduct = () => {
       // Invalidate product lists to refetch
       queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['myProducts'] });
+      // Invalidate discovery queries so new products appear in user panel
+      queryClient.invalidateQueries({ queryKey: ['discovery'] });
     },
   });
 

@@ -1,49 +1,84 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { FavoriteProduct } from '../../domain/Favorite';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Product } from '../../domain/Product';
+import { ProductStatus } from '../../domain/enums/ProductStatus';
 
 interface FavoriteProductCardProps {
-  product: FavoriteProduct;
+  product: Product;
   onPress: () => void;
+  onRemove: () => void;
+  onReserve: () => void;
 }
 
-const FavoriteProductCard: React.FC<FavoriteProductCardProps> = ({ product, onPress }) => {
-  const discountPercentage = product.discountPercentage || 0;
-  const imageUrl = product.images?.[0]?.url;
+const FavoriteProductCard = ({ product, onPress, onRemove, onReserve }: FavoriteProductCardProps) => {
+  const isActive = product.status === ProductStatus.ACTIVE;
+  const isSoldOut = product.status === ProductStatus.SOLD_OUT || product.quantityAvailable <= 0;
+  const isLowStock = isActive && product.quantityAvailable > 0 && product.quantityAvailable <= 3;
+
+  const getActionButton = () => {
+    if (isSoldOut) {
+      return (
+        <View style={[styles.badge, styles.badgeSoldOut]}>
+          <Text style={styles.badgeSoldOutText}>Sold Out</Text>
+        </View>
+      );
+    }
+    if (product.status === ProductStatus.EXPIRED || product.status === ProductStatus.DEACTIVATED) {
+      return (
+        <View style={[styles.badge, styles.badgeClosed]}>
+          <Text style={styles.badgeClosedText}>Closed</Text>
+        </View>
+      );
+    }
+    return (
+      <TouchableOpacity
+        style={styles.reserveButton}
+        onPress={(e) => {
+          e.stopPropagation();
+          onReserve();
+        }}
+      >
+        <Text style={styles.reserveButtonText}>Reserve</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
+      {/* Product Image */}
       <View style={styles.imageContainer}>
-        {imageUrl ? (
-          <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="cover" />
-        ) : (
-          <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>No Image</Text>
-          </View>
-        )}
-        {discountPercentage > 0 && (
-          <View style={styles.discountBadge}>
-            <Text style={styles.discountText}>-{discountPercentage}%</Text>
+        <Image
+          source={{ uri: product.images?.[0]?.url || product.images?.[0]?.thumbnailUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        {isLowStock && (
+          <View style={styles.lowStockBadge}>
+            <Text style={styles.lowStockText}>Low Stock</Text>
           </View>
         )}
       </View>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.productName} numberOfLines={2}>
-          {product.name}
-        </Text>
-
-        <Text style={styles.storeName} numberOfLines={1}>
-          {product.store?.name || 'Unknown Store'}
-        </Text>
-
-        <View style={styles.priceContainer}>
-          <Text style={styles.currentPrice}>
-            ${(product.discountedPrice || product.price).toFixed(2)}
-          </Text>
-          {product.discountedPrice && product.discountedPrice < product.price && (
-            <Text style={styles.originalPrice}>${product.price.toFixed(2)}</Text>
-          )}
+      {/* Product Info */}
+      <View style={styles.info}>
+        <View style={styles.topRow}>
+          <Text style={styles.name} numberOfLines={2}>{product.name}</Text>
+          <TouchableOpacity
+            style={styles.moreButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="ellipsis-horizontal" size={18} color="#999" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.storeName} numberOfLines={1}>{product.store?.name}</Text>
+        <View style={styles.bottomRow}>
+          <Text style={styles.price}>${product.discountedPrice?.toFixed(2)}</Text>
+          {getActionButton()}
         </View>
       </View>
     </TouchableOpacity>
@@ -51,85 +86,113 @@ const FavoriteProductCard: React.FC<FavoriteProductCardProps> = ({ product, onPr
 };
 
 const styles = StyleSheet.create({
-  card: {
+  container: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: 'white',
+    borderRadius: 16,
     marginHorizontal: 16,
     marginBottom: 12,
     padding: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 2,
+    alignItems: 'center',
   },
   imageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
-    overflow: 'hidden',
     position: 'relative',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+    backgroundColor: '#f0f0f0',
   },
-  placeholderImage: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#F0F0F0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  placeholderText: {
-    fontSize: 12,
-    color: '#999',
-  },
-  discountBadge: {
+  lowStockBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#FF7A00',
+    top: 6,
+    left: 6,
+    backgroundColor: '#FF3B30',
     paddingHorizontal: 6,
-    paddingVertical: 4,
+    paddingVertical: 2,
     borderRadius: 4,
   },
-  discountText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: 'bold',
+  lowStockText: {
+    color: 'white',
+    fontSize: 9,
+    fontWeight: '700',
   },
-  infoContainer: {
+  info: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 14,
     justifyContent: 'space-between',
+    height: 90,
+    paddingVertical: 2,
   },
-  productName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  name: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    flex: 1,
+    marginRight: 8,
+    lineHeight: 20,
+  },
+  moreButton: {
+    padding: 2,
   },
   storeName: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
+    fontSize: 13,
+    color: '#888',
+    marginTop: 2,
   },
-  priceContainer: {
+  bottomRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 4,
   },
-  currentPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FF7A00',
-    marginRight: 8,
+  price: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#ff7a33',
   },
-  originalPrice: {
-    fontSize: 14,
-    color: '#999',
-    textDecorationLine: 'line-through',
+  reserveButton: {
+    backgroundColor: '#ff7a33',
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  reserveButtonText: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  badge: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  badgeSoldOut: {
+    backgroundColor: '#FFF0ED',
+  },
+  badgeSoldOutText: {
+    color: '#FF3B30',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  badgeClosed: {
+    backgroundColor: '#F0F0F0',
+  },
+  badgeClosedText: {
+    color: '#888',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
 

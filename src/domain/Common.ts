@@ -1,6 +1,10 @@
 export interface PaginationMeta {
   cursor: string | null;
   hasMore: boolean;
+  total?: number;
+  page?: number;
+  limit?: number;
+  pages?: number;
 }
 
 export interface PaginatedResponse<T> {

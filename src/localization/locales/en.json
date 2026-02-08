@@ -1,0 +1,66 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "done": "Done",
+        "delete": "Delete",
+        "edit": "Edit",
+        "confirm": "Confirm",
+        "close": "Close",
+        "retry": "Retry",
+        "success": "Success"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "email": "Email",
+        "password": "Password",
+        "full_name": "Full Name",
+        "phone": "Phone Number",
+        "confirm_password": "Confirm Password",
+        "forgot_password": "Forgot Password?",
+        "no_account": "Don't have an account? Register",
+        "have_account": "Already have an account? Login",
+        "login_required": "Login Required",
+        "login_required_msg": "You need to be logged in to perform this action.",
+        "login_button": "Log In",
+        "welcome_back": "Welcome Back!",
+        "login_subtitle": "Login to save food and save money",
+        "create_account": "Create Account",
+        "register_subtitle": "Join the fight against food waste",
+        "continue_google": "Continue with Google",
+        "signup_google": "Sign up with Google",
+        "or": "or",
+        "terms_agree": "I agree to the",
+        "terms_conditions": "Terms & Conditions",
+        "terms_required_title": "Terms Required",
+        "terms_required_msg": "Please agree to the Terms & Conditions to continue",
+        "registration_success_title": "Success!",
+        "registration_success_msg": "Account created successfully",
+        "registration_failed_title": "Registration Failed"
+    },
+    "navigation": {
+        "home": "Home",
+        "discovery": "Discovery",
+        "orders": "Orders",
+        "favorites": "Favorites",
+        "profile": "Profile"
+    },
+    "store": {
+        "follow": "Follow",
+        "following": "Following",
+        "reviews_count": "{{count}} review",
+        "reviews_count_other": "{{count}} reviews",
+        "about": "About",
+        "reviews": "Reviews"
+    },
+    "errors": {
+        "network": "Network error. Please check your connection.",
+        "required": "This field is required",
+        "email_invalid": "Invalid email address"
+    }
+}

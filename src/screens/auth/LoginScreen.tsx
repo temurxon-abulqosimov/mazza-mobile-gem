@@ -3,13 +3,26 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Scr
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../hooks/useAuth';
+import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 import { loginSchema, LoginFormData } from '../../domain/validators/AuthValidators';
 import ControlledInput from '../../components/forms/ControlledInput';
+import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { login, isLoggingIn } = useAuth();
+  const { signInWithGoogle, isLoading: isGoogleLoading, isReady: isGoogleReady, isConfigured: isGoogleConfigured } = useGoogleSignIn({
+    onSuccess: () => {
+      navigation.goBack();
+    },
+    onError: (error) => {
+      console.error('Google Sign-In error:', error);
+    },
+  });
+
   const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -24,8 +37,8 @@ const LoginScreen = () => {
         navigation.goBack();
       },
       onError: (error: any) => {
-        const message = error.response?.data?.message || 'Invalid email or password';
-        Alert.alert('Login Failed', message);
+        const message = error.response?.data?.message || t('auth.invalid_credentials', 'Invalid email or password');
+        Alert.alert(t('common.error'), message);
       }
     });
   };
@@ -33,15 +46,34 @@ const LoginScreen = () => {
   return (
     <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subtitle}>Login to save food and save money</Text>
+        <Text style={styles.title}>{t('auth.welcome_back')}</Text>
+        <Text style={styles.subtitle}>{t('auth.login_subtitle')}</Text>
       </View>
 
       <View style={styles.form}>
+        {/* Google Sign-In Button - only show when configured */}
+        {isGoogleConfigured && (
+          <>
+            <GoogleSignInButton
+              onPress={signInWithGoogle}
+              isLoading={isGoogleLoading}
+              disabled={!isGoogleReady}
+              label={t('auth.continue_google')}
+            />
+
+            {/* Divider */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t('auth.or')}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+          </>
+        )}
+
         <ControlledInput
           control={control}
           name="email"
-          label="Email"
+          label={t('auth.email')}
           placeholder="alex@example.com"
           keyboardType="email-address"
           autoCapitalize="none"
@@ -51,15 +83,15 @@ const LoginScreen = () => {
         <ControlledInput
           control={control}
           name="password"
-          label="Password"
-          placeholder="Enter your password"
+          label={t('auth.password')}
+          placeholder={t('auth.password')} // Using password label as placeholder for now or add specific key
           secureTextEntry
           error={errors.password}
         />
 
         {/* Forgot Password Link */}
         <TouchableOpacity style={styles.forgotPassword}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          <Text style={styles.forgotPasswordText}>{t('auth.forgot_password')}</Text>
         </TouchableOpacity>
 
         {/* Login Button */}
@@ -71,7 +103,7 @@ const LoginScreen = () => {
           {isLoggingIn ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.submitButtonText}>Login</Text>
+            <Text style={styles.submitButtonText}>{t('auth.login_button')}</Text>
           )}
         </TouchableOpacity>
 
@@ -81,8 +113,8 @@ const LoginScreen = () => {
           onPress={() => navigation.navigate('Register' as never)}
         >
           <Text style={styles.registerLinkText}>
-            Don't have an account?{' '}
-            <Text style={styles.registerLinkBold}>Sign Up</Text>
+            {t('auth.no_account').split('?')[0]}?{' '}
+            <Text style={styles.registerLinkBold}>{t('auth.register')}</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -114,6 +146,21 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ddd',
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: '#999',
+    fontSize: 14,
   },
   forgotPassword: {
     alignSelf: 'flex-end',

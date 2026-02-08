@@ -80,7 +80,7 @@ const MapScreen = () => {
   const { products, isLoading } = useDiscovery({
     lat: location?.coords.latitude ?? 0,
     lng: location?.coords.longitude ?? 0,
-    radius: 5000, // 5km radius
+    radius: 50, // 50 km radius (backend expects km, not meters)
     enabled: !!location,
   });
 

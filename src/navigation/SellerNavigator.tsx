@@ -1,11 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform, Text, View } from 'react-native';
+import { Platform } from 'react-native';
 import { colors } from '../theme';
 import SellerDashboardScreen from '../screens/seller/SellerDashboardScreen';
 import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
 import SellerOrdersScreen from '../screens/seller/SellerOrdersScreen';
 import StoreSettingsScreen from '../screens/seller/StoreSettingsScreen';
+import Icon from '../components/ui/Icon';
 
 export type SellerTabParamList = {
     Dashboard: undefined;
@@ -43,8 +44,8 @@ const SellerNavigator = () => {
                 component={SellerDashboardScreen}
                 options={{
                     tabBarLabel: 'Home',
-                    tabBarIcon: ({ size, color }) => (
-                        <Text style={{ fontSize: size, color }}>🏠</Text>
+                    tabBarIcon: ({ size, focused, color }) => (
+                        <Icon name={focused ? "dashboard-filled" : "dashboard"} size={size} color={color} />
                     ),
                 }}
             />
@@ -53,8 +54,8 @@ const SellerNavigator = () => {
                 component={ManageProductsScreen}
                 options={{
                     tabBarLabel: 'Inventory',
-                    tabBarIcon: ({ size, color }) => (
-                        <Text style={{ fontSize: size, color }}>📦</Text>
+                    tabBarIcon: ({ size, focused, color }) => (
+                        <Icon name={focused ? "package-filled" : "package"} size={size} color={color} />
                     ),
                 }}
             />
@@ -64,8 +65,8 @@ const SellerNavigator = () => {
                 component={SellerOrdersScreen}
                 options={{
                     tabBarLabel: 'Wallet',
-                    tabBarIcon: ({ size, color }) => (
-                        <Text style={{ fontSize: size, color }}>💰</Text>
+                    tabBarIcon: ({ size, focused, color }) => (
+                        <Icon name={focused ? "wallet-filled" : "wallet"} size={size} color={color} />
                     ),
                 }}
             />
@@ -75,7 +76,7 @@ const SellerNavigator = () => {
                 options={{
                     tabBarLabel: 'Account',
                     tabBarIcon: ({ size, color }) => (
-                        <Text style={{ fontSize: size, color }}>⚙️</Text>
+                        <Icon name="settings" size={size} color={color} />
                     ),
                 }}
             />

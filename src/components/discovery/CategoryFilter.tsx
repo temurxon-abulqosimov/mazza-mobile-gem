@@ -2,11 +2,12 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Chip } from '../ui/Chip';
 import { spacing } from '../../theme';
+import { IconName } from '../../theme/icons';
 
 export interface Category {
   id: string;
   label: string;
-  icon: string;
+  icon: IconName;
 }
 
 interface CategoryFilterProps {

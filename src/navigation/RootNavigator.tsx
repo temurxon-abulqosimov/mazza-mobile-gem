@@ -6,6 +6,8 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import AddProductScreen from '../screens/seller/AddProductScreen';
 import SellerOrderDetailScreen from '../screens/seller/SellerOrderDetailScreen';
+import QRScannerScreen from '../screens/seller/QRScannerScreen';
+import AddReviewScreen from '../screens/reviews/AddReviewScreen';
 
 export type RootStackParamList = {
   MainApp: undefined;
@@ -13,6 +15,14 @@ export type RootStackParamList = {
   Register: undefined;
   AddProduct: undefined;
   SellerOrderDetail: { order: any };
+  QRScanner: undefined;
+  AddReview: {
+    bookingId: string;
+    productId: string;
+    productName: string;
+    productImage: string | null;
+    storeName: string;
+  };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -48,6 +58,16 @@ const RootNavigator = () => {
             name="SellerOrderDetail"
             component={SellerOrderDetailScreen}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="QRScanner"
+            component={QRScannerScreen}
+            options={{ headerShown: false, presentation: 'fullScreenModal' }}
+          />
+          <Stack.Screen
+            name="AddReview"
+            component={AddReviewScreen}
+            options={{ headerShown: false, presentation: 'modal' }}
           />
         </Stack.Group>
       </Stack.Navigator>

@@ -7,10 +7,12 @@ import {
   TextStyle,
 } from 'react-native';
 import { colors, spacing, typography } from '../../theme';
+import Icon from './Icon';
+import { IconName } from '../../theme/icons';
 
 interface ChipProps {
   label: string;
-  icon?: string;
+  icon?: IconName;
   active?: boolean;
   onPress: () => void;
   style?: ViewStyle;
@@ -37,13 +39,15 @@ export const Chip: React.FC<ChipProps> = ({
     textStyle,
   ];
 
+  const iconColor = active ? colors.text.inverse : colors.text.primary;
+
   return (
     <TouchableOpacity
       style={chipStyles}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      {icon && <Text style={styles.icon}>{icon}</Text>}
+      {icon && <Icon name={icon} size={14} color={iconColor} style={{ marginRight: spacing.sm }} />}
       <Text style={textStyles}>{label}</Text>
     </TouchableOpacity>
   );

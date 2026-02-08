@@ -3,6 +3,11 @@ import { authApi } from '../api';
 import { useAuthStore } from '../state/authStore';
 import { LoginFormData, RegisterFormData } from '../domain/validators/AuthValidators';
 
+interface GoogleAuthParams {
+  idToken: string;
+  marketId?: string;
+}
+
 export const useAuth = () => {
   const { setTokens, clearTokens } = useAuthStore((state) => state.actions);
 
@@ -10,10 +15,8 @@ export const useAuth = () => {
     mutationFn: (credentials: LoginFormData) => authApi.login(credentials),
     onSuccess: (data) => {
       setTokens(data.tokens);
-      // Here you could also set user data in another store if needed
     },
     onError: (error) => {
-      // Handle login error (e.g., show a toast notification)
       console.error('Login failed:', error);
       clearTokens();
     },
@@ -30,11 +33,19 @@ export const useAuth = () => {
     },
   });
 
+  const googleAuthMutation = useMutation({
+    mutationFn: (params: GoogleAuthParams) => authApi.googleAuth(params.idToken, params.marketId),
+    onSuccess: (data) => {
+      setTokens(data.tokens);
+    },
+    onError: (error) => {
+      console.error('Google auth failed:', error);
+      clearTokens();
+    },
+  });
+
   const logout = () => {
-    // Call API if it had a server-side logout
-    // authApi.logout(); 
     clearTokens();
-    // Here you would also clear any other user-related state
   };
 
   return {
@@ -45,6 +56,10 @@ export const useAuth = () => {
     register: registerMutation.mutate,
     isRegistering: registerMutation.isPending,
     registerError: registerMutation.error,
+
+    googleAuth: googleAuthMutation.mutate,
+    isGoogleAuthPending: googleAuthMutation.isPending,
+    googleAuthError: googleAuthMutation.error,
 
     logout,
   };

@@ -7,6 +7,8 @@ export interface User {
   avatarUrl?: string;
   role: UserRole;
   marketId: string;
+  lat?: number;
+  lng?: number;
   createdAt: string;
 }
 

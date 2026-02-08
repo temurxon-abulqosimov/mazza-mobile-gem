@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, Linking, Platform } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { useProduct } from '../../hooks/useProduct';
 import { useBooking } from '../../hooks/useBooking';
 import { useAuthGuard } from '../../hooks/useAuthGuard';
+import { favoriteApi } from '../../api';
+import { useQueryClient } from '@tanstack/react-query';
 import { ImageGallery } from '../../components/discovery/ImageGallery';
 import { QuantitySelector } from '../../components/discovery/QuantitySelector';
 import { Badge } from '../../components/ui/Badge';
@@ -13,6 +16,8 @@ import { Button } from '../../components/ui/Button';
 import { LoadingScreen } from '../../components/ui/LoadingScreen';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { colors, spacing, typography, shadows } from '../../theme';
+import Icon from '../../components/ui/Icon';
+import { IconName } from '../../theme/icons';
 
 type ProductDetailRouteProp = RouteProp<DiscoveryStackParamList, 'ProductDetail'>;
 type ProductDetailNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'ProductDetail'>;
@@ -25,9 +30,17 @@ const ProductDetailScreen = () => {
   const { product, isLoading, isError, refetch } = useProduct(productId);
   const { createBookingAsync, isCreatingBooking } = useBooking();
   const { requireAuth } = useAuthGuard();
+  const queryClient = useQueryClient();
 
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  // Sync isFavorite with product data
+  useEffect(() => {
+    if (product?.isFavorited !== undefined) {
+      setIsFavorite(product.isFavorited);
+    }
+  }, [product?.isFavorited]);
 
   const handleBooking = async () => {
     if (!requireAuth('Please login to reserve products and save meals!')) {
@@ -49,18 +62,62 @@ const ProductDetailScreen = () => {
     }
   };
 
-  const handleFavoriteToggle = () => {
-    setIsFavorite(!isFavorite);
-    // TODO: Call API to save/remove favorite
+  const handleFavoriteToggle = async () => {
+    if (!requireAuth('Please login to save favorites!')) {
+      return;
+    }
+
+    const newState = !isFavorite;
+    setIsFavorite(newState); // Optimistic update
+
+    try {
+      if (newState) {
+        await favoriteApi.addFavoriteProduct(productId);
+      } else {
+        await favoriteApi.removeFavoriteProduct(productId);
+      }
+      // Invalidate related queries so favorites screen updates
+      queryClient.invalidateQueries({ queryKey: ['favorites'] });
+      queryClient.invalidateQueries({ queryKey: ['discovery'] });
+    } catch (e) {
+      setIsFavorite(!newState); // Revert on error
+      console.error('Failed to toggle favorite', e);
+      Alert.alert('Error', 'Could not update favorites. Please try again.');
+    }
   };
 
-  const getCategoryIcon = () => {
+  const handleOpenMaps = () => {
+    if (!product?.store?.location) return;
+
+    const { lat, lng, address } = product.store.location;
+    const label = encodeURIComponent(product.store.name);
+
+    const scheme = Platform.select({
+      ios: 'maps:0,0?q=',
+      android: 'geo:0,0?q=',
+    });
+
+    const latLng = `${lat},${lng}`;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    if (url) {
+      Linking.openURL(url).catch(err => {
+        console.error('Error opening maps:', err);
+        Alert.alert('Error', 'Could not open maps application.');
+      });
+    }
+  };
+
+  const getCategoryIcon = (): IconName => {
     const category = product?.category?.name?.toLowerCase() || '';
-    if (category.includes('bakery')) return '🥖';
-    if (category.includes('cafe')) return '☕';
-    if (category.includes('grocery') || category.includes('market')) return '🛒';
-    if (category.includes('restaurant')) return '🍽️';
-    return '🏪';
+    if (category.includes('bakery')) return 'bread';
+    if (category.includes('cafe')) return 'coffee';
+    if (category.includes('grocery') || category.includes('market')) return 'cart';
+    if (category.includes('restaurant')) return 'utensils';
+    return 'store';
   };
 
   if (isLoading) {
@@ -70,7 +127,7 @@ const ProductDetailScreen = () => {
   if (isError || !product) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon="alert-circle"
         title="Could not load product"
         subtitle="Please check your connection and try again"
         action={{
@@ -122,10 +179,21 @@ const ProductDetailScreen = () => {
         <View style={styles.content}>
           {/* Store Info */}
           <View style={styles.storeInfo}>
-            <Text style={styles.storeName}>{product.store.name}</Text>
-            <Text style={styles.storeDistance}>
-              📍 {product.distance ? `${product.distance.toFixed(1)} km` : '0.5 km away'}
-            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('StoreProfile', {
+              storeId: product.store.id,
+              storeName: product.store.name,
+              storeImage: product.store.imageUrl, // Assuming product.store has these
+              storeAddress: product.store.location?.address,
+              storeRating: product.store.rating,
+            })}>
+              <Text style={styles.storeName}>{product.store.name}</Text>
+            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="location-fill" size={12} color={colors.text.secondary} style={{ marginRight: 4 }} />
+              <Text style={styles.storeDistance}>
+                {product.distance ? `${product.distance.toFixed(1)} km` : '0.5 km away'}
+              </Text>
+            </View>
           </View>
 
           {/* Product Title */}
@@ -137,7 +205,7 @@ const ProductDetailScreen = () => {
           {/* Pickup Info */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Text style={styles.infoIcon}>🕐</Text>
+              <Icon name="clock" size={24} color={colors.primary} style={styles.infoIcon} />
               <View style={styles.infoContent}>
                 <Text style={styles.infoLabel}>Pickup Time</Text>
                 <Text style={styles.infoValue}>
@@ -150,7 +218,7 @@ const ProductDetailScreen = () => {
           {/* Quantity Available */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Text style={styles.infoIcon}>📦</Text>
+              <Icon name="package" size={24} color={colors.primary} style={styles.infoIcon} />
               <View style={styles.infoContent}>
                 <Text style={styles.infoLabel}>Available</Text>
                 <Text style={styles.infoValue}>
@@ -163,6 +231,39 @@ const ProductDetailScreen = () => {
           {/* Store Location */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Store Location</Text>
+            <TouchableOpacity
+              style={styles.mapContainer}
+              onPress={handleOpenMaps}
+              activeOpacity={0.9}
+            >
+              <MapView
+                provider={PROVIDER_GOOGLE}
+                style={styles.map}
+                initialRegion={{
+                  latitude: product.store.location.lat,
+                  longitude: product.store.location.lng,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                pitchEnabled={false}
+                rotateEnabled={false}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: product.store.location.lat,
+                    longitude: product.store.location.lng,
+                  }}
+                  title={product.store.name}
+                />
+              </MapView>
+              <View style={styles.mapOverlay}>
+                <Icon name="location-fill" size={24} color={colors.primary} />
+                <Text style={styles.openMapText}>Tap to open in Maps</Text>
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.locationCard}>
               <Text style={styles.locationAddress}>{product.store.location.address}</Text>
               <Text style={styles.locationCity}>
@@ -302,7 +403,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoIcon: {
-    fontSize: 24,
     marginRight: spacing.md,
   },
   infoContent: {
@@ -332,6 +432,36 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.text.secondary,
     lineHeight: 22,
+  },
+  mapContainer: {
+    height: 200,
+    borderRadius: spacing.radiusLg,
+    overflow: 'hidden',
+    marginBottom: spacing.md,
+    position: 'relative',
+    ...shadows.sm,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  mapOverlay: {
+    position: 'absolute',
+    bottom: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: spacing.radiusFull,
+    flexDirection: 'row',
+    alignItems: 'center',
+    ...shadows.sm,
+  },
+  openMapText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.primary,
+    marginLeft: spacing.xs,
   },
   locationCard: {
     backgroundColor: colors.card,

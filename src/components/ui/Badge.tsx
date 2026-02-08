@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { colors, spacing, typography, shadows } from '../../theme';
+import Icon from '../ui/Icon';
+import { IconName } from '../../theme/icons';
 
 export type BadgeVariant = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'bakery' | 'cafe' | 'market' | 'restaurant';
 export type BadgeSize = 'small' | 'medium' | 'large';
 
 interface BadgeProps {
   label: string;
-  icon?: string;
+  icon?: IconName;
   variant?: BadgeVariant;
   size?: BadgeSize;
   style?: ViewStyle;
@@ -36,9 +38,14 @@ export const Badge: React.FC<BadgeProps> = ({
     textStyle,
   ];
 
+  // Determine icon size/color based on variant/size
+  const iconSize = size === 'small' ? 10 : size === 'medium' ? 12 : 14;
+  const isInverse = ['primary', 'success', 'error', 'info', 'bakery', 'cafe', 'market', 'restaurant'].includes(variant);
+  const iconColor = isInverse ? colors.text.inverse : colors.text.primary;
+
   return (
     <View style={badgeStyles}>
-      {icon && <Text style={[styles.icon, styles[`${size}Icon`]]}>{icon}</Text>}
+      {icon && <Icon name={icon} size={iconSize} color={iconColor} style={styles.icon} />}
       <Text style={textStyles}>{label}</Text>
     </View>
   );
@@ -160,15 +167,6 @@ const styles = StyleSheet.create({
   },
 
   // Icon sizes
-  smallIcon: {
-    fontSize: 10,
-  },
-  mediumIcon: {
-    fontSize: 12,
-  },
-  largeIcon: {
-    fontSize: 14,
-  },
 });
 
 export default Badge;

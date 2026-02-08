@@ -7,7 +7,7 @@ export const getMe = async (): Promise<ApiResponse<{ user: UserProfile }>> => {
   return data;
 };
 
-export const updateMe = async (profileData: { fullName?: string; avatarUrl?: string }): Promise<ApiResponse<{ user: UserProfile }>> => {
+export const updateMe = async (profileData: { fullName?: string; avatarUrl?: string; lat?: number; lng?: number }): Promise<ApiResponse<{ user: UserProfile }>> => {
   const { data } = await apiClient.patch('/users/me', profileData);
   return data;
 };

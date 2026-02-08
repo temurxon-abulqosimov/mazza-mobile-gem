@@ -6,6 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import { colors, spacing, typography } from '../../theme';
+import Icon from '../ui/Icon';
+import { IconName } from '../../theme/icons';
 
 export type NotificationType = 'order' | 'deal' | 'confirmation' | 'seller';
 
@@ -29,18 +31,18 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   onPress,
   onDelete,
 }) => {
-  const getIconAndColor = () => {
+  const getIconAndColor = (): { icon: IconName; bgColor: string; iconColor: string } => {
     switch (type) {
       case 'order':
-        return { icon: '📦', bgColor: colors.infoBackground, iconColor: colors.info };
+        return { icon: 'package', bgColor: colors.infoBackground, iconColor: colors.info };
       case 'deal':
-        return { icon: '🏷️', bgColor: colors.primaryBackground, iconColor: colors.primary };
+        return { icon: 'tag', bgColor: colors.primaryBackground, iconColor: colors.primary };
       case 'confirmation':
-        return { icon: '✅', bgColor: colors.successBackground, iconColor: colors.success };
+        return { icon: 'check-circle', bgColor: colors.successBackground, iconColor: colors.success };
       case 'seller':
-        return { icon: '🏪', bgColor: colors.secondaryBackground, iconColor: colors.secondary };
+        return { icon: 'store', bgColor: colors.secondaryBackground, iconColor: colors.secondary };
       default:
-        return { icon: '🔔', bgColor: colors.backgroundDark, iconColor: colors.text.secondary };
+        return { icon: 'notification', bgColor: colors.backgroundDark, iconColor: colors.text.secondary };
     }
   };
 
@@ -54,7 +56,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
     >
       {/* Icon Circle */}
       <View style={[styles.iconContainer, { backgroundColor: bgColor }]}>
-        <Text style={styles.icon}>{icon}</Text>
+        <Icon name={icon} size={24} color={iconColor} />
       </View>
 
       {/* Content */}
@@ -81,7 +83,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
           }}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={styles.deleteIcon}>🗑️</Text>
+          <Icon name="trash" size={18} color={colors.text.tertiary} />
         </TouchableOpacity>
       )}
     </TouchableOpacity>
@@ -107,9 +109,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
-  },
-  icon: {
-    fontSize: 24,
   },
   content: {
     flex: 1,
@@ -148,10 +147,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: spacing.sm,
     marginLeft: spacing.xs,
-  },
-  deleteIcon: {
-    fontSize: 18,
-    opacity: 0.6,
   },
 });
 

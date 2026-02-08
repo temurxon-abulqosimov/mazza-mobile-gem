@@ -1,0 +1,68 @@
+{
+    "common": {
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "back": "Назад",
+        "next": "Далее",
+        "done": "Готово",
+        "delete": "Удалить",
+        "edit": "Редактировать",
+        "confirm": "Подтвердить",
+        "close": "Закрыть",
+        "retry": "Повторить",
+        "success": "Успешно"
+    },
+    "auth": {
+        "login": "Войти",
+        "register": "Регистрация",
+        "email": "Email",
+        "password": "Пароль",
+        "full_name": "ФИО",
+        "phone": "Номер телефона",
+        "confirm_password": "Подтвердите пароль",
+        "forgot_password": "Забыли пароль?",
+        "no_account": "Нет аккаунта? Зарегистрироваться",
+        "have_account": "Уже есть аккаунт? Войти",
+        "login_required": "Требуется вход",
+        "login_required_msg": "Вам необходимо войти в систему для выполнения этого действия.",
+        "login_button": "Войти",
+        "welcome_back": "С возвращением!",
+        "login_subtitle": "Войдите, чтобы спасать еду и экономить",
+        "create_account": "Создать аккаунт",
+        "register_subtitle": "Присоединяйтесь к борьбе с пищевыми отходами",
+        "continue_google": "Войти через Google",
+        "signup_google": "Регистрация через Google",
+        "or": "или",
+        "terms_agree": "Я согласен с",
+        "terms_conditions": "Условиями использования",
+        "terms_required_title": "Требуется согласие",
+        "terms_required_msg": "Пожалуйста, согласитесь с Условиями использования для продолжения",
+        "registration_success_title": "Успешно!",
+        "registration_success_msg": "Аккаунт успешно создан",
+        "registration_failed_title": "Ошибка регистрации"
+    },
+    "navigation": {
+        "home": "Главная",
+        "discovery": "Обзор",
+        "orders": "Заказы",
+        "favorites": "Избранное",
+        "profile": "Профиль"
+    },
+    "store": {
+        "follow": "Подписаться",
+        "following": "Вы подписаны",
+        "reviews_count": "{{count}} отзыв",
+        "reviews_count_few": "{{count}} отзыва",
+        "reviews_count_many": "{{count}} отзывов",
+        "reviews_count_other": "{{count}} отзывов",
+        "about": "О магазине",
+        "reviews": "Отзывы"
+    },
+    "errors": {
+        "network": "Ошибка сети. Проверьте подключение.",
+        "required": "Это поле обязательно",
+        "email_invalid": "Некорректный email"
+    }
+}

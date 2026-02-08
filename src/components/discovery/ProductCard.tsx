@@ -1,10 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Product } from '../../domain/Product';
+import Icon from '../ui/Icon';
+import { IconName } from '../../theme/icons';
+import { colors } from '../../theme';
 
 interface ProductCardProps {
   product: Product;
   onPress: () => void;
+  onToggleFavorite?: () => void;
 }
 
 /**
@@ -19,13 +23,14 @@ interface ProductCardProps {
  * - Prominent pricing
  * - Orange "Add" button
  */
-const ProductCard = ({ product, onPress }: ProductCardProps) => {
-  const getCategoryIcon = () => {
+const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) => {
+  const getCategoryIcon = (): IconName => {
     const category = product.category?.name?.toLowerCase() || '';
-    if (category.includes('bakery')) return '🥖';
-    if (category.includes('cafe')) return '☕';
-    if (category.includes('grocery')) return '🛒';
-    return '🍽️';
+    if (category.includes('bakery')) return 'bread';
+    if (category.includes('cafe')) return 'coffee';
+    if (category.includes('grocery')) return 'cart';
+    if (category.includes('restaurant')) return 'utensils';
+    return 'grid';
   };
 
   return (
@@ -40,7 +45,7 @@ const ProductCard = ({ product, onPress }: ProductCardProps) => {
 
         {/* Category Badge - Top Left */}
         <View style={styles.categoryBadge}>
-          <Text style={styles.categoryIcon}>{getCategoryIcon()}</Text>
+          <Icon name={getCategoryIcon()} size={12} color="#333" style={{ marginRight: 4 }} />
           <Text style={styles.categoryText}>
             {product.category?.name || 'Food'}
           </Text>
@@ -55,11 +60,28 @@ const ProductCard = ({ product, onPress }: ProductCardProps) => {
 
         {/* Pickup Time Badge - Bottom Right */}
         <View style={styles.pickupBadge}>
-          <Text style={styles.pickupIcon}>🕐</Text>
+          <Icon name="clock" size={12} color="#fff" style={{ marginRight: 4 }} />
           <Text style={styles.pickupText}>
             Pickup: {product.pickupWindow.label.split(':')[0]}
           </Text>
         </View>
+
+        {/* Favorite Button (Heart) */}
+        {onToggleFavorite && (
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            onPress={(e) => {
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
+          >
+            <Icon
+              name={product.isFavorited ? 'heart-filled' : 'heart'}
+              size={18}
+              color={product.isFavorited ? colors.error : '#333'}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Product Info */}
@@ -147,19 +169,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  categoryIcon: {
-    fontSize: 12,
-    marginRight: 4,
-  },
   categoryText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#333',
+    shadowRadius: 2,
+    zIndex: 1,
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12, // Needs to adjust based on discount badge if present, but for now absolute top right
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   discountBadge: {
     position: 'absolute',
     top: 12,
-    right: 12,
+    right: 50, // Moved to left of heart button
     backgroundColor: '#FF3B30',
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -180,10 +216,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
-  },
-  pickupIcon: {
-    fontSize: 12,
-    marginRight: 4,
   },
   pickupText: {
     color: '#fff',

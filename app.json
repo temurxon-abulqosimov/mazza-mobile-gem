@@ -2,6 +2,7 @@
   "expo": {
     "name": "mazza-frontend",
     "slug": "mazza-frontend",
+    "scheme": "mazza",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

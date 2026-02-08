@@ -22,4 +22,5 @@ export interface Store {
   totalProductsSold?: number;
   foodSavedKg?: number;
   createdAt?: string;
+  isFollowing?: boolean;
 }

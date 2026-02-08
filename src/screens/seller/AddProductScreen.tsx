@@ -1019,34 +1019,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f6f5',
     borderRadius: 12,
     padding: 12,
+    minHeight: 110, // Ensure enough height
+    justifyContent: 'center',
   },
   timeAdjusterHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12, // More space
     gap: 6,
+    justifyContent: 'center', // Center title
   },
   timeAdjusterIcon: {
     fontSize: 16,
   },
   timeAdjusterTitle: {
-    fontSize: 12,
+    fontSize: 14, // Larger title
     fontWeight: '600',
     color: '#1c120d',
   },
   timeControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12, // More gap
+    justifyContent: 'space-between', // Distribute evenly
   },
   timeControlButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10, // Taller button
     backgroundColor: '#f46a25',
     borderRadius: 8,
+    minWidth: 44, // Minimum touch target width
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   timeControlButtonText: {
-    fontSize: 11,
+    fontSize: 14, // Larger text
     fontWeight: 'bold',
     color: 'white',
   },
@@ -1054,15 +1061,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     borderRadius: 8,
-    paddingVertical: 8,
+    paddingVertical: 10,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#e8d7ce',
+    marginHorizontal: 4, // Spacing from buttons
   },
   timeDisplayLarge: {
-    fontSize: 15,
+    fontSize: 16, // Larger time font
     fontWeight: 'bold',
     color: '#1c120d',
+    letterSpacing: 0.5,
   },
   durationInfo: {
     marginTop: 16,

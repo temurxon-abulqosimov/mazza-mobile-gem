@@ -2,71 +2,72 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 const FavoriteStoreCardSkeleton = () => {
-    return (
-        <View style={styles.container}>
-            <View style={styles.image} />
-            <View style={styles.infoContainer}>
-                <View style={styles.textLineLg} />
-                <View style={styles.textLineSm} />
-                <View style={styles.tag} />
-            </View>
-            <View style={styles.heart} />
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <View style={styles.image} />
+      <View style={styles.info}>
+        <View style={styles.titleLine} />
+        <View style={styles.metaLine} />
+        <View style={styles.priceLine} />
+      </View>
+      <View style={styles.button} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 24,
+    backgroundColor: 'white',
+    borderRadius: 16,
     marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 16,
+    marginBottom: 12,
+    padding: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 16,
-    backgroundColor: '#EAEAEA',
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+    backgroundColor: '#F0F0F0',
   },
-  infoContainer: {
+  info: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: 14,
+    height: 90,
+    justifyContent: 'center',
   },
-  textLineLg: {
-    width: '80%',
-    height: 18,
+  titleLine: {
+    width: '75%',
+    height: 16,
     borderRadius: 4,
-    backgroundColor: '#EAEAEA',
+    backgroundColor: '#F0F0F0',
+    marginBottom: 10,
   },
-  textLineSm: {
+  metaLine: {
     width: '50%',
+    height: 12,
+    borderRadius: 4,
+    backgroundColor: '#F0F0F0',
+    marginBottom: 14,
+  },
+  priceLine: {
+    width: '30%',
     height: 14,
     borderRadius: 4,
-    backgroundColor: '#EAEAEA',
-    marginTop: 8,
+    backgroundColor: '#F0F0F0',
   },
-  tag: {
-    width: '60%',
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#EAEAEA',
-    marginTop: 12,
+  button: {
+    width: 72,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#F0F0F0',
   },
-  heart: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#EAEAEA',
-    marginLeft: 16,
-  }
 });
 
 export default FavoriteStoreCardSkeleton;

@@ -31,3 +31,12 @@ export const refreshToken = async (token: string): Promise<{ accessToken: string
     const { data } = await apiClient.post('/auth/refresh', { refreshToken: token });
     return data.data.tokens; // Extract tokens from the nested data structure
 }
+
+interface GoogleAuthResponse extends AuthResponse {
+  isNewUser: boolean;
+}
+
+export const googleAuth = async (idToken: string, marketId?: string): Promise<GoogleAuthResponse> => {
+  const { data } = await apiClient.post('/auth/google', { idToken, marketId });
+  return data.data;
+};

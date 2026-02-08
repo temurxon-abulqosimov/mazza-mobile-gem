@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform, Text, View, ActivityIndicator } from 'react-native';
+import { Platform, View, ActivityIndicator } from 'react-native';
 import DiscoveryNavigator from './DiscoveryNavigator';
 import OrdersNavigator from './OrdersNavigator';
 import FavoritesScreen from '../screens/favorites/FavoritesScreen';
@@ -11,9 +11,13 @@ import { useAuthStore } from '../state/authStore';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { UserRole } from '../domain/enums/UserRole';
 import { colors } from '../theme';
+import LocationOnboardingScreen from '../screens/onboarding/LocationOnboardingScreen';
+import Icon from '../components/ui/Icon';
+import MapScreen from '../screens/discovery/MapScreen';
 
 export type MainTabParamList = {
   Discover: undefined;
+  Map: undefined;
   Orders: undefined;
   Favorites: undefined;
   Profile: undefined;
@@ -36,6 +40,13 @@ const MainAppNavigator = () => {
       </View>
     );
   }
+
+  // FORCE LOCATION ONBOARDING
+  // If user is authenticated but has no location set, show onboarding
+  // DISABLED: We now allow users to enter and prompt them contextually
+  // if (isAuthenticated && userProfile && userProfile.role === UserRole.CONSUMER && (!userProfile.lat || !userProfile.lng)) {
+  //   return <LocationOnboardingScreen />;
+  // }
 
   // Show admin dashboard if user is admin
   if (isAuthenticated && userProfile?.role === UserRole.ADMIN) {
@@ -65,8 +76,8 @@ const MainAppNavigator = () => {
           options={{
             headerShown: false,
             tabBarLabel: 'Dashboard',
-            tabBarIcon: ({ size }) => (
-              <Text style={{ fontSize: size }}>📊</Text>
+            tabBarIcon: ({ size, color }) => (
+              <Icon name="dashboard" size={size} color={color} />
             ),
           }}
         />
@@ -82,7 +93,7 @@ const MainAppNavigator = () => {
   // Show regular consumer tabs
   return (
     <Tab.Navigator
-      id="AdminTabs"
+      id="ConsumerTabs"
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.text.tertiary,
@@ -97,6 +108,7 @@ const MainAppNavigator = () => {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
+
         },
       }}
     >
@@ -106,8 +118,19 @@ const MainAppNavigator = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Home',
-          tabBarIcon: ({ size }) => (
-            <Text style={{ fontSize: size }}>🏠</Text>
+          tabBarIcon: ({ size, focused, color }) => (
+            <Icon name={focused ? "home-filled" : "home"} size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Map',
+          tabBarIcon: ({ size, focused, color }) => (
+            <Icon name={focused ? "discovery-filled" : "discovery"} size={size} color={color} />
           ),
         }}
       />
@@ -117,8 +140,8 @@ const MainAppNavigator = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Orders',
-          tabBarIcon: ({ size }) => (
-            <Text style={{ fontSize: size }}>📄</Text>
+          tabBarIcon: ({ size, focused, color }) => (
+            <Icon name={focused ? "orders-filled" : "orders"} size={size} color={color} />
           ),
         }}
       />
@@ -128,8 +151,8 @@ const MainAppNavigator = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Saved',
-          tabBarIcon: ({ size, focused }) => (
-            <Text style={{ fontSize: size }}>{focused ? '❤️' : '🤍'}</Text>
+          tabBarIcon: ({ size, focused, color }) => (
+            <Icon name={focused ? "heart-filled" : "heart"} size={size} color={color} />
           ),
         }}
       />
@@ -139,8 +162,8 @@ const MainAppNavigator = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Profile',
-          tabBarIcon: ({ size }) => (
-            <Text style={{ fontSize: size }}>👤</Text>
+          tabBarIcon: ({ size, focused, color }) => (
+            <Icon name={focused ? "user-filled" : "user"} size={size} color={color} />
           ),
         }}
       />

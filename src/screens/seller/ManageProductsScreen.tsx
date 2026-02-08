@@ -6,6 +6,7 @@ import { colors, spacing, typography } from '../../theme';
 import { useMyProducts } from '../../hooks/useMyProducts';
 import SellerProductCard from '../../components/seller/SellerProductCard';
 import { deleteProduct } from '../../api/products';
+import Icon from '../../components/ui/Icon';
 
 const ManageProductsScreen = () => {
   const navigation = useNavigation<any>();
@@ -57,7 +58,7 @@ const ManageProductsScreen = () => {
 
   const renderEmpty = () => (
     <View style={styles.emptyState}>
-      <Text style={styles.emptyIcon}>📦</Text>
+      <Icon name="package" size={64} color="#e8d7ce" style={styles.emptyIcon} />
       <Text style={styles.emptyTitle}>No Products Yet</Text>
       <Text style={styles.emptySubtitle}>
         Tap the + button above to add your first product
@@ -76,14 +77,14 @@ const ManageProductsScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backIcon}>←</Text>
+          <Icon name="arrow-back" size={24} color={colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Manage Products</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('AddProduct')}
           style={styles.addButton}
         >
-          <Text style={styles.addIcon}>+</Text>
+          <Icon name="plus" size={24} color={colors.text.inverse} />
         </TouchableOpacity>
       </View>
 
@@ -118,7 +119,7 @@ const ManageProductsScreen = () => {
           style={styles.fab}
           onPress={() => navigation.navigate('AddProduct')}
         >
-          <Text style={styles.fabIcon}>+</Text>
+          <Icon name="plus" size={32} color={colors.text.inverse} />
         </TouchableOpacity>
       )}
     </View>
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
   },
   emptyIcon: {
-    fontSize: 64,
+    // fontSize: 64,
     marginBottom: spacing.lg,
   },
   emptyTitle: {
@@ -246,9 +247,9 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   fabIcon: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.text.inverse,
+    // fontSize: 32,
+    // fontWeight: 'bold',
+    // color: colors.text.inverse,
   },
 });
 

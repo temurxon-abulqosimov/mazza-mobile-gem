@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { colors, spacing, typography } from '../../theme';
+import Icon from '../ui/Icon';
 
 interface LocationSelectorProps {
   location: string;
@@ -13,11 +14,11 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
 }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
-      <Text style={styles.icon}>📍</Text>
+      <Icon name="location" size={16} color={colors.primary} style={styles.icon} />
       <Text style={styles.text} numberOfLines={1}>
         {location}
       </Text>
-      <Text style={styles.arrow}>▼</Text>
+      <Icon name="chevron-down" size={12} color={colors.text.secondary} />
     </TouchableOpacity>
   );
 };
@@ -39,10 +40,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.text.primary,
     ...typography.h4,
-  },
-  arrow: {
-    fontSize: 12,
-    color: colors.text.secondary,
   },
 });
 

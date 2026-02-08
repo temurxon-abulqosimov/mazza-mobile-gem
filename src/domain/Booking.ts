@@ -28,4 +28,5 @@ export interface Booking {
   createdAt: string;
   confirmedAt: string;
   completedAt: string | null;
+  isReviewed?: boolean;
 }

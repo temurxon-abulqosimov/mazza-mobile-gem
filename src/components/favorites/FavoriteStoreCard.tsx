@@ -1,21 +1,38 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { FavoriteStore } from '../../domain/Favorite';
+import { Ionicons } from '@expo/vector-icons';
 
 interface FavoriteStoreCardProps {
-  store: FavoriteStore;
+  store: any;
   onPress: () => void;
 }
 
 const FavoriteStoreCard = ({ store, onPress }: FavoriteStoreCardProps) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: store.imageUrl }} style={styles.image} />
-      <View style={styles.infoContainer}>
-        <Text style={styles.name}>{store.name}</Text>
-        <Text style={styles.rating}>⭐ {store.rating.toFixed(1)}</Text>
-        {store.distance && <Text style={styles.distance}>{store.distance.toFixed(1)} km away</Text>}
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
+      <Image
+        source={{ uri: store.imageUrl }}
+        style={styles.image}
+        resizeMode="cover"
+      />
+      <View style={styles.info}>
+        <Text style={styles.name} numberOfLines={1}>{store.name}</Text>
+        <View style={styles.metaRow}>
+          <Ionicons name="star" size={13} color="#FFB800" />
+          <Text style={styles.rating}>{Number(store.rating || 0).toFixed(1)}</Text>
+          {store.distance != null && (
+            <>
+              <Text style={styles.separator}>·</Text>
+              <Ionicons name="location-outline" size={13} color="#999" />
+              <Text style={styles.distance}>{Number(store.distance).toFixed(1)} km</Text>
+            </>
+          )}
+        </View>
+        {store.address && (
+          <Text style={styles.address} numberOfLines={1}>{store.address}</Text>
+        )}
       </View>
+      <Ionicons name="chevron-forward" size={18} color="#ccc" />
     </TouchableOpacity>
   );
 };
@@ -24,40 +41,59 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: 'white',
+    borderRadius: 16,
     marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 12,
+    marginBottom: 12,
+    padding: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
     elevation: 2,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#f0f0f0',
   },
-  infoContainer: {
+  info: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: 14,
   },
   name: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
   },
   rating: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#333',
+    marginLeft: 3,
+  },
+  separator: {
+    fontSize: 13,
+    color: '#ccc',
+    marginHorizontal: 6,
   },
   distance: {
+    fontSize: 13,
+    color: '#888',
+    marginLeft: 2,
+  },
+  address: {
     fontSize: 12,
     color: '#999',
-    marginTop: 4,
-  }
+    marginTop: 2,
+  },
 });
 
 export default FavoriteStoreCard;

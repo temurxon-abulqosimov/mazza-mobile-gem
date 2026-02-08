@@ -122,6 +122,18 @@ const OrderHistoryScreen = () => {
             <OrderCard
               booking={item}
               onPress={() => navigation.navigate('OrderDetail', { bookingId: item.id })}
+              onReviewPress={() => {
+                // We need to type cast navigation because AddReview is in RootStack, not OrdersStack
+                // However, OrdersNavigator is nested in MainAppNavigator which is nested in RootNavigator
+                // So we can navigate to 'AddReview' via the parent navigator
+                (navigation.getParent()?.getParent() as any).navigate('AddReview', {
+                  bookingId: item.id,
+                  productId: item.product.id,
+                  productName: item.product.name,
+                  productImage: item.product.imageUrl,
+                  storeName: item.store.name,
+                });
+              }}
             />
           )}
           renderSectionHeader={renderSectionHeader}

@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 
 import { OrdersStackParamList } from '../../navigation/OrdersNavigator';
 import { useBookingDetail } from '../../hooks/useBookingDetail';
+import { BookingStatus } from '../../domain/Booking';
 
 type OrderDetailProps = NativeStackScreenProps<OrdersStackParamList, 'OrderDetail'>;
 type OrderDetailRouteProp = OrderDetailProps['route'];
@@ -107,6 +108,23 @@ const OrderDetailScreen = () => {
 
             </ScrollView>
             <View style={styles.footer}>
+                {booking.status === BookingStatus.COMPLETED && !booking.isReviewed && (
+                    <TouchableOpacity
+                        style={styles.reviewButton}
+                        onPress={() => {
+                            (navigation.getParent()?.getParent() as any).navigate('AddReview', {
+                                bookingId: booking.id,
+                                productId: booking.product.id,
+                                productName: booking.product.name,
+                                productImage: booking.product.imageUrl,
+                                storeName: booking.store.name,
+                            });
+                        }}
+                    >
+                        <Ionicons name="star-outline" size={20} color="#FF7A00" style={{ marginRight: 8 }} />
+                        <Text style={styles.reviewButtonText}>Write a Review</Text>
+                    </TouchableOpacity>
+                )}
                 <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('MainApp' as never)}>
                     <Text style={styles.homeButtonText}>Back to Home</Text>
                 </TouchableOpacity>
@@ -146,9 +164,11 @@ const styles = StyleSheet.create({
     directionsButton: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: '#FF7A00', paddingVertical: 14, borderRadius: 12, marginTop: 10 },
     directionsText: { color: 'white', fontWeight: 'bold', fontSize: 16, marginLeft: 8 },
     supportText: { textAlign: 'center', color: '#888', marginVertical: 20 },
-    footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 20, backgroundColor: '#FCFCFC', borderTopWidth: 1, borderTopColor: '#F0F0F0' },
+    footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 20, backgroundColor: '#FCFCFC', borderTopWidth: 1, borderTopColor: '#F0F0F0', gap: 12 },
     homeButton: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#EAEAEA' },
-    homeButtonText: { textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: '#333' }
+    homeButtonText: { textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: '#333' },
+    reviewButton: { backgroundColor: 'white', padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#FF7A00', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+    reviewButtonText: { textAlign: 'center', fontSize: 16, fontWeight: 'bold', color: '#FF7A00' }
 });
 
 export default OrderDetailScreen;

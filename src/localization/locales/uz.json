@@ -1,0 +1,66 @@
+{
+    "common": {
+        "loading": "Yuklanmoqda...",
+        "error": "Xatolik yuz berdi",
+        "save": "Saqlash",
+        "cancel": "Bekor qilish",
+        "back": "Orqaga",
+        "next": "Keyingi",
+        "done": "Tayyor",
+        "delete": "O'chirish",
+        "edit": "Tahrirlash",
+        "confirm": "Tasdiqlash",
+        "close": "Yopish",
+        "retry": "Qayta urinish",
+        "success": "Muvaffaqiyatli"
+    },
+    "auth": {
+        "login": "Kirish",
+        "register": "Ro'yxatdan o'tish",
+        "email": "Email",
+        "password": "Parol",
+        "full_name": "Ism-sharif",
+        "phone": "Telefon raqami",
+        "confirm_password": "Parolni tasdiqlang",
+        "forgot_password": "Parolni unutdingizmi?",
+        "no_account": "Hisobingiz yo'qmi? Ro'yxatdan o'tish",
+        "have_account": "Hisobingiz bormi? Kirish",
+        "login_required": "Kirish talab qilinadi",
+        "login_required_msg": "Bu amalni bajarish uchun tizimga kirishingiz kerak.",
+        "login_button": "Kirish",
+        "welcome_back": "Xush kelibsiz!",
+        "login_subtitle": "Ovqatni asrash va pulni tejash uchun kiring",
+        "create_account": "Hisob yaratish",
+        "register_subtitle": "Oziq-ovqat isrofiga qarshi kurashga qo'shiling",
+        "continue_google": "Google orqali davom etish",
+        "signup_google": "Google orqali ro'yxatdan o'tish",
+        "or": "yoki",
+        "terms_agree": "Men roziman",
+        "terms_conditions": "Foydalanish shartlari",
+        "terms_required_title": "Rozilik talab qilinadi",
+        "terms_required_msg": "Davom etish uchun Foydalanish shartlariga rozi bo'ling",
+        "registration_success_title": "Muvaffaqiyatli!",
+        "registration_success_msg": "Hisob muvaffaqiyatli yaratildi",
+        "registration_failed_title": "Ro'yxatdan o'tishda xatolik"
+    },
+    "navigation": {
+        "home": "Bosh sahifa",
+        "discovery": "Keshfiyot",
+        "orders": "Buyurtmalar",
+        "favorites": "Sevimlilar",
+        "profile": "Profil"
+    },
+    "store": {
+        "follow": "Obuna bo'lish",
+        "following": "Obuna bo'lgansiz",
+        "reviews_count": "{{count}} sharh",
+        "reviews_count_other": "{{count}} sharh",
+        "about": "Do'kon haqida",
+        "reviews": "Sharhlar"
+    },
+    "errors": {
+        "network": "Tarmoq xatosi. Aloqani tekshiring.",
+        "required": "Bu maydon majburiy",
+        "email_invalid": "Email noto'g'ri"
+    }
+}

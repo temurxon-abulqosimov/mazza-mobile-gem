@@ -31,4 +31,5 @@ export interface Product {
   category: Category;
   distance?: number;
   createdAt?: string;
+  isFavorited?: boolean;
 }

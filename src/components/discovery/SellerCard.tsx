@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { colors, spacing, typography, shadows } from '../../theme';
 import { Badge } from '../ui/Badge';
+import Icon from '../ui/Icon';
+import { IconName } from '../../theme/icons';
 
 interface Seller {
   id: string;
@@ -24,13 +26,13 @@ interface SellerCardProps {
 }
 
 export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress }) => {
-  const getCategoryIcon = () => {
+  const getCategoryIcon = (): IconName => {
     const category = (typeof seller.category === 'string' ? seller.category : '').toLowerCase();
-    if (category.includes('bakery')) return '🥖';
-    if (category.includes('cafe')) return '☕';
-    if (category.includes('grocery') || category.includes('market')) return '🛒';
-    if (category.includes('restaurant')) return '🍽️';
-    return '🏪';
+    if (category.includes('bakery')) return 'bread';
+    if (category.includes('cafe')) return 'coffee';
+    if (category.includes('grocery') || category.includes('market')) return 'cart';
+    if (category.includes('restaurant')) return 'utensils';
+    return 'store';
   };
 
   return (
@@ -69,7 +71,7 @@ export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress }) => {
         <View style={styles.meta}>
           {seller.rating && (
             <>
-              <Text style={styles.ratingIcon}>⭐</Text>
+              <Icon name="star-filled" size={12} color={colors.warning} style={styles.ratingIcon} />
               <Text style={styles.rating}>{seller.rating.toFixed(1)}</Text>
             </>
           )}
@@ -125,7 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ratingIcon: {
-    fontSize: 12,
     marginRight: spacing.xxs,
   },
   rating: {

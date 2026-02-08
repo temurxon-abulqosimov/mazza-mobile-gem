@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { useFavorites } from '../../hooks/useFavorites';
-import FavoriteStoreCard from '../../components/favorites/FavoriteStoreCard';
 import FavoriteProductCard from '../../components/favorites/FavoriteProductCard';
-import FavoritesHeader from '../../components/navigation/FavoritesHeader';
 import FavoriteStoreCardSkeleton from '../../components/favorites/FavoriteStoreCardSkeleton';
-
-const LoadingComponent = () => (
-  <View style={{ paddingHorizontal: 16 }}>
-    <FavoriteStoreCardSkeleton />
-    <FavoriteStoreCardSkeleton />
-    <FavoriteStoreCardSkeleton />
-    <FavoriteStoreCardSkeleton />
-  </View>
-);
+import { favoriteApi } from '../../api';
 
 const FavoritesScreen = () => {
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [activeTab, setActiveTab] = useState<'Stores' | 'Products'>('Stores');
 
   const {
     favorites,
@@ -28,91 +30,150 @@ const FavoritesScreen = () => {
     hasNextPage,
     isFetchingNextPage,
     refetch,
-    isRefetching
+    isRefetching,
   } = useFavorites({
-    type: activeTab === 'Stores' ? 'STORE' : 'PRODUCT',
+    type: 'PRODUCT',
     lat: location?.coords.latitude,
     lng: location?.coords.longitude,
   });
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.getForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Location permission not granted for favorites distance calculation.');
-        return;
-      }
+      const { status } = await Location.getForegroundPermissionsAsync();
+      if (status !== 'granted') return;
       try {
-        let currentLocation = await Location.getLastKnownPositionAsync();
+        const currentLocation = await Location.getLastKnownPositionAsync();
         if (currentLocation) {
           setLocation(currentLocation);
         } else {
-          let freshLocation = await Location.getCurrentPositionAsync();
+          const freshLocation = await Location.getCurrentPositionAsync();
           setLocation(freshLocation);
         }
       } catch (e) {
-        console.error("Could not get location for favorites", e);
+        console.error('Could not get location for favorites', e);
       }
     })();
   }, []);
 
-  const ListEmptyComponent = () => (
-    <View style={styles.centered}>
-      <Text style={styles.emptyText}>
-        No favorite {activeTab.toLowerCase()} yet
-      </Text>
-      <Text style={styles.emptySubText}>
-        Tap the heart icon on {activeTab === 'Stores' ? 'a store' : 'a product'} to save it here.
-      </Text>
+  const handleProductPress = (productId: string) => {
+    navigation.navigate('Discover', {
+      screen: 'ProductDetail',
+      params: { productId },
+    });
+  };
+
+  const handleReservePress = (productId: string) => {
+    navigation.navigate('Discover', {
+      screen: 'ProductDetail',
+      params: { productId },
+    });
+  };
+
+  const handleRemoveProduct = async (productId: string) => {
+    try {
+      await favoriteApi.removeFavoriteProduct(productId);
+      refetch();
+    } catch (e) {
+      console.error('Failed to remove favorite product', e);
+      Alert.alert('Error', 'Could not remove product from favorites.');
+    }
+  };
+
+  const handleStartExploring = () => {
+    navigation.navigate('Discover');
+  };
+
+  const renderEmptyState = () => {
+    return (
+      <View style={styles.emptyContainer}>
+        <View style={styles.emptyIconWrapper}>
+          <Ionicons
+            name='heart-outline'
+            size={56}
+            color="#ff7a33"
+          />
+        </View>
+        <Text style={styles.emptyTitle}>
+          No favorite products yet
+        </Text>
+        <Text style={styles.emptySubtitle}>
+          Tap the heart icon on a product to save it here for easy access.
+        </Text>
+        <TouchableOpacity style={styles.exploreButton} onPress={handleStartExploring}>
+          <Text style={styles.exploreButtonText}>Start Exploring</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }: { item: any }) => {
+    return (
+      <FavoriteProductCard
+        product={item}
+        onPress={() => handleProductPress(item.id)}
+        onRemove={() => handleRemoveProduct(item.id)}
+        onReserve={() => handleReservePress(item.id)}
+      />
+    );
+  };
+
+  const LoadingSkeleton = () => (
+    <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+      <FavoriteStoreCardSkeleton />
+      <FavoriteStoreCardSkeleton />
+      <FavoriteStoreCardSkeleton />
+      <FavoriteStoreCardSkeleton />
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <FavoritesHeader />
-
-      <View style={styles.tabContainer}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
+      <View style={styles.header}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'Stores' && styles.activeTab]}
-          onPress={() => setActiveTab('Stores')}
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={[styles.tabText, activeTab === 'Stores' && styles.activeTabText]}>Stores</Text>
+          <Ionicons name="chevron-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Products' && styles.activeTab]}
-          onPress={() => setActiveTab('Products')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Products' && styles.activeTabText]}>Products</Text>
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Favorites</Text>
+        <View style={styles.headerRight} />
       </View>
 
+      {/* Content */}
       {isLoading && favorites.length === 0 ? (
-        <LoadingComponent />
+        <LoadingSkeleton />
       ) : isError ? (
-        <View style={styles.centered}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="cloud-offline-outline" size={48} color="#ccc" />
           <Text style={styles.errorText}>Could not load your favorites.</Text>
-          <Button title="Try Again" onPress={() => refetch()} color="#FF7A00" />
+          <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <FlatList
-          data={favorites.filter(item => item && item.id)}
-          renderItem={({ item }) =>
-            activeTab === 'Stores' ? (
-              <FavoriteStoreCard store={item as any} onPress={() => { /* TODO: Navigate to store detail */ }} />
-            ) : (
-              <FavoriteProductCard product={item as any} onPress={() => { /* TODO: Navigate to product detail */ }} />
-            )
-          }
+          data={favorites.filter((item) => item && item.id)}
+          renderItem={renderItem}
           keyExtractor={(item, index) => item?.id || `favorite-${index}`}
-          ListEmptyComponent={ListEmptyComponent}
-          ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={{ margin: 20 }} color="#FF7A00" /> : null}
+          ListEmptyComponent={renderEmptyState}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator style={{ margin: 20 }} color="#ff7a33" />
+            ) : null
+          }
           onEndReached={() => {
             if (hasNextPage) fetchNextPage();
           }}
           onEndReachedThreshold={0.5}
           onRefresh={refetch}
           refreshing={isRefetching}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[
+            styles.listContent,
+            favorites.length === 0 && styles.listContentEmpty,
+          ]}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </View>
@@ -124,70 +185,126 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FCFCFC',
   },
-  centered: {
+  // Header
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+  headerRight: {
+    width: 36,
+  },
+  // Tabs
+  tabContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
+  },
+  activeTab: {
+    borderBottomColor: '#ff7a33',
+  },
+  tabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#999',
+  },
+  activeTabText: {
+    color: '#1a1a1a',
+  },
+  // List
+  listContent: {
+    paddingTop: 16,
+    paddingBottom: 20,
+  },
+  listContentEmpty: {
+    flexGrow: 1,
+  },
+  // Empty State
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyIconWrapper: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FFF3EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 28,
+  },
+  exploreButton: {
+    backgroundColor: '#ff7a33',
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 28,
+  },
+  exploreButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  // Error
+  errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  emptySubText: {
-    fontSize: 14,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 8,
-  },
   errorText: {
-    fontSize: 16,
-    color: '#D32F2F',
-    marginBottom: 10,
+    fontSize: 15,
+    color: '#666',
+    marginTop: 12,
+    marginBottom: 16,
   },
-  listContent: {
-    paddingBottom: 20,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginHorizontal: 20,
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#F3F3F3',
-    borderRadius: 25,
-    justifyContent: 'center',
-  },
-  tab: {
-    flex: 1,
+  retryButton: {
+    backgroundColor: '#ff7a33',
+    paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 20,
-    alignItems: 'center',
   },
-  activeTab: {
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  disabledTab: {
-    opacity: 0.5,
-  },
-  tabText: {
+  retryButtonText: {
+    color: 'white',
+    fontSize: 14,
     fontWeight: '600',
-    fontSize: 16,
-    color: '#888',
   },
-  activeTabText: {
-    color: '#FF7A00',
-  },
-  disabledTabText: {
-    color: '#888',
-  }
 });
 
 export default FavoritesScreen;

@@ -6,6 +6,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
 import { apiClient } from '../../api/client';
 import { AdminStackParamList } from '../../navigation/AdminNavigator';
+import Icon from '../../components/ui/Icon';
+import { IconName } from '../../theme/icons';
 
 type NavigationProp = NativeStackNavigationProp<AdminStackParamList>;
 
@@ -46,7 +48,7 @@ const AdminDashboardScreen = () => {
   );
 
   const MenuCard = ({ icon, title, subtitle, onPress, badge }: {
-    icon: string;
+    icon: IconName;
     title: string;
     subtitle: string;
     onPress: () => void;
@@ -54,7 +56,7 @@ const AdminDashboardScreen = () => {
   }) => (
     <TouchableOpacity style={styles.menuCard} onPress={onPress}>
       <View style={styles.menuIcon}>
-        <Text style={styles.menuIconText}>{icon}</Text>
+        <Icon name={icon} size={24} color="#FF6B35" />
         {badge !== undefined && badge > 0 && (
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{badge > 99 ? '99+' : badge}</Text>
@@ -65,7 +67,7 @@ const AdminDashboardScreen = () => {
         <Text style={styles.menuTitle}>{title}</Text>
         <Text style={styles.menuSubtitle}>{subtitle}</Text>
       </View>
-      <Text style={styles.menuArrow}>›</Text>
+      <Icon name="chevron-right" size={24} color="#ccc" />
     </TouchableOpacity>
   );
 
@@ -94,7 +96,7 @@ const AdminDashboardScreen = () => {
         <Text style={styles.sectionTitle}>QUICK ACTIONS</Text>
 
         <MenuCard
-          icon="👤"
+          icon="user"
           title="Pending Sellers"
           subtitle="Review seller applications"
           badge={stats?.pendingSellers}
@@ -102,7 +104,7 @@ const AdminDashboardScreen = () => {
         />
 
         <MenuCard
-          icon="📊"
+          icon="dashboard"
           title="Platform Stats"
           subtitle="View detailed analytics"
           onPress={() => {
@@ -112,7 +114,7 @@ const AdminDashboardScreen = () => {
         />
 
         <MenuCard
-          icon="🏪"
+          icon="store"
           title="Manage Stores"
           subtitle="View and manage all stores"
           onPress={() => {
@@ -122,7 +124,7 @@ const AdminDashboardScreen = () => {
         />
 
         <MenuCard
-          icon="📦"
+          icon="package"
           title="Manage Products"
           subtitle="View and manage all products"
           onPress={() => {
@@ -132,7 +134,7 @@ const AdminDashboardScreen = () => {
         />
 
         <MenuCard
-          icon="👥"
+          icon="users"
           title="User Management"
           subtitle="Manage user accounts"
           onPress={() => {
@@ -232,7 +234,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   menuIconText: {
-    fontSize: 24,
+    // fontSize: 24,
   },
   badge: {
     position: 'absolute',
@@ -265,8 +267,8 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   menuArrow: {
-    fontSize: 24,
-    color: '#ccc',
+    // fontSize: 24,
+    // color: '#ccc',
   },
   logoutSection: {
     padding: 16,

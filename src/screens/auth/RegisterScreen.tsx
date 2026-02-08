@@ -3,19 +3,25 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Scr
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../hooks/useAuth';
+import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 import { registerSchema, RegisterFormData } from '../../domain/validators/AuthValidators';
 import ControlledInput from '../../components/forms/ControlledInput';
+import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
-/**
- * RegisterScreen - User registration form
- *
- * Note: Market selection is simplified for now - uses a default market ID
- * TODO: Add market selection UI in the future
- */
 const RegisterScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { register, isRegistering } = useAuth();
+  const { signInWithGoogle, isLoading: isGoogleLoading, isReady: isGoogleReady, isConfigured: isGoogleConfigured } = useGoogleSignIn({
+    onSuccess: () => {
+      navigation.goBack();
+    },
+    onError: (error) => {
+      console.error('Google Sign-In error:', error);
+    },
+  });
   const [agreed, setAgreed] = useState(false);
 
   const { control, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
@@ -24,28 +30,28 @@ const RegisterScreen = () => {
       fullName: '',
       email: '',
       password: '',
-      marketId: '550e8400-e29b-41d4-a716-446655440000', // Default market ID for now
+      marketId: '550e8400-e29b-41d4-a716-446655440000',
     },
   });
 
   const onSubmit = (data: RegisterFormData) => {
     if (!agreed) {
-      Alert.alert('Terms Required', 'Please agree to the Terms & Conditions to continue');
+      Alert.alert(t('auth.terms_required_title'), t('auth.terms_required_msg'));
       return;
     }
 
     register(data, {
       onSuccess: () => {
-        Alert.alert('Success!', 'Account created successfully', [
+        Alert.alert(t('auth.registration_success_title'), t('auth.registration_success_msg'), [
           {
-            text: 'OK',
+            text: t('common.close'),
             onPress: () => navigation.goBack(),
           },
         ]);
       },
       onError: (error: any) => {
-        const message = error.response?.data?.message || 'Failed to create account';
-        Alert.alert('Registration Failed', message);
+        const message = error.response?.data?.message || t('common.error');
+        Alert.alert(t('auth.registration_failed_title'), message);
       },
     });
   };
@@ -53,15 +59,34 @@ const RegisterScreen = () => {
   return (
     <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Join the fight against food waste</Text>
+        <Text style={styles.title}>{t('auth.create_account')}</Text>
+        <Text style={styles.subtitle}>{t('auth.register_subtitle')}</Text>
       </View>
 
       <View style={styles.form}>
+        {/* Google Sign-In Button - only show when configured */}
+        {isGoogleConfigured && (
+          <>
+            <GoogleSignInButton
+              onPress={signInWithGoogle}
+              isLoading={isGoogleLoading}
+              disabled={!isGoogleReady}
+              label={t('auth.signup_google')}
+            />
+
+            {/* Divider */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t('auth.or')}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+          </>
+        )}
+
         <ControlledInput
           control={control}
           name="fullName"
-          label="Full Name"
+          label={t('auth.full_name')}
           placeholder="Alex Johnson"
           autoCapitalize="words"
           error={errors.fullName}
@@ -70,7 +95,7 @@ const RegisterScreen = () => {
         <ControlledInput
           control={control}
           name="email"
-          label="Email"
+          label={t('auth.email')}
           placeholder="alex@example.com"
           keyboardType="email-address"
           autoCapitalize="none"
@@ -80,8 +105,8 @@ const RegisterScreen = () => {
         <ControlledInput
           control={control}
           name="password"
-          label="Password"
-          placeholder="Minimum 8 characters"
+          label={t('auth.password')}
+          placeholder={t('auth.password')}
           secureTextEntry
           error={errors.password}
         />
@@ -96,8 +121,8 @@ const RegisterScreen = () => {
             {agreed && <Text style={styles.checkmark}>✓</Text>}
           </View>
           <Text style={styles.checkboxLabel}>
-            I agree to the{' '}
-            <Text style={styles.link}>Terms & Conditions</Text>
+            {t('auth.terms_agree')}{' '}
+            <Text style={styles.link}>{t('auth.terms_conditions')}</Text>
           </Text>
         </TouchableOpacity>
 
@@ -110,7 +135,7 @@ const RegisterScreen = () => {
           {isRegistering ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.submitButtonText}>Create Account</Text>
+            <Text style={styles.submitButtonText}>{t('auth.create_account')}</Text>
           )}
         </TouchableOpacity>
 
@@ -120,8 +145,8 @@ const RegisterScreen = () => {
           onPress={() => navigation.navigate('Login' as never)}
         >
           <Text style={styles.loginLinkText}>
-            Already have an account?{' '}
-            <Text style={styles.loginLinkBold}>Login</Text>
+            {t('auth.have_account').split('?')[0]}?{' '}
+            <Text style={styles.loginLinkBold}>{t('auth.login')}</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -153,6 +178,21 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ddd',
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: '#999',
+    fontSize: 14,
   },
   checkboxRow: {
     flexDirection: 'row',

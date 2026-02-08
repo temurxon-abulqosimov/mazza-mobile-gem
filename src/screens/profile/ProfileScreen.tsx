@@ -15,6 +15,9 @@ import { LoadingScreen } from '../../components/ui/LoadingScreen';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Button } from '../../components/ui/Button';
 import { colors, spacing, typography } from '../../theme';
+import Icon from '../../components/ui/Icon';
+import { IconName } from '../../theme/icons';
+import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
 
 type ProfileNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<ProfileStackParamList, 'ProfileHome'>,
@@ -55,7 +58,7 @@ const ProfileScreen = () => {
   if (isError || !userProfile) {
     return (
       <EmptyState
-        icon="⚠️"
+        icon="alert-circle"
         title="Could not load profile"
         subtitle="Please check your connection and try again"
         action={{
@@ -70,128 +73,141 @@ const ProfileScreen = () => {
   const isSeller = userProfile.role === UserRole.SELLER;
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          tintColor={colors.primary}
-        />
-      }
-    >
-      {/* User Header */}
-      <View style={styles.header}>
-        <Image
-          source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }}
-          style={styles.avatar}
-        />
-        <Text style={styles.fullName}>{userProfile.fullName}</Text>
-        <Text style={styles.email}>{userProfile.email}</Text>
-        <Text style={styles.memberSince}>
-          Member since {new Date(userProfile.memberSince).toLocaleDateString()}
-        </Text>
-        {isSeller && <Text style={styles.sellerBadge}>🏪 Seller</Text>}
-      </View>
-
-      {/* Gamification Section */}
-      <View style={styles.gamificationSection}>
-        <Text style={styles.levelName}>{userProfile.level.name} Food Saver</Text>
-        <View style={styles.progressBarContainer}>
-          <View style={[styles.progressBar, { width: `${userProfile.level.progress}%` }]} />
-        </View>
-      </View>
-
-      {/* Stats Cards */}
-      <View style={styles.statsContainer}>
-        <StatCard label="Meals Saved" value={userProfile.stats.mealsSaved} />
-        <StatCard label="CO2 (kg)" value={userProfile.stats.co2Prevented.toFixed(1)} />
-        <StatCard label="Saved" value={`$${userProfile.stats.moneySaved.toFixed(0)}`} />
-      </View>
-
-      {/* HISTORY Section */}
-      <Section title="HISTORY" style={styles.section}>
-        <MenuItem
-          icon="❤️"
-          label="Saved Deals"
-          subtitle="Your favorite picks"
-          onPress={() => navigation.navigate('Favorites' as never)}
-        />
-        <MenuItem
-          icon="🔔"
-          label="Notifications"
-          subtitle="Manage your alerts"
-          onPress={() => navigation.navigate('Notifications')}
-          badge={2}
-        />
-      </Section>
-
-      {/* SELLER Section */}
-      <Section title="SELLER" style={styles.section}>
-        {canBecomeSeller ? (
-          <MenuItem
-            icon="🏪"
-            label="Become a Seller"
-            subtitle="Start selling surplus food"
-            onPress={() => navigation.navigate('BecomeSeller')}
-            showBorder={false}
+    <SafeAreaWrapper>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.primary}
           />
-        ) : isSeller ? (
-          <>
+        }
+      >
+        {/* User Header */}
+        <View style={styles.header}>
+          <Image
+            source={{ uri: userProfile.avatarUrl || 'https://via.placeholder.com/100' }}
+            style={styles.avatar}
+          />
+          <Text style={styles.fullName}>{userProfile.fullName}</Text>
+          <Text style={styles.email}>{userProfile.email}</Text>
+          <Text style={styles.memberSince}>
+            Member since {new Date(userProfile.memberSince).toLocaleDateString()}
+          </Text>
+          {isSeller && (
+            <View style={styles.sellerBadgeContainer}>
+              <Icon name="store" size={14} color={colors.primary} style={{ marginRight: 4 }} />
+              <Text style={styles.sellerBadgeText}>Seller</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Gamification Section */}
+        <View style={styles.gamificationSection}>
+          <Text style={styles.levelName}>{userProfile.level.name} Food Saver</Text>
+          <View style={styles.progressBarContainer}>
+            <View style={[styles.progressBar, { width: `${userProfile.level.progress}%` }]} />
+          </View>
+        </View>
+
+        {/* Stats Cards */}
+        <View style={styles.statsContainer}>
+          <StatCard label="Meals Saved" value={userProfile.stats.mealsSaved} />
+          <StatCard label="CO2 (kg)" value={userProfile.stats.co2Prevented.toFixed(1)} />
+          <StatCard label="Saved" value={`$${userProfile.stats.moneySaved.toFixed(0)}`} />
+        </View>
+
+        {/* HISTORY Section */}
+        <Section title="HISTORY" style={styles.section}>
+          <MenuItem
+            icon="heart"
+            label="Saved Deals"
+            subtitle="Your favorite picks"
+            onPress={() => navigation.navigate('Favorites' as never)}
+          />
+          <MenuItem
+            icon="star"
+            label="Followed Stores"
+            subtitle="Stores you follow"
+            onPress={() => navigation.navigate('FollowedStores')}
+          />
+          <MenuItem
+            icon="notification"
+            label="Notifications"
+            subtitle="Manage your alerts"
+            onPress={() => navigation.navigate('Notifications')}
+            badge={2}
+          />
+        </Section>
+
+        {/* SELLER Section */}
+        <Section title="SELLER" style={styles.section}>
+          {canBecomeSeller ? (
             <MenuItem
-              icon="📊"
-              label="Dashboard & Analytics"
-              onPress={() => navigation.navigate('SellerDashboard' as never)}
-            />
-            <MenuItem
-              icon="📦"
-              label="Manage Products"
-              onPress={() => navigation.navigate('ManageProducts' as never)}
-            />
-            <MenuItem
-              icon="📋"
-              label="View Orders"
-              onPress={() => navigation.navigate('SellerOrders' as never)}
-            />
-            <MenuItem
-              icon="⚙️"
-              label="Store Settings"
-              onPress={() => navigation.navigate('StoreSettings' as never)}
+              icon="store"
+              label="Become a Seller"
+              subtitle="Start selling surplus food"
+              onPress={() => navigation.navigate('BecomeSeller')}
               showBorder={false}
             />
-          </>
-        ) : null}
-      </Section>
+          ) : isSeller ? (
+            <>
+              <MenuItem
+                icon="dashboard"
+                label="Dashboard & Analytics"
+                onPress={() => navigation.navigate('SellerDashboard' as never)}
+              />
+              <MenuItem
+                icon="package"
+                label="Manage Products"
+                onPress={() => navigation.navigate('ManageProducts' as never)}
+              />
+              <MenuItem
+                icon="orders"
+                label="View Orders"
+                onPress={() => navigation.navigate('SellerOrders' as never)}
+              />
+              <MenuItem
+                icon="settings"
+                label="Store Settings"
+                onPress={() => navigation.navigate('StoreSettings' as never)}
+                showBorder={false}
+              />
+            </>
+          ) : null}
+        </Section>
 
-      {/* SETTINGS Section */}
-      <Section title="SETTINGS" style={styles.section}>
-        <MenuItem
-          icon="⚙️"
-          label="Settings"
-          subtitle="App preferences"
-          onPress={() => navigation.navigate('Settings')}
-        />
-        <MenuItem
-          icon="❓"
-          label="Help & Support"
-          subtitle="Get help with the app"
-          onPress={() => {/* TODO: Navigate to help */}}
-          showBorder={false}
-        />
-      </Section>
+        {/* SETTINGS Section */}
+        <Section title="SETTINGS" style={styles.section}>
+          <MenuItem
+            icon="settings"
+            label="Settings"
+            subtitle="App preferences"
+            onPress={() => navigation.navigate('Settings')}
+          />
+          <MenuItem
+            icon="help-circle"
+            label="Help & Support"
+            subtitle="Get help with the app"
+            onPress={() => {/* TODO: Navigate to help */ }}
+            showBorder={false}
+          />
+        </Section>
 
-      {/* Sign Out Button */}
-      <View style={styles.signOutSection}>
-        <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
-          <Text style={styles.signOutIcon}>🚪</Text>
-          <Text style={styles.signOutText}>Sign Out</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Sign Out Button */}
+        <View style={styles.signOutSection}>
+          <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
+            <Icon name="log-out" size={20} color={colors.error} style={styles.signOutIcon} />
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Bottom spacing */}
-      <View style={styles.bottomSpacing} />
-    </ScrollView>
+        {/* Bottom spacing */}
+        <View style={styles.bottomSpacing} />
+      </ScrollView>
+    </SafeAreaWrapper>
   );
 };
 
@@ -206,7 +222,7 @@ const StatCard = ({ label, value }: { label: string; value: string | number }) =
  * Guest Profile View
  * Shown when user is not authenticated
  */
-const GuestProfileView = () => {
+function GuestProfileView() {
   const navigation = useNavigation<any>();
 
   return (
@@ -248,14 +264,14 @@ const GuestProfileView = () => {
       {/* About Mazza Section */}
       <Section title="ABOUT MAZZA" style={styles.guestAboutSection}>
         <MenuItem
-          icon="ℹ️"
+          icon="info"
           label="How it Works"
-          onPress={() => {/* TODO */}}
+          onPress={() => {/* TODO */ }}
         />
         <MenuItem
-          icon="💬"
+          icon="message-circle"
           label="Support"
-          onPress={() => {/* TODO */}}
+          onPress={() => {/* TODO */ }}
           showBorder={false}
         />
       </Section>
@@ -298,15 +314,19 @@ const styles = StyleSheet.create({
     color: colors.text.tertiary,
     marginTop: spacing.xs,
   },
-  sellerBadge: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.primary,
+  sellerBadgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: spacing.sm,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
     backgroundColor: colors.primaryBackground,
     borderRadius: spacing.radiusMd,
+  },
+  sellerBadgeText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: colors.primary,
   },
   gamificationSection: {
     padding: spacing.xl,
@@ -374,7 +394,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   signOutIcon: {
-    fontSize: 20,
     marginRight: spacing.sm,
   },
   signOutText: {

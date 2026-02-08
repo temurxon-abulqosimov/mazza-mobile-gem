@@ -7,9 +7,11 @@ import {
   ViewStyle,
 } from 'react-native';
 import { colors, spacing, typography } from '../../theme';
+import Icon from './Icon';
+import { IconName } from '../../theme/icons';
 
 interface MenuItemProps {
-  icon: string;
+  icon: IconName;
   label: string;
   subtitle?: string;
   onPress: () => void;
@@ -35,7 +37,7 @@ export const MenuItem: React.FC<MenuItemProps> = ({
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Text style={styles.icon}>{icon}</Text>
+      <Icon name={icon} size={20} color={colors.text.primary} style={styles.icon} />
       <View style={styles.content}>
         <Text style={styles.label}>{label}</Text>
         {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
@@ -61,9 +63,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.divider,
   },
   icon: {
-    fontSize: 20,
     marginRight: spacing.md,
-    width: 28,
   },
   content: {
     flex: 1,

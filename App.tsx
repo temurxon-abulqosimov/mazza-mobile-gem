@@ -1,4 +1,5 @@
 import 'react-native-get-random-values'; // Must be first import for uuid polyfill
+import './src/localization/i18n'; // Initialize i18n
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RootNavigator from './src/navigation/RootNavigator';
