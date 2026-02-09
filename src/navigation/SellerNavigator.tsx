@@ -11,7 +11,7 @@ import Icon from '../components/ui/Icon';
 export type SellerTabParamList = {
     Dashboard: undefined;
     Inventory: undefined;
-    Wallet: undefined;
+    SellerOrders: undefined;
     Account: undefined;
 };
 
@@ -61,12 +61,12 @@ const SellerNavigator = () => {
             />
             {/* Wallet / Finance - Using Orders for now as placeholder or combined view */}
             <Tab.Screen
-                name="Wallet"
+                name="SellerOrders"
                 component={SellerOrdersScreen}
                 options={{
-                    tabBarLabel: 'Wallet',
+                    tabBarLabel: 'Orders',
                     tabBarIcon: ({ size, focused, color }) => (
-                        <Icon name={focused ? "wallet-filled" : "wallet"} size={size} color={color} />
+                        <Icon name={focused ? "orders-filled" : "orders"} size={size} color={color} />
                     ),
                 }}
             />

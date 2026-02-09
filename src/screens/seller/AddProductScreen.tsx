@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,27 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Image,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useCreateProduct } from '../../hooks/useCreateProduct';
-import { useCategories } from '../../hooks/useCategories';
+import { CATEGORY_IMAGES } from '../../theme/images';
+
+// Product categories for sellers (excludes cafe/restaurant which are business types)
+const PRODUCT_CATEGORIES = [
+  { id: 'bakery', name: 'Bakery', slug: 'bakery', image: CATEGORY_IMAGES.bakery },
+  { id: 'desserts', name: 'Desserts', slug: 'desserts', image: CATEGORY_IMAGES.desserts },
+  { id: 'fast-food', name: 'Fast Food', slug: 'fast-food', image: CATEGORY_IMAGES['fast-food'] },
+  { id: 'traditional', name: 'Traditional', slug: 'traditional', image: CATEGORY_IMAGES.traditional },
+  { id: 'salad', name: 'Salads & Healthy', slug: 'salad', image: CATEGORY_IMAGES.salad },
+];
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const AddProductScreen = () => {
   const navigation = useNavigation<any>();
   const { createProduct, isCreating } = useCreateProduct();
-  const { categories: categoriesData, isLoading: isCategoriesLoading } = useCategories();
 
   // Form state
   const [name, setName] = useState('');
@@ -25,7 +37,6 @@ const AddProductScreen = () => {
   const [originalPrice, setOriginalPrice] = useState('');
   const [salePrice, setSalePrice] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [selectedQuickImage, setSelectedQuickImage] = useState<string | null>(null);
 
   // Calculate default pickup times using useState initializer function
   const [pickupStart, setPickupStart] = useState(() => {
@@ -43,28 +54,6 @@ const AddProductScreen = () => {
     const minutes = endTime.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   });
-
-  // Set the first category as default when categories load
-  useEffect(() => {
-    if (categoriesData.length > 0 && !selectedCategoryId) {
-      console.log('Setting default category:', categoriesData[0].id);
-      setSelectedCategoryId(categoriesData[0].id);
-    }
-  }, [categoriesData, selectedCategoryId]);
-
-  // Debug log to check selection
-  useEffect(() => {
-    console.log('Selected category ID:', selectedCategoryId);
-    console.log('Available categories:', categoriesData.map(c => ({ id: c.id, name: c.name })));
-  }, [selectedCategoryId, categoriesData]);
-
-  const quickSelectImages = [
-    { label: 'Bakery', emoji: '🥐' },
-    { label: 'Pizza', emoji: '🍕' },
-    { label: 'Salad', emoji: '🥗' },
-    { label: 'Sushi', emoji: '🍱' },
-    { label: 'Grocery', emoji: '🛒' },
-  ];
 
   const handleIncrement = () => setQuantity(prev => prev + 1);
   const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
@@ -194,7 +183,7 @@ const AddProductScreen = () => {
     }
 
     try {
-      const payload = {
+      const payload: any = {
         name: name.trim(),
         description: description.trim(),
         originalPrice: Math.round(originalPriceNum * 100), // Convert dollars to cents
@@ -257,63 +246,39 @@ const AddProductScreen = () => {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Image Uploader */}
-        <TouchableOpacity style={styles.uploadArea} disabled={isCreating}>
-          <View style={styles.uploadIcon}>
-            <Text style={styles.uploadIconText}>
-              {selectedQuickImage || '📷'}
-            </Text>
-          </View>
-          <Text style={styles.uploadTitle}>
-            {selectedQuickImage ? 'Image Selected!' : 'Upload Food Photo'}
-          </Text>
-          <Text style={styles.uploadSubtitle}>
-            {selectedQuickImage ? 'Tap to change or select another below' : 'Tap to upload or select a suggestion below'}
-          </Text>
-        </TouchableOpacity>
+        {/* Category Selection - Visual Grid */}
+        <View style={styles.categorySectionHeader}>
+          <Text style={styles.categorySectionTitle}>Select Category</Text>
+          <Text style={styles.categorySectionSubtitle}>Help customers find your food faster</Text>
+        </View>
 
-        {/* Quick Select Images */}
-        <View style={styles.quickSelectSection}>
-          <Text style={styles.quickSelectTitle}>QUICK SELECT IMAGE</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickSelectScroll}>
-            {quickSelectImages.map((item, index) => {
-              const isSelected = selectedQuickImage === item.emoji;
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.quickSelectItem}
-                  onPress={() => {
-                    setSelectedQuickImage(isSelected ? null : item.emoji);
-                  }}
-                  disabled={isCreating}
-                  activeOpacity={0.7}
-                >
-                  <View style={[
-                    styles.quickSelectImageContainer,
-                    isSelected && styles.quickSelectImageContainerSelected
-                  ]}>
-                    <Text style={[
-                      styles.quickSelectEmoji,
-                      isSelected && styles.quickSelectEmojiSelected
-                    ]}>
-                      {item.emoji}
-                    </Text>
-                    {isSelected && (
-                      <View style={styles.quickSelectCheck}>
-                        <Text style={styles.quickSelectCheckText}>✓</Text>
-                      </View>
-                    )}
+        <View style={styles.categoryImageGrid}>
+          {PRODUCT_CATEGORIES.map((cat, index) => {
+            const isSelected = selectedCategoryId === cat.id;
+            const isLastOdd = index === PRODUCT_CATEGORIES.length - 1 && PRODUCT_CATEGORIES.length % 2 !== 0;
+            return (
+              <TouchableOpacity
+                key={cat.id}
+                style={[
+                  styles.categoryImageCard,
+                  isSelected && styles.categoryImageCardSelected,
+                  isLastOdd && styles.categoryImageCardFull,
+                ]}
+                onPress={() => setSelectedCategoryId(cat.id)}
+                activeOpacity={0.8}
+                disabled={isCreating}
+              >
+                <Image source={cat.image} style={styles.categoryImage} />
+                <View style={styles.categoryImageOverlay} />
+                <Text style={styles.categoryImageLabel}>{cat.name}</Text>
+                {isSelected && (
+                  <View style={styles.categoryImageCheck}>
+                    <Text style={styles.categoryImageCheckText}>✓</Text>
                   </View>
-                  <Text style={[
-                    styles.quickSelectLabel,
-                    isSelected && styles.quickSelectLabelSelected
-                  ]}>
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Product Details */}
@@ -345,59 +310,6 @@ const AddProductScreen = () => {
               onChangeText={setDescription}
               editable={!isCreating}
             />
-          </View>
-
-          {/* Business Type */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Category</Text>
-            <Text style={styles.helpText}>Choose your business type</Text>
-            {isCategoriesLoading ? (
-              <ActivityIndicator color="#f46a25" />
-            ) : categoriesData.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>
-                  No categories available. Please run the seed script on your Railway database.
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.categoryGrid}>
-                {categoriesData.map((category) => {
-                  const isSelected = selectedCategoryId === category.id;
-                  return (
-                    <TouchableOpacity
-                      key={category.id}
-                      style={[
-                        styles.categoryCard,
-                        isSelected && styles.categoryCardSelected,
-                      ]}
-                      onPress={() => {
-                        console.log('Category clicked:', category.id, category.name);
-                        setSelectedCategoryId(category.id);
-                      }}
-                      disabled={isCreating}
-                      activeOpacity={0.7}
-                    >
-                      <View style={styles.categoryCardContent}>
-                        <Text style={styles.categoryIcon}>{category.icon || '📦'}</Text>
-                        <Text
-                          style={[
-                            styles.categoryName,
-                            isSelected && styles.categoryNameSelected,
-                          ]}
-                        >
-                          {category.name}
-                        </Text>
-                        {isSelected && (
-                          <View style={styles.checkmarkContainer}>
-                            <Text style={styles.checkmark}>✓</Text>
-                          </View>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            )}
           </View>
         </View>
 
@@ -625,6 +537,79 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  // Category Selection Styles
+  categorySectionHeader: {
+    marginBottom: 16,
+  },
+  categorySectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1c120d',
+    marginBottom: 4,
+  },
+  categorySectionSubtitle: {
+    fontSize: 14,
+    color: '#9c6549',
+  },
+  categoryImageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 24,
+  },
+  categoryImageCard: {
+    width: (SCREEN_WIDTH - 44) / 2, // 16 padding on each side + 12 gap
+    height: 140,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  categoryImageCardFull: {
+    width: SCREEN_WIDTH - 32, // Full width for last odd item
+    height: 120,
+  },
+  categoryImageCardSelected: {
+    borderWidth: 3,
+    borderColor: '#ff7a33',
+  },
+  categoryImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  categoryImageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
+  categoryImageLabel: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  categoryImageCheck: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#ff7a33',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  categoryImageCheckText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   uploadArea: {
     borderWidth: 2,
     borderStyle: 'dashed',
@@ -701,6 +686,16 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
     transform: [{ scale: 1.05 }],
+  },
+  quickSelectImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 14,
+  },
+  selectedUploadImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 28,
   },
   quickSelectEmoji: {
     fontSize: 32,
@@ -810,9 +805,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   categoryNameSelected: {
-    fontSize: 15,
-    fontWeight: 'bold',
     color: '#f46a25',
+    fontWeight: 'bold',
+  },
+  categoryCardImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 8,
+  },
+  categoryCheck: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#f46a25',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  categoryCheckText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   checkmarkContainer: {
     position: 'absolute',
@@ -829,6 +847,37 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
+  },
+  categoryCardSelectedReadOnly: {
+    backgroundColor: '#fff5ed',
+    borderColor: '#f46a25',
+    borderWidth: 2,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  categoryCardContentHorizontal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  categoryIconSmall: {
+    fontSize: 24,
+  },
+  autoSelectBadge: {
+    backgroundColor: '#ffedd5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#f46a25',
+  },
+  autoSelectText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#c2410c',
   },
   checkmark: {
     fontSize: 14,

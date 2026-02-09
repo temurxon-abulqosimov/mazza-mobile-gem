@@ -10,6 +10,9 @@ import { useDiscovery } from '../../hooks/useDiscovery';
 import { colors, spacing, typography } from '../../theme';
 import Icon from '../../components/ui/Icon';
 import { Product } from '../../domain/Product';
+import { getCategoryImage } from '../../theme/images';
+import { ProductImage } from '../../components/ui/ProductImage';
+
 
 const { width, height } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
@@ -93,7 +96,11 @@ const MapScreen = () => {
             style={styles.cardContainer}
         >
             <View style={styles.card}>
-                <Image source={{ uri: item.images[0]?.url }} style={styles.cardImage} />
+                <ProductImage
+                    imageUrl={item.images[0]?.url || item.images[0]?.thumbnailUrl}
+                    categorySlug={item.category?.slug}
+                    style={styles.cardImage}
+                />
                 <View style={styles.cardContent}>
                     <View style={styles.cardHeader}>
                         <Text style={styles.storeName} numberOfLines={1}>{item.store.name}</Text>
@@ -143,8 +150,9 @@ const MapScreen = () => {
                             styles.markerContainer,
                             selectedProductId === product.id && styles.selectedMarker
                         ]}>
-                            <Image
-                                source={{ uri: product.store.imageUrl || product.images[0]?.url }} // Fallback
+                            <ProductImage
+                                imageUrl={product.store.imageUrl || product.images[0]?.url || product.images[0]?.thumbnailUrl}
+                                categorySlug={product.category?.slug}
                                 style={styles.markerImage}
                             />
                             <View style={styles.markerPriceBadge}>

@@ -18,6 +18,7 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { colors, spacing, typography, shadows } from '../../theme';
 import Icon from '../../components/ui/Icon';
 import { IconName } from '../../theme/icons';
+import { getCategoryImage } from '../../theme/images';
 
 type ProductDetailRouteProp = RouteProp<DiscoveryStackParamList, 'ProductDetail'>;
 type ProductDetailNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'ProductDetail'>;
@@ -139,8 +140,8 @@ const ProductDetailScreen = () => {
   }
 
   const canReserve = product.quantityAvailable > 0;
-  const totalPrice = product.discountedPrice * quantity;
-  const totalSavings = (product.originalPrice - product.discountedPrice) * quantity;
+  const totalPrice = (product.discountedPrice / 100) * quantity;
+  const totalSavings = ((product.originalPrice - product.discountedPrice) / 100) * quantity;
 
   return (
     <View style={styles.container}>
@@ -149,9 +150,11 @@ const ProductDetailScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+
         {/* Image Gallery */}
         <ImageGallery
-          images={product.images.length > 0 ? product.images : [{ url: 'https://via.placeholder.com/400' }]}
+          images={product.images.length > 0 ? product.images : [{ source: getCategoryImage(product.category?.slug) }]}
+          categorySlug={product.category?.slug}
           onBack={() => navigation.goBack()}
           onFavorite={handleFavoriteToggle}
           isFavorite={isFavorite}
@@ -304,7 +307,7 @@ const ProductDetailScreen = () => {
             <View style={styles.priceSection}>
               <Text style={styles.priceLabel}>Total</Text>
               <View style={styles.priceRow}>
-                <Text style={styles.originalPrice}>${(product.originalPrice * quantity).toFixed(2)}</Text>
+                <Text style={styles.originalPrice}>${((product.originalPrice / 100) * quantity).toFixed(2)}</Text>
                 <Text style={styles.discountedPrice}>${totalPrice.toFixed(2)}</Text>
               </View>
               <Text style={styles.savingsText}>You save ${totalSavings.toFixed(2)}</Text>

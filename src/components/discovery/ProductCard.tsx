@@ -4,6 +4,8 @@ import { Product } from '../../domain/Product';
 import Icon from '../ui/Icon';
 import { IconName } from '../../theme/icons';
 import { colors } from '../../theme';
+import { getCategoryImage } from '../../theme/images';
+import { ProductImage } from '../ui/ProductImage';
 
 interface ProductCardProps {
   product: Product;
@@ -37,8 +39,9 @@ const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) =
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.95}>
       {/* Product Image with Overlays */}
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: product.images[0]?.url || product.images[0]?.thumbnailUrl }}
+        <ProductImage
+          imageUrl={product.images[0]?.url || product.images[0]?.thumbnailUrl}
+          categorySlug={product.category?.slug}
           style={styles.image}
           resizeMode="cover"
         />
@@ -111,10 +114,10 @@ const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) =
         <View style={styles.bottomRow}>
           <View style={styles.priceContainer}>
             <Text style={styles.discountedPrice}>
-              ${product.discountedPrice.toFixed(2)}
+              ${(product.discountedPrice / 100).toFixed(2)}
             </Text>
             <Text style={styles.originalPrice}>
-              ${product.originalPrice.toFixed(2)}
+              ${(product.originalPrice / 100).toFixed(2)}
             </Text>
           </View>
 

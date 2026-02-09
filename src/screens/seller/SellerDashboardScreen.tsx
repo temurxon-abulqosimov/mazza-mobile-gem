@@ -159,7 +159,7 @@ const SellerDashboardScreen = () => {
                         <Text style={styles.paymentBadgeTextPaid}>{order.status}</Text>
                       </View>
                     </View>
-                    <Text style={styles.orderInfo}>{order.quantity} items • ${order.totalPrice}</Text>
+                    <Text style={styles.orderInfo}>{order.quantity} items • ${(order.totalPrice / 100).toFixed(2)}</Text>
                     <Text style={styles.pickupTime}>Pickup: Today</Text>
                   </View>
                 </TouchableOpacity>

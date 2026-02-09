@@ -11,11 +11,13 @@ import { colors, spacing, typography, shadows } from '../../theme';
 import { Badge } from '../ui/Badge';
 import Icon from '../ui/Icon';
 import { IconName } from '../../theme/icons';
+import { ProductImage } from '../ui/ProductImage';
 
 interface ProductPreview {
   id: string;
   images: { url: string; thumbnailUrl?: string }[];
   discountedPrice: number;
+  category?: { slug: string };
 }
 
 interface Seller {
@@ -109,13 +111,14 @@ export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress, onProdu
               style={styles.productThumbnail}
               onPress={() => onProductPress && onProductPress(product.id)}
             >
-              <Image
-                source={{ uri: product.images[0]?.url || product.images[0]?.thumbnailUrl }}
+              <ProductImage
+                imageUrl={product.images[0]?.url || product.images[0]?.thumbnailUrl}
+                categorySlug={product.category?.slug}
                 style={styles.productImage}
                 resizeMode="cover"
               />
               <View style={styles.priceTag}>
-                <Text style={styles.priceText}>${product.discountedPrice.toFixed(2)}</Text>
+                <Text style={styles.priceText}>${(product.discountedPrice / 100).toFixed(2)}</Text>
               </View>
             </TouchableOpacity>
           ))}

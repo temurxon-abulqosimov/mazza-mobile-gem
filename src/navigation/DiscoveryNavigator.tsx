@@ -6,6 +6,8 @@ import StoreProfileScreen from '../screens/discovery/StoreProfileScreen';
 import BookingConfirmationScreen from '../screens/booking/BookingConfirmationScreen';
 import { DiscoveryStackParamList } from './types';
 
+export { DiscoveryStackParamList };
+
 const Stack = createNativeStackNavigator<DiscoveryStackParamList>();
 
 const DiscoveryNavigator = () => {

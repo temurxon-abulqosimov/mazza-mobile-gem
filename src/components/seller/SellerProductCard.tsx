@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Product } from '../../domain/Product';
 import { colors, spacing, typography } from '../../theme';
+import { getCategoryImage } from '../../theme/images';
+import { ProductImage } from '../ui/ProductImage';
 
 interface SellerProductCardProps {
   product: Product;
@@ -48,8 +50,9 @@ const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProduct
       <View style={styles.contentRow}>
         {/* Product Image */}
         {product.images && product.images.length > 0 ? (
-          <Image
-            source={{ uri: product.images[0]?.url || product.images[0]?.thumbnailUrl }}
+          <ProductImage
+            imageUrl={product.images[0]?.url || product.images[0]?.thumbnailUrl}
+            categorySlug={product.category?.slug}
             style={styles.image}
             resizeMode="cover"
           />

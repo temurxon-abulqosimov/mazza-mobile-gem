@@ -2,18 +2,29 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList, ActivityIndicator, Button, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useUserBookings } from '../../hooks/useUserBookings';
 import { OrdersStackParamList } from '../../navigation/OrdersNavigator';
+import { MainTabParamList } from '../../navigation/MainAppNavigator';
+import { RootStackParamList } from '../../navigation/RootNavigator';
 import OrderCard from '../../components/booking/OrderCard';
 import { Booking, BookingStatus } from '../../domain/Booking';
 import OrderCardSkeleton from '../../components/booking/OrderCardSkeleton';
 
-type NavigationProp = NativeStackNavigationProp<OrdersStackParamList, 'OrderList'>;
+type OrderHistoryNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<OrdersStackParamList, 'OrderList'>,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<MainTabParamList>,
+    NativeStackNavigationProp<RootStackParamList>
+  >
+>;
 
 interface BookingSection {
   title: string;
   data: Booking[];
 }
+
 
 const groupBookingsByDate = (bookings: Booking[]): BookingSection[] => {
   const sections: { [key: string]: Booking[] } = {};
@@ -65,7 +76,7 @@ const LoadingComponent = () => (
 
 const OrderHistoryScreen = () => {
   const [status, setStatus] = useState<'active' | 'past'>('active');
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<OrderHistoryNavigationProp>();
   const {
     bookings,
     isLoading,
@@ -123,10 +134,7 @@ const OrderHistoryScreen = () => {
               booking={item}
               onPress={() => navigation.navigate('OrderDetail', { bookingId: item.id })}
               onReviewPress={() => {
-                // We need to type cast navigation because AddReview is in RootStack, not OrdersStack
-                // However, OrdersNavigator is nested in MainAppNavigator which is nested in RootNavigator
-                // So we can navigate to 'AddReview' via the parent navigator
-                (navigation.getParent()?.getParent() as any).navigate('AddReview', {
+                navigation.navigate('AddReview', {
                   bookingId: item.id,
                   productId: item.product.id,
                   productName: item.product.name,

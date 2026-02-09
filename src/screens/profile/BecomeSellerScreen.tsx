@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Button, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Image } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,9 @@ import { useSeller } from '../../hooks/useSeller';
 import { sellerApplicationSchema, SellerApplicationFormData } from '../../domain/validators/SellerValidators';
 import ControlledInput from '../../components/forms/ControlledInput';
 import { ProfileStackParamList } from '../../navigation/ProfileNavigator';
+
+import { getCategories } from '../../api/categories';
+import { Category } from '../../domain/Category';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'BecomeSeller'>;
 
@@ -21,12 +24,35 @@ const BecomeSellerScreen = () => {
     const [isGettingLocation, setIsGettingLocation] = useState(false);
     const [locationObtained, setLocationObtained] = useState(false);
 
+    // Category State
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+    const selectedCategoryId = watch('categoryId');
     const lat = watch('lat');
     const lng = watch('lng');
 
     useEffect(() => {
         getCurrentLocation();
+        loadCategories();
     }, []);
+
+    const loadCategories = async () => {
+        try {
+            const data = await getCategories();
+            // data.categories is the array
+            if (data && Array.isArray(data)) { // Check if data itself is array or data.categories
+                // api/categories says returns data.data which is { categories: [] } ?
+                // checking api/categories.ts: return data.data; // Backend returns {..., data: { categories: [...] } }
+                // Wait, getCategories return type is Promise<{ categories: Category[] }>
+                setCategories(data.categories || []);
+            }
+        } catch (error) {
+            console.error('Failed to load categories', error);
+            Alert.alert('Error', 'Failed to load business categories.');
+        } finally {
+            setIsCategoriesLoading(false);
+        }
+    };
 
     const getCurrentLocation = async () => {
         setIsGettingLocation(true);
@@ -101,6 +127,36 @@ const BecomeSellerScreen = () => {
             <Text style={styles.title}>Become a Seller</Text>
             <Text style={styles.subtitle}>Join our community of sellers!</Text>
 
+            <Text style={styles.label}>Select Business Category</Text>
+            {isCategoriesLoading ? (
+                <ActivityIndicator color="#FF6B35" size="small" style={{ alignSelf: 'flex-start', marginBottom: 16 }} />
+            ) : (
+                <View style={styles.categoryContainer}>
+                    {categories.map((cat) => (
+                        <TouchableOpacity
+                            key={cat.id}
+                            style={[
+                                styles.categoryCard,
+                                selectedCategoryId === cat.id && styles.categoryCardSelected
+                            ]}
+                            onPress={() => setValue('categoryId', cat.id, { shouldValidate: true })}
+                        >
+                            {/* Handle icon being URL or emoji */}
+                            {cat.icon?.startsWith('http') ? (
+                                <Image source={{ uri: cat.icon }} style={styles.categoryImage} />
+                            ) : (
+                                <Text style={styles.categoryIcon}>{cat.icon || '📦'}</Text>
+                            )}
+                            <Text style={[
+                                styles.categoryName,
+                                selectedCategoryId === cat.id && styles.categoryNameSelected
+                            ]}>{cat.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            )}
+            {errors.categoryId && <Text style={styles.errorText}>{errors.categoryId.message}</Text>}
+
             <ControlledInput name="businessName" label="Business Name" control={control} error={errors.businessName} />
             <ControlledInput name="description" label="Description" control={control} error={errors.description} multiline numberOfLines={4} />
             <ControlledInput name="address" label="Address" control={control} error={errors.address} />
@@ -140,6 +196,16 @@ const styles = StyleSheet.create({
     locationInfo: { marginTop: 8, fontSize: 12, color: '#28a745', textAlign: 'center' },
     submitButton: { backgroundColor: '#FF6B35', borderRadius: 8, paddingVertical: 16, alignItems: 'center', marginTop: 20, marginBottom: 40 },
     submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+
+    label: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
+    categoryContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
+    categoryCard: { width: '48%', backgroundColor: '#f9f9f9', borderRadius: 12, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: '#eee', marginBottom: 10 },
+    categoryCardSelected: { backgroundColor: '#FFF5F2', borderColor: '#FF6B35' },
+    categoryIcon: { fontSize: 32, marginBottom: 8 },
+    categoryImage: { width: 50, height: 50, borderRadius: 25, marginBottom: 8 },
+    categoryName: { fontSize: 14, color: '#666', textAlign: 'center', fontWeight: '500' },
+    categoryNameSelected: { color: '#FF6B35', fontWeight: 'bold' },
+    errorText: { color: 'red', fontSize: 12, marginBottom: 12 },
 });
 
 export default BecomeSellerScreen;

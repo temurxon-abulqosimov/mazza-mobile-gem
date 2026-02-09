@@ -7,17 +7,26 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
+  ImageSourcePropType,
 } from 'react-native';
 import { colors, spacing } from '../../theme';
+import { ProductImage } from '../ui/ProductImage';
 
 const { width } = Dimensions.get('window');
 const IMAGE_HEIGHT = width * 0.75;
 
+export interface GalleryImage {
+  url?: string;
+  thumbnailUrl?: string;
+  source?: ImageSourcePropType;
+}
+
 interface ImageGalleryProps {
-  images: Array<{ url: string; thumbnailUrl?: string }>;
+  images: GalleryImage[];
   onBack?: () => void;
   onFavorite?: () => void;
   isFavorite?: boolean;
+  categorySlug?: string;
 }
 
 export const ImageGallery: React.FC<ImageGalleryProps> = ({
@@ -25,7 +34,9 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
   onBack,
   onFavorite,
   isFavorite = false,
+  categorySlug,
 }) => {
+  // ...
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleScroll = (event: any) => {
@@ -43,14 +54,27 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        {images.map((image, index) => (
-          <Image
-            key={index}
-            source={{ uri: image.url || image.thumbnailUrl }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ))}
+        {images.map((image, index) => {
+          if (image.source) {
+            return (
+              <Image
+                key={index}
+                source={image.source}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            );
+          }
+          return (
+            <ProductImage
+              key={index}
+              imageUrl={image.url || image.thumbnailUrl}
+              categorySlug={categorySlug}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          );
+        })}
       </ScrollView>
 
       {/* Back Button */}

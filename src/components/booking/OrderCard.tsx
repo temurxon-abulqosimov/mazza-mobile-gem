@@ -74,7 +74,7 @@ const OrderCard = ({ booking, onPress, onReviewPress }: OrderCardProps) => {
           <View style={styles.priceContainer}>
             {/* TODO: The API's /bookings endpoint does not return the original price. 
                         It needs to be added to the booking's product object to display the discount. */}
-            <Text style={styles.discountedPrice}>${booking.totalPrice.toFixed(2)}</Text>
+            <Text style={styles.discountedPrice}>${(booking.totalPrice / 100).toFixed(2)}</Text>
           </View>
         </View>
         <Image source={{ uri: booking.product.imageUrl }} style={styles.image} />

@@ -1,20 +1,31 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Button, TouchableOpacity, Image, Linking } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRoute, useNavigation, CompositeNavigationProp } from '@react-navigation/native';
+import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
 
 import { OrdersStackParamList } from '../../navigation/OrdersNavigator';
+import { MainTabParamList } from '../../navigation/MainAppNavigator';
+import { RootStackParamList } from '../../navigation/RootNavigator';
 import { useBookingDetail } from '../../hooks/useBookingDetail';
 import { BookingStatus } from '../../domain/Booking';
 
 type OrderDetailProps = NativeStackScreenProps<OrdersStackParamList, 'OrderDetail'>;
 type OrderDetailRouteProp = OrderDetailProps['route'];
 
+type OrderDetailNavigationProp = CompositeNavigationProp<
+    NativeStackNavigationProp<OrdersStackParamList, 'OrderDetail'>,
+    CompositeNavigationProp<
+        BottomTabNavigationProp<MainTabParamList>,
+        NativeStackNavigationProp<RootStackParamList>
+    >
+>;
+
 const OrderDetailScreen = () => {
     const route = useRoute<OrderDetailRouteProp>();
-    const navigation = useNavigation();
+    const navigation = useNavigation<OrderDetailNavigationProp>();
     const { bookingId } = route.params;
     const { booking, isLoading, isError, refetch } = useBookingDetail(bookingId);
 
@@ -112,7 +123,7 @@ const OrderDetailScreen = () => {
                     <TouchableOpacity
                         style={styles.reviewButton}
                         onPress={() => {
-                            (navigation.getParent()?.getParent() as any).navigate('AddReview', {
+                            navigation.navigate('AddReview', {
                                 bookingId: booking.id,
                                 productId: booking.product.id,
                                 productName: booking.product.name,

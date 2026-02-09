@@ -9,6 +9,7 @@ interface SellerApplicationPayload {
     lat: number;
     lng: number;
     phone?: string;
+    categoryId: string;
 }
 
 export const apply = async (payload: SellerApplicationPayload): Promise<ApiResponse<any>> => {
@@ -26,6 +27,33 @@ export interface DashboardStats {
 
 export const getDashboardStats = async (): Promise<ApiResponse<DashboardStats>> => {
     const { data } = await apiClient.get('/seller/dashboard/stats');
+    return data;
+};
+
+export interface SellerDashboardResponse {
+    store: {
+        id: string;
+        name: string;
+        imageUrl: string | null;
+        categories: {
+            id: string;
+            name: string;
+            slug: string;
+            icon: string | null;
+        }[];
+    };
+    stats: {
+        period: string;
+        posted: number;
+        postedChange: number;
+        sold: number;
+        revenue: number;
+        foodSaved: number;
+    };
+}
+
+export const getSellerDashboard = async (): Promise<ApiResponse<SellerDashboardResponse>> => {
+    const { data } = await apiClient.get('/seller/dashboard');
     return data;
 };
 

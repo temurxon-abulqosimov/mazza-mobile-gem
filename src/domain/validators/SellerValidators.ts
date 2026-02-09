@@ -8,6 +8,7 @@ export const sellerApplicationSchema = z.object({
   lat: z.number().min(-90).max(90),
   lng: z.number().min(-180).max(180),
   phone: z.string().min(10, 'Phone number must be at least 10 digits').max(20, 'Phone number must be at most 20 digits'),
+  categoryId: z.string().min(1, 'Please select a business category').uuid('Invalid category'),
 });
 
 export type SellerApplicationFormData = z.infer<typeof sellerApplicationSchema>;

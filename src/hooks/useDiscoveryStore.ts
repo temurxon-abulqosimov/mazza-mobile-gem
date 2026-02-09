@@ -1,7 +1,5 @@
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
-import { discoveryApi } from '../api';
-import { PaginatedResponse } from '../domain/Common';
+import { useQuery } from '@tanstack/react-query';
+import { getStoreProducts } from '../api/stores';
 import { Product } from '../domain/Product';
 
 interface UseDiscoveryStoreParams {
@@ -10,48 +8,24 @@ interface UseDiscoveryStoreParams {
 }
 
 export const useDiscoveryStore = ({ storeId, enabled = true }: UseDiscoveryStoreParams) => {
-    const queryClient = useQueryClient();
-    const queryKey = ['discovery', 'store', storeId];
-
     const {
-        data,
+        data: products,
         isLoading,
-        isError,
-        error,
-        isRefetching,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
-    } = useInfiniteQuery<PaginatedResponse<{ products: Product[] }>>({
-        queryKey,
-        queryFn: ({ pageParam }) => discoveryApi.discoverProducts({
-            storeId,
-            cursor: pageParam as string | undefined,
-            limit: 20,
-        }),
-        getNextPageParam: (lastPage) => lastPage.meta.pagination.hasMore ? lastPage.meta.pagination.cursor : undefined,
-        initialPageParam: undefined,
-        enabled: enabled && !!storeId,
-        staleTime: 60 * 1000, // 1 minute stale time for store products
-        gcTime: 5 * 60 * 1000, // 5 minutes cache
-    });
-
-    // Reset and refetch
-    const refetch = useCallback(async () => {
-        await queryClient.resetQueries({ queryKey });
-    }, [queryClient, queryKey]);
-
-    const products = data?.pages.flatMap(page => page.data.products) ?? [];
-
-    return {
-        products,
-        isLoading,
-        isError,
         error,
         refetch,
-        isRefetching,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
+    } = useQuery<Product[]>({
+        queryKey: ['store-products', storeId],
+        queryFn: async (): Promise<Product[]> => {
+            const response = await getStoreProducts(storeId);
+            return response.data;
+        },
+        enabled: enabled && !!storeId,
+    });
+
+    return {
+        products: products || [],
+        isLoading,
+        error,
+        refetch,
     };
 };
