@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import ReviewsList from '../../components/ReviewsList';
 import { useFollowStore } from '../../hooks/useFollowStore';
 import { useStore } from '../../hooks/useStore';
+import { useDiscoveryStore } from '../../hooks/useDiscoveryStore';
+import ProductCard from '../../components/discovery/ProductCard';
 
 type StoreProfileRouteProp = RouteProp<DiscoveryStackParamList, 'StoreProfile'>;
 type StoreProfileNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'StoreProfile'>;
@@ -18,8 +20,10 @@ const StoreProfileScreen = () => {
     const { storeId, storeName, storeImage, storeAddress, storeRating } = route.params;
 
     const { store, isLoading: isStoreLoading } = useStore(storeId);
+    const { products, isLoading: isProductsLoading } = useDiscoveryStore({ storeId });
     const { follow, unfollow, isFollowingLoading } = useFollowStore();
     const [isFollowing, setIsFollowing] = useState(false);
+    const [activeTab, setActiveTab] = useState<'products' | 'reviews'>('products');
 
     // Sync follow state when store data loads
     useEffect(() => {
@@ -69,8 +73,45 @@ const StoreProfileScreen = () => {
         }
     };
 
+    const renderProducts = () => {
+        if (isProductsLoading && products.length === 0) {
+            return <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }} />;
+        }
+
+        if (products.length === 0) {
+            return (
+                <View style={styles.emptyState}>
+                    <Text style={styles.emptyStateText}>No products available at the moment</Text>
+                </View>
+            );
+        }
+
+        return (
+            <View style={styles.productsGrid}>
+                {products.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={{
+                            ...product,
+                            store: { // hydrate store info from route/hook since discoverProducts might not return full store relation for all items
+                                id: storeId,
+                                name: storeName,
+                                rating: storeRating,
+                                imageUrl: storeImage,
+                                // @ts-ignore
+                                location: { address: storeAddress }
+                            }
+                        }}
+                        onPress={() => navigation.navigate('ProductDetail', { productId: product.id })}
+                    />
+                ))}
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
+            {/* ... Header ... */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="white" />
@@ -108,22 +149,70 @@ const StoreProfileScreen = () => {
 
             <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
                 <View style={styles.infoSection}>
-                    <Text style={styles.sectionTitle}>About</Text>
                     <Text style={styles.address}>
                         <Ionicons name="location-outline" size={16} color={colors.text.secondary} />
                         {' '}{storeAddress || 'Address not available'}
                     </Text>
                 </View>
 
-                <View style={styles.divider} />
+                {/* Tabs */}
+                <View style={styles.tabContainer}>
+                    <TouchableOpacity
+                        style={[styles.tab, activeTab === 'products' && styles.activeTab]}
+                        onPress={() => setActiveTab('products')}
+                    >
+                        <Text style={[styles.tabText, activeTab === 'products' && styles.activeTabText]}>Products</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.tab, activeTab === 'reviews' && styles.activeTab]}
+                        onPress={() => setActiveTab('reviews')}
+                    >
+                        <Text style={[styles.tabText, activeTab === 'reviews' && styles.activeTabText]}>Reviews</Text>
+                    </TouchableOpacity>
+                </View>
 
-                <ReviewsList storeId={storeId} />
+                {activeTab === 'products' ? renderProducts() : <ReviewsList storeId={storeId} />}
             </ScrollView>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    // ... existing styles ...
+    tabContainer: {
+        flexDirection: 'row',
+        marginBottom: spacing.lg,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.divider,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: spacing.md,
+        alignItems: 'center',
+    },
+    activeTab: {
+        borderBottomWidth: 2,
+        borderBottomColor: colors.primary,
+    },
+    tabText: {
+        ...typography.h4,
+        color: colors.text.secondary,
+    },
+    activeTabText: {
+        color: colors.primary,
+    },
+    productsGrid: {
+        gap: spacing.md,
+    },
+    emptyState: {
+        padding: spacing.xl,
+        alignItems: 'center',
+    },
+    emptyStateText: {
+        ...typography.body,
+        color: colors.text.secondary,
+    },
+    // ... rest of existing styles
     container: {
         flex: 1,
         backgroundColor: colors.background,

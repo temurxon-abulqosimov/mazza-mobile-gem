@@ -4,12 +4,13 @@ import { Product } from '../domain/Product';
 import { Store } from '../domain/Store';
 
 interface DiscoveryParams {
-  lat: number;
-  lng: number;
+  lat?: number;
+  lng?: number;
   radius?: number;
   limit?: number;
   cursor?: string;
   categoryId?: string;
+  storeId?: string;
 }
 
 export const discoverProducts = async (params: DiscoveryParams): Promise<PaginatedResponse<{ products: Product[] }>> => {

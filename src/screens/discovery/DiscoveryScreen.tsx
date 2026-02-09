@@ -171,17 +171,25 @@ const DiscoveryScreen = () => {
     const uniqueStores = new Map();
     products.forEach((product) => {
       if (!product.store) return;
-      if (!uniqueStores.has(product.store.id)) {
+
+      const existingStore = uniqueStores.get(product.store.id);
+      if (!existingStore) {
         uniqueStores.set(product.store.id, {
           id: product.store.id,
           name: product.store.name,
           imageUrl: product.store.imageUrl,
-          category: 'Store',
+          category: 'Store', // Ideally should come from store categories
           rating: product.store.rating || 0,
           distance: product.distance || 0,
           address: product.store.location?.address || 'Unknown Address',
-          location: product.store.location, // Keep full location object if needed
+          location: product.store.location,
+          products: [product], // Initialize with this product
         });
+      } else {
+        // Add product to existing store if not already present (optimization: check ID)
+        if (!existingStore.products.find((p: any) => p.id === product.id)) {
+          existingStore.products.push(product);
+        }
       }
     });
     return Array.from(uniqueStores.values()).slice(0, 5);
@@ -266,6 +274,7 @@ const DiscoveryScreen = () => {
               key={seller.id}
               seller={seller}
               onPress={() => handleStorePress(seller)}
+              onProductPress={handleProductPress}
             />
           ))}
         </ScrollView>
