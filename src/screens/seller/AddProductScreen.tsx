@@ -15,6 +15,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useCreateProduct, useUpdateProduct } from '../../hooks/useCreateProduct';
 import { CATEGORY_IMAGES } from '../../theme/images';
+import TimePickerSheet from '../../components/seller/TimePickerSheet';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -59,21 +60,14 @@ const AddProductScreen = () => {
   // Calculate default pickup times using useState initializer function
   const [pickupStart, setPickupStart] = useState(() => {
     if (productToEdit?.pickupWindowStart) {
-      // Assuming format HH:MM or ISO string. Backend usually sends ISO.
-      // If ISO, extract HH:MM. If HH:MM, use as is.
       const time = new Date(productToEdit.pickupWindowStart);
       if (!isNaN(time.getTime())) {
         const hours = time.getHours().toString().padStart(2, '0');
-        const minutes = time.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+        return `${hours}:00`;
       }
-      return '12:00'; // Fallback
+      return '13:00'; // Default
     }
-    const now = new Date();
-    const startTime = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours from now
-    const hours = startTime.getHours().toString().padStart(2, '0');
-    const minutes = startTime.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return '13:00'; // Default start time
   });
 
   const [pickupEnd, setPickupEnd] = useState(() => {
@@ -81,17 +75,19 @@ const AddProductScreen = () => {
       const time = new Date(productToEdit.pickupWindowEnd);
       if (!isNaN(time.getTime())) {
         const hours = time.getHours().toString().padStart(2, '0');
-        const minutes = time.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+        return `${hours}:00`;
       }
-      return '17:00'; // Fallback
+      return '16:00'; // Default
     }
-    const now = new Date();
-    const endTime = new Date(now.getTime() + 5 * 60 * 60 * 1000); // 5 hours from now
-    const hours = endTime.getHours().toString().padStart(2, '0');
-    const minutes = endTime.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return '16:00'; // Default end time (3 hours after start)
   });
+
+  // Day selector: 'today' or 'tomorrow'
+  const [pickupDay, setPickupDay] = useState<'today' | 'tomorrow'>('today');
+
+  // Time picker modal state
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
   const handleIncrement = () => setQuantity(prev => prev + 1);
   const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
@@ -104,34 +100,20 @@ const AddProductScreen = () => {
     return `${displayHour}:${minutes} ${period}`;
   };
 
-  const handleTimeChange = (type: 'start' | 'end', increment: boolean) => {
-    const currentTime = type === 'start' ? pickupStart : pickupEnd;
-    const [hours, minutes] = currentTime.split(':').map(Number);
-
-    let newHours = hours;
-    let newMinutes = minutes;
-
-    if (increment) {
-      newMinutes += 30;
-      if (newMinutes >= 60) {
-        newMinutes = 0;
-        newHours = (newHours + 1) % 24;
-      }
-    } else {
-      newMinutes -= 30;
-      if (newMinutes < 0) {
-        newMinutes = 30;
-        newHours = newHours === 0 ? 23 : newHours - 1;
-      }
+  const getPickupDate = () => {
+    const date = new Date();
+    if (pickupDay === 'tomorrow') {
+      date.setDate(date.getDate() + 1);
     }
+    return date;
+  };
 
-    const newTime = `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
-
-    if (type === 'start') {
-      setPickupStart(newTime);
-    } else {
-      setPickupEnd(newTime);
-    }
+  const getDayLabel = (day: 'today' | 'tomorrow') => {
+    const date = new Date();
+    if (day === 'tomorrow') date.setDate(date.getDate() + 1);
+    const dayNum = date.getDate();
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${dayNum} ${months[date.getMonth()]}`;
   };
 
   const calculateDuration = (start: string, end: string) => {
@@ -194,42 +176,45 @@ const AddProductScreen = () => {
     const [startHours, startMinutes] = pickupStart.split(':').map(Number);
     const [endHours, endMinutes] = pickupEnd.split(':').map(Number);
 
-    const startTime = new Date(now);
+    const pickupDate = getPickupDate();
+    const startTime = new Date(pickupDate);
     startTime.setHours(startHours, startMinutes, 0, 0);
 
-    const endTime = new Date(now);
+    const endTime = new Date(pickupDate);
     endTime.setHours(endHours, endMinutes, 0, 0);
 
-    // If start time is in the past, move it to tomorrow
-    if (startTime <= now) {
-      startTime.setDate(startTime.getDate() + 1);
-    }
-
-    // If end time is before start time, move it to the next day
+    // If end time is before or equal to start time, it's invalid
     if (endTime <= startTime) {
-      endTime.setDate(startTime.getDate() + 1);
-    }
-
-    // Check if start time is at least 30 minutes in the future
-    const minFutureTime = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes from now
-    if (startTime < minFutureTime) {
       Alert.alert(
         t('seller.invalid_pickup_time'),
-        t('seller.pickup_time_error')
+        t('seller.end_after_start_error')
       );
       return;
     }
 
+    // Only check 30-min future rule for today (tomorrow is always valid)
+    if (pickupDay === 'today') {
+      const minFutureTime = new Date(now.getTime() + 30 * 60 * 1000);
+      if (startTime < minFutureTime) {
+        Alert.alert(
+          t('seller.invalid_pickup_time'),
+          t('seller.pickup_time_error')
+        );
+        return;
+      }
+    }
+
     try {
+      // Send full ISO date-time strings so the backend knows the exact date
       const payload: any = {
         name: name.trim(),
         description: description.trim(),
-        originalPrice: Math.round(originalPriceNum * 100), // Convert dollars to cents
-        discountedPrice: Math.round(salePriceNum * 100), // Convert dollars to cents
+        originalPrice: Math.round(originalPriceNum * 100),
+        discountedPrice: Math.round(salePriceNum * 100),
         quantity,
         categoryId: selectedCategoryId,
-        pickupWindowStart: pickupStart,
-        pickupWindowEnd: pickupEnd,
+        pickupWindowStart: startTime.toISOString(),
+        pickupWindowEnd: endTime.toISOString(),
       };
 
       console.log(`${isEditMode ? 'Updating' : 'Creating'} product with payload:`, JSON.stringify(payload, null, 2));
@@ -438,84 +423,94 @@ const AddProductScreen = () => {
           <Text style={styles.inputLabel}>{t('seller.pickup_window')}</Text>
           <Text style={styles.helpText}>{t('seller.pickup_subtitle')}</Text>
 
-          {/* Visual Timeline */}
-          <View style={styles.timelineContainer}>
-            <View style={styles.timelineBar}>
-              <View style={styles.timelineTrack} />
-              <View style={styles.timelineActiveSegment} />
-
-              {/* Start Time Marker */}
-              <View style={styles.timeMarkerStart}>
-                <View style={styles.timeMarkerDot} />
-                <View style={styles.timeMarkerLabel}>
-                  <Text style={styles.timeMarkerLabelText}>{t('seller.start')}</Text>
-                  <Text style={styles.timeMarkerTime}>{formatTimeDisplay(pickupStart)}</Text>
-                </View>
+          {/* Day Selector */}
+          <View style={styles.daySelectorRow}>
+            <TouchableOpacity
+              style={[
+                styles.dayChip,
+                pickupDay === 'today' && styles.dayChipSelected,
+              ]}
+              onPress={() => setPickupDay('today')}
+              disabled={isCreating}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.dayChipEmoji}>📅</Text>
+              <View>
+                <Text style={[styles.dayChipLabel, pickupDay === 'today' && styles.dayChipLabelSelected]}>
+                  {t('seller.today')}
+                </Text>
+                <Text style={[styles.dayChipDate, pickupDay === 'today' && styles.dayChipDateSelected]}>
+                  {getDayLabel('today')}
+                </Text>
               </View>
-
-              {/* End Time Marker */}
-              <View style={styles.timeMarkerEnd}>
-                <View style={styles.timeMarkerDot} />
-                <View style={styles.timeMarkerLabel}>
-                  <Text style={styles.timeMarkerLabelText}>{t('seller.end')}</Text>
-                  <Text style={styles.timeMarkerTime}>{formatTimeDisplay(pickupEnd)}</Text>
+              {pickupDay === 'today' && (
+                <View style={styles.dayCheckmark}>
+                  <Text style={styles.dayCheckmarkText}>✓</Text>
                 </View>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.dayChip,
+                pickupDay === 'tomorrow' && styles.dayChipSelected,
+              ]}
+              onPress={() => setPickupDay('tomorrow')}
+              disabled={isCreating}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.dayChipEmoji}>📅</Text>
+              <View>
+                <Text style={[styles.dayChipLabel, pickupDay === 'tomorrow' && styles.dayChipLabelSelected]}>
+                  {t('seller.tomorrow')}
+                </Text>
+                <Text style={[styles.dayChipDate, pickupDay === 'tomorrow' && styles.dayChipDateSelected]}>
+                  {getDayLabel('tomorrow')}
+                </Text>
               </View>
-            </View>
+              {pickupDay === 'tomorrow' && (
+                <View style={styles.dayCheckmark}>
+                  <Text style={styles.dayCheckmarkText}>✓</Text>
+                </View>
+              )}
+            </TouchableOpacity>
           </View>
 
-          {/* Time Adjusters */}
-          <View style={styles.timeAdjustersRow}>
-            <View style={styles.timeAdjusterGroup}>
-              <View style={styles.timeAdjusterHeader}>
-                <Text style={styles.timeAdjusterIcon}>🕐</Text>
-                <Text style={styles.timeAdjusterTitle}>{t('seller.start_time')}</Text>
-              </View>
-              <View style={styles.timeControls}>
-                <TouchableOpacity
-                  style={styles.timeControlButton}
-                  onPress={() => handleTimeChange('start', false)}
-                  disabled={isCreating}
-                >
-                  <Text style={styles.timeControlButtonText}>−30m</Text>
-                </TouchableOpacity>
-                <View style={styles.timeDisplay}>
-                  <Text style={styles.timeDisplayLarge}>{formatTimeDisplay(pickupStart)}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.timeControlButton}
-                  onPress={() => handleTimeChange('start', true)}
-                  disabled={isCreating}
-                >
-                  <Text style={styles.timeControlButtonText}>+30m</Text>
-                </TouchableOpacity>
-              </View>
+          {/* Time Selectors */}
+          <View style={styles.timeSelectorsRow}>
+            {/* Start Time */}
+            <View style={styles.timeSelectorGroup}>
+              <Text style={styles.timeSelectorLabel}>{t('seller.start_time')}</Text>
+              <TouchableOpacity
+                style={styles.timeSelectorButton}
+                onPress={() => setShowStartTimePicker(true)}
+                disabled={isCreating}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.timeSelectorIcon}>🕐</Text>
+                <Text style={styles.timeSelectorValue}>{formatTimeDisplay(pickupStart)}</Text>
+                <Text style={styles.timeSelectorArrow}>▼</Text>
+              </TouchableOpacity>
             </View>
 
-            <View style={styles.timeAdjusterGroup}>
-              <View style={styles.timeAdjusterHeader}>
-                <Text style={styles.timeAdjusterIcon}>🕐</Text>
-                <Text style={styles.timeAdjusterTitle}>{t('seller.end_time')}</Text>
-              </View>
-              <View style={styles.timeControls}>
-                <TouchableOpacity
-                  style={styles.timeControlButton}
-                  onPress={() => handleTimeChange('end', false)}
-                  disabled={isCreating}
-                >
-                  <Text style={styles.timeControlButtonText}>−30m</Text>
-                </TouchableOpacity>
-                <View style={styles.timeDisplay}>
-                  <Text style={styles.timeDisplayLarge}>{formatTimeDisplay(pickupEnd)}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.timeControlButton}
-                  onPress={() => handleTimeChange('end', true)}
-                  disabled={isCreating}
-                >
-                  <Text style={styles.timeControlButtonText}>+30m</Text>
-                </TouchableOpacity>
-              </View>
+            {/* Arrow between */}
+            <View style={styles.timeArrowContainer}>
+              <Text style={styles.timeArrowText}>→</Text>
+            </View>
+
+            {/* End Time */}
+            <View style={styles.timeSelectorGroup}>
+              <Text style={styles.timeSelectorLabel}>{t('seller.end_time')}</Text>
+              <TouchableOpacity
+                style={styles.timeSelectorButton}
+                onPress={() => setShowEndTimePicker(true)}
+                disabled={isCreating}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.timeSelectorIcon}>🕐</Text>
+                <Text style={styles.timeSelectorValue}>{formatTimeDisplay(pickupEnd)}</Text>
+                <Text style={styles.timeSelectorArrow}>▼</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -523,10 +518,26 @@ const AddProductScreen = () => {
           <View style={styles.durationInfo}>
             <Text style={styles.durationIcon}>⏱️</Text>
             <Text style={styles.durationText}>
-              {t('seller.pickup_duration')} {calculateDuration(pickupStart, pickupEnd)}
+              {pickupDay === 'today' ? t('seller.today') : t('seller.tomorrow')} · {t('seller.pickup_duration')} {calculateDuration(pickupStart, pickupEnd)}
             </Text>
           </View>
         </View>
+
+        {/* Time Picker Modals */}
+        <TimePickerSheet
+          visible={showStartTimePicker}
+          onClose={() => setShowStartTimePicker(false)}
+          onSelect={setPickupStart}
+          selectedTime={pickupStart}
+          title={t('seller.select_start_time')}
+        />
+        <TimePickerSheet
+          visible={showEndTimePicker}
+          onClose={() => setShowEndTimePicker(false)}
+          onSelect={setPickupEnd}
+          selectedTime={pickupEnd}
+          title={t('seller.select_end_time')}
+        />
 
         <View style={styles.bottomSpacer} />
       </ScrollView>
@@ -1039,140 +1050,110 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e8d7ce',
   },
-  timelineContainer: {
-    marginVertical: 20,
-    paddingHorizontal: 10,
-  },
-  timelineBar: {
-    height: 60,
-    position: 'relative',
-    justifyContent: 'center',
-  },
-  timelineTrack: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    height: 4,
-    backgroundColor: '#e8d7ce',
-    borderRadius: 2,
-  },
-  timelineActiveSegment: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    height: 4,
-    backgroundColor: '#f46a25',
-    borderRadius: 2,
-  },
-  timeMarkerStart: {
-    position: 'absolute',
-    left: 10,
-    alignItems: 'center',
-  },
-  timeMarkerEnd: {
-    position: 'absolute',
-    right: 10,
-    alignItems: 'center',
-  },
-  timeMarkerDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#f46a25',
-    borderWidth: 3,
-    borderColor: 'white',
-    shadowColor: '#f46a25',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  timeMarkerLabel: {
-    marginTop: 8,
-    alignItems: 'center',
-    backgroundColor: '#fff5ed',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#f46a25',
-  },
-  timeMarkerLabelText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#9c6549',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  timeMarkerTime: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: '#f46a25',
-    marginTop: 2,
-  },
-  timeAdjustersRow: {
+  // Day selector styles
+  daySelectorRow: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 10,
+    marginBottom: 20,
   },
-  timeAdjusterGroup: {
+  dayChip: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
     backgroundColor: '#f8f6f5',
-    borderRadius: 12,
-    padding: 12,
-    minHeight: 110, // Ensure enough height
-    justifyContent: 'center',
-  },
-  timeAdjusterHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12, // More space
-    gap: 6,
-    justifyContent: 'center', // Center title
-  },
-  timeAdjusterIcon: {
-    fontSize: 16,
-  },
-  timeAdjusterTitle: {
-    fontSize: 14, // Larger title
-    fontWeight: '600',
-    color: '#1c120d',
-  },
-  timeControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12, // More gap
-    justifyContent: 'space-between', // Distribute evenly
-  },
-  timeControlButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 10, // Taller button
-    backgroundColor: '#f46a25',
-    borderRadius: 8,
-    minWidth: 44, // Minimum touch target width
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  timeControlButtonText: {
-    fontSize: 14, // Larger text
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  timeDisplay: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderWidth: 1,
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 2,
     borderColor: '#e8d7ce',
-    marginHorizontal: 4, // Spacing from buttons
   },
-  timeDisplayLarge: {
-    fontSize: 16, // Larger time font
+  dayChipSelected: {
+    backgroundColor: '#fff5ed',
+    borderColor: '#f46a25',
+  },
+  dayChipEmoji: {
+    fontSize: 20,
+  },
+  dayChipLabel: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1c120d',
+  },
+  dayChipLabelSelected: {
+    color: '#f46a25',
+  },
+  dayChipDate: {
+    fontSize: 12,
+    color: '#9c6549',
+    marginTop: 1,
+  },
+  dayChipDateSelected: {
+    color: '#f46a25',
+  },
+  dayCheckmark: {
+    marginLeft: 'auto',
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#f46a25',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dayCheckmarkText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  // Time selector styles
+  timeSelectorsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  timeSelectorGroup: {
+    flex: 1,
+  },
+  timeSelectorLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#9c6549',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+  },
+  timeSelectorButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f6f5',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderWidth: 1.5,
+    borderColor: '#e8d7ce',
+    gap: 8,
+  },
+  timeSelectorIcon: {
+    fontSize: 18,
+  },
+  timeSelectorValue: {
+    flex: 1,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#1c120d',
-    letterSpacing: 0.5,
+  },
+  timeSelectorArrow: {
+    fontSize: 10,
+    color: '#9c6549',
+  },
+  timeArrowContainer: {
+    paddingTop: 22,
+    paddingHorizontal: 2,
+  },
+  timeArrowText: {
+    fontSize: 18,
+    color: '#f46a25',
+    fontWeight: 'bold',
   },
   durationInfo: {
     marginTop: 16,

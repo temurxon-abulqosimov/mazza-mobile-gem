@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, Linking, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, Linking, Platform, Dimensions } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { useProduct } from '../../hooks/useProduct';
 import { useBooking } from '../../hooks/useBooking';
@@ -162,72 +163,94 @@ const ProductDetailScreen = () => {
           isFavorite={isFavorite}
         />
 
-        {/* Badges on top of content */}
-        <View style={styles.badgesContainer}>
-          {product.discountPercent > 0 && (
+        {/* Content card that overlaps the image */}
+        <View style={styles.contentCard}>
+          {/* Badges */}
+          <View style={styles.badgesContainer}>
+            {product.discountPercent > 0 && (
+              <Badge
+                label={`${product.discountPercent}% OFF`}
+                variant="error"
+                size="medium"
+                style={styles.badgeMargin}
+              />
+            )}
             <Badge
-              label={`${product.discountPercent}% OFF`}
-              variant="error"
+              label={product.category?.name || 'Food'}
+              icon={getCategoryIcon()}
+              variant="primary"
               size="medium"
-              style={styles.badgeMargin}
             />
-          )}
-          <Badge
-            label={product.category?.name || 'Food'}
-            icon={getCategoryIcon()}
-            variant="primary"
-            size="medium"
-          />
-        </View>
+          </View>
 
-        {/* Content */}
-        <View style={styles.content}>
           {/* Store Info */}
-          <View style={styles.storeInfo}>
-            <TouchableOpacity onPress={() => navigation.navigate('StoreProfile', {
+          <TouchableOpacity
+            style={styles.storeRow}
+            onPress={() => navigation.navigate('StoreProfile', {
               storeId: product.store.id,
               storeName: product.store.name,
-              storeImage: product.store.imageUrl, // Assuming product.store has these
+              storeImage: product.store.imageUrl,
               storeAddress: product.store.location?.address,
               storeRating: product.store.rating,
-            })}>
-              <Text style={styles.storeName}>{product.store.name}</Text>
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Icon name="location-fill" size={12} color={colors.text.secondary} style={{ marginRight: 4 }} />
-              <Text style={styles.storeDistance}>
-                {t('product_detail.km_away', { distance: product.distance ? product.distance.toFixed(1) : '0.5' })}
-              </Text>
+            })}
+            activeOpacity={0.7}
+          >
+            <View style={styles.storeAvatarCircle}>
+              <Ionicons name="business" size={16} color={colors.primary} />
             </View>
-          </View>
+            <View style={styles.storeTextGroup}>
+              <Text style={styles.storeName}>{product.store.name}</Text>
+              <View style={styles.storeMetaRow}>
+                <Ionicons name="location" size={12} color={colors.text.tertiary} />
+                <Text style={styles.storeDistance}>
+                  {t('product_detail.km_away', { distance: product.distance ? product.distance.toFixed(1) : '0.5' })}
+                </Text>
+                {product.store.rating > 0 && (
+                  <>
+                    <Text style={styles.storeDot}>•</Text>
+                    <Ionicons name="star" size={12} color="#FFB800" />
+                    <Text style={styles.storeRating}>{product.store.rating.toFixed(1)}</Text>
+                  </>
+                )}
+              </View>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.text.tertiary} />
+          </TouchableOpacity>
 
           {/* Product Title */}
           <Text style={styles.productTitle}>{product.name}</Text>
 
           {/* Description */}
-          <Text style={styles.description}>{product.description}</Text>
+          {product.description ? (
+            <Text style={styles.description}>{product.description}</Text>
+          ) : null}
 
-          {/* Pickup Info */}
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Icon name="clock" size={24} color={colors.primary} style={styles.infoIcon} />
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>{t('product_detail.pickup_time')}</Text>
-                <Text style={styles.infoValue}>
-                  {product.pickupWindow.dateLabel}: {product.pickupWindow.label}
-                </Text>
+          {/* Info Cards Row */}
+          <View style={styles.infoCardsRow}>
+            <View style={[styles.infoCardCompact, { flex: 1, marginRight: 8 }]}>
+              <View style={styles.infoIconCircle}>
+                <Ionicons name="time-outline" size={20} color={colors.primary} />
+              </View>
+              <Text style={styles.infoLabelCompact}>{t('product_detail.pickup_time')}</Text>
+              <Text style={styles.infoValueCompact}>
+                {product.pickupWindow.label}
+              </Text>
+              <View style={styles.infoBadge}>
+                <Text style={styles.infoBadgeText}>{product.pickupWindow.dateLabel}</Text>
               </View>
             </View>
-          </View>
 
-          {/* Quantity Available */}
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Icon name="package" size={24} color={colors.primary} style={styles.infoIcon} />
-              <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>{t('product_detail.available')}</Text>
-                <Text style={styles.infoValue}>
-                  {product.quantityAvailable === 1 ? t('product_detail.item_left', { count: product.quantityAvailable }) : t('product_detail.items_left', { count: product.quantityAvailable })}
+            <View style={[styles.infoCardCompact, { flex: 1, marginLeft: 8 }]}>
+              <View style={styles.infoIconCircle}>
+                <Ionicons name="cube-outline" size={20} color={colors.primary} />
+              </View>
+              <Text style={styles.infoLabelCompact}>{t('product_detail.available')}</Text>
+              <Text style={styles.infoValueCompact}>
+                {product.quantityAvailable}
+              </Text>
+              <View style={[styles.infoBadge, product.quantityAvailable <= 2 && styles.infoBadgeUrgent]}>
+                <Text style={[styles.infoBadgeText, product.quantityAvailable <= 2 && styles.infoBadgeTextUrgent]}>
+                  {product.quantityAvailable <= 2 ? t('product_detail.selling_fast') : t('product_detail.in_stock')}
                 </Text>
               </View>
             </View>
@@ -264,25 +287,30 @@ const ProductDetailScreen = () => {
                 />
               </MapView>
               <View style={styles.mapOverlay}>
-                <Icon name="location-fill" size={24} color={colors.primary} />
+                <Ionicons name="navigate-outline" size={16} color={colors.primary} />
                 <Text style={styles.openMapText}>{t('product_detail.open_in_maps')}</Text>
               </View>
             </TouchableOpacity>
 
             <View style={styles.locationCard}>
-              <Text style={styles.locationAddress}>{product.store.location.address}</Text>
-              <Text style={styles.locationCity}>
-                {product.store.location.city}, {product.store.location.state} {product.store.location.zipCode}
-              </Text>
+              <Ionicons name="location-outline" size={18} color={colors.primary} style={{ marginRight: 10 }} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.locationAddress}>{product.store.location.address}</Text>
+                <Text style={styles.locationCity}>
+                  {product.store.location.city}, {product.store.location.state} {product.store.location.zipCode}
+                </Text>
+              </View>
             </View>
           </View>
 
           {/* What You Get */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('product_detail.what_you_get')}</Text>
-            <Text style={styles.sectionText}>
-              {product.description || t('product_detail.default_description')}
-            </Text>
+            <View style={styles.whatYouGetCard}>
+              <Text style={styles.sectionText}>
+                {product.description || t('product_detail.default_description')}
+              </Text>
+            </View>
           </View>
 
           {/* Bottom spacing for fixed footer */}
@@ -355,79 +383,159 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: spacing.massive,
   },
+
+  // Content card overlapping image
+  contentCard: {
+    marginTop: -28,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    backgroundColor: colors.background,
+    paddingTop: 24,
+    paddingHorizontal: spacing.lg,
+  },
+
   badgesContainer: {
     flexDirection: 'row',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
     flexWrap: 'wrap',
+    marginBottom: 16,
   },
   badgeMargin: {
     marginRight: spacing.sm,
   },
-  content: {
-    padding: spacing.lg,
+
+  // Store row
+  storeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    padding: 14,
+    borderRadius: 16,
+    marginBottom: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
-  storeInfo: {
-    marginBottom: spacing.sm,
+  storeAvatarCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primaryBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  storeTextGroup: {
+    flex: 1,
   },
   storeName: {
-    ...typography.h4,
     fontSize: 15,
-    fontWeight: '600',
-    color: colors.primary,
-    marginBottom: spacing.xxs,
-  },
-  storeDistance: {
-    fontSize: 13,
-    color: colors.text.secondary,
-  },
-  productTitle: {
-    ...typography.h1,
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: colors.text.primary,
-    marginBottom: spacing.md,
-    lineHeight: 32,
+    marginBottom: 3,
   },
-  description: {
-    ...typography.body,
-    fontSize: 15,
-    color: colors.text.secondary,
-    lineHeight: 22,
-    marginBottom: spacing.xl,
-  },
-  infoCard: {
-    backgroundColor: colors.card,
-    borderRadius: spacing.radiusLg,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    ...shadows.sm,
-  },
-  infoRow: {
+  storeMetaRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  infoIcon: {
-    marginRight: spacing.md,
-  },
-  infoContent: {
-    flex: 1,
-  },
-  infoLabel: {
+  storeDistance: {
     fontSize: 13,
     color: colors.text.tertiary,
-    marginBottom: spacing.xxs,
+    marginLeft: 3,
   },
-  infoValue: {
-    fontSize: 15,
+  storeDot: {
+    fontSize: 10,
+    color: colors.text.tertiary,
+    marginHorizontal: 6,
+  },
+  storeRating: {
+    fontSize: 13,
     fontWeight: '600',
-    color: colors.text.primary,
+    color: colors.text.secondary,
+    marginLeft: 3,
   },
+
+  productTitle: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: colors.text.primary,
+    marginBottom: 10,
+    lineHeight: 32,
+  },
+  description: {
+    fontSize: 15,
+    color: colors.text.secondary,
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+
+  // Info cards row (side by side)
+  infoCardsRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  infoCardCompact: {
+    backgroundColor: colors.card,
+    borderRadius: 18,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
+  },
+  infoIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.primaryBackground,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  infoLabelCompact: {
+    fontSize: 12,
+    color: colors.text.tertiary,
+    fontWeight: '600',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  infoValueCompact: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text.primary,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  infoBadge: {
+    backgroundColor: '#E8F5E9',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  infoBadgeUrgent: {
+    backgroundColor: '#FFF3E0',
+  },
+  infoBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4CAF50',
+  },
+  infoBadgeTextUrgent: {
+    color: '#FF7A00',
+  },
+
   section: {
     marginTop: spacing.xl,
   },
   sectionTitle: {
-    ...typography.h3,
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.text.primary,
@@ -438,13 +546,24 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
     lineHeight: 22,
   },
+  whatYouGetCard: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
+  },
   mapContainer: {
-    height: 200,
-    borderRadius: spacing.radiusLg,
+    height: 180,
+    borderRadius: 18,
     overflow: 'hidden',
     marginBottom: spacing.md,
     position: 'relative',
-    ...shadows.sm,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   map: {
     width: '100%',
@@ -456,11 +575,15 @@ const styles = StyleSheet.create({
     right: spacing.sm,
     backgroundColor: colors.surface,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.xs + 2,
     borderRadius: spacing.radiusFull,
     flexDirection: 'row',
     alignItems: 'center',
-    ...shadows.sm,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   openMapText: {
     fontSize: 12,
@@ -470,9 +593,12 @@ const styles = StyleSheet.create({
   },
   locationCard: {
     backgroundColor: colors.card,
-    borderRadius: spacing.radiusLg,
+    borderRadius: 16,
     padding: spacing.lg,
-    ...shadows.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#F0F0F0',
   },
   locationAddress: {
     fontSize: 15,
@@ -490,7 +616,7 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: colors.card,
     padding: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingBottom: spacing.xl + 12,
     borderTopWidth: 1,
     borderTopColor: colors.divider,
     ...shadows.lg,

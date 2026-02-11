@@ -115,7 +115,9 @@
         "login_to_save": "Sevimlilarni saqlash uchun tizimga kiring!",
         "booking_failed": "Band qilish muvaffaqiyatsiz",
         "could_not_update_favorites": "Sevimlilarni yangilab bo'lmadi. Qayta urinib ko'ring.",
-        "could_not_open_maps": "Xarita ilovasini ochib bo'lmadi."
+        "could_not_open_maps": "Xarita ilovasini ochib bo'lmadi.",
+        "selling_fast": "Tez sotilmoqda!",
+        "in_stock": "Mavjud"
     },
     "store": {
         "follow": "Obuna bo'lish",
@@ -148,11 +150,20 @@
         "contact_support": "Muammo bormi? Qo'llab-quvvatlashga murojaat qiling",
         "write_review": "Sharh yozish",
         "back_to_home": "Bosh sahifaga qaytish",
+        "back_to_orders": "Buyurtmalarga qaytish",
         "could_not_load_detail": "Buyurtma tafsilotlarini yuklab bo'lmadi.",
+        "order_details": "Buyurtma tafsilotlari",
+        "order_completed": "Buyurtma bajarildi",
+        "total_paid": "Jami to'langan",
+        "quantity": "Miqdori",
+        "order_number": "Buyurtma raqami",
         "order_success": "Muvaffaqiyatli!",
         "order_confirmed_subtitle": "Buyurtmangiz tasdiqlandi.",
         "back_to_discover": "Bosh sahifaga qaytish",
-        "pickup_at": "Olib ketish joyi:"
+        "pickup_at": "Olib ketish joyi:",
+        "view_pickup_code": "Olib ketish kodini ko'rish",
+        "view_receipt": "Kvitansiyani ko'rish",
+        "view_details": "Tafsilotlarni ko'rish"
     },
     "favorites": {
         "title": "Sevimlilar",
@@ -320,6 +331,9 @@
         "pickup_duration": "Olib ketish oralig'i:",
         "publish_listing": "E'lonni chop etish",
         "success_product_created": "Mahsulot muvaffaqiyatli yaratildi",
+        "success_product_updated": "Mahsulot muvaffaqiyatli yangilandi",
+        "edit_listing": "E'lonni tahrirlash",
+        "update_listing": "E'lonni yangilash",
         "missing_info": "Ma'lumot yetishmayapti",
         "enter_product_name": "Iltimos, mahsulot nomini kiriting",
         "enter_description": "Iltimos, tavsif kiriting",
@@ -333,6 +347,11 @@
         "invalid_pickup_time": "Noto'g'ri olib ketish vaqti",
         "pickup_time_error": "Olib ketish boshlanish vaqti hozirgi vaqtdan kamida 30 daqiqa keyin bo'lishi kerak.",
         "pickup_today": "Olib ketish: Bugun",
+        "today": "Bugun",
+        "tomorrow": "Ertaga",
+        "select_start_time": "Boshlanish vaqtini tanlang",
+        "select_end_time": "Tugash vaqtini tanlang",
+        "end_after_start_error": "Tugash vaqti boshlanish vaqtidan keyin bo'lishi kerak.",
         "categories": {
             "bakery": "Non mahsulotlari",
             "desserts": "Shirinliklar",
@@ -352,5 +371,29 @@
             "edit": "Tahrirlash",
             "delete": "O'chirish"
         }
+    },
+    "review": {
+        "title": "Sharh yozish",
+        "how_was_experience": "Tajribangiz qanday bo'ldi?",
+        "tap_to_rate": "Baholash uchun yulduzni bosing",
+        "rating_poor": "Yomon",
+        "rating_fair": "O'rtacha",
+        "rating_good": "Yaxshi",
+        "rating_very_good": "Juda yaxshi",
+        "rating_excellent": "A'lo",
+        "add_comment": "Izoh qo'shish",
+        "optional": "Ixtiyoriy",
+        "comment_placeholder": "Nimalar yoqdi yoki nimani yaxshilash mumkin...",
+        "submit": "Sharhni yuborish",
+        "maybe_later": "Keyinroq",
+        "validation_title": "Baho tanlang",
+        "validation_rating": "Iltimos, tajribangizni baholash uchun yulduzni bosing.",
+        "submit_error": "Sharhni yuborib bo'lmadi. Qayta urinib ko'ring.",
+        "thank_you": "Rahmat!",
+        "review_submitted": "Sharhingiz boshqa xaridorlarga va do'konga yordam beradi.",
+        "enjoyed_order": "Buyurtma yoqdimi?",
+        "tap_to_leave_review": "Sharh qoldirish uchun bosing",
+        "rate_your_experience": "Tajribangizni baholang",
+        "reviewed": "Sharh yuborildi ✓"
     }
 }

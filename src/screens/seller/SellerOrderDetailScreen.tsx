@@ -27,7 +27,7 @@ const SellerOrderDetailScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RouteProp<{ params: SellerOrderDetailParams }, 'params'>>();
     const { order } = route.params;
-    const { completeOrder, isCompleting } = useCompleteOrder();
+    const { completeOrderAsync, isCompleting } = useCompleteOrder();
 
     const handleCompleteOrder = () => {
         Alert.alert(
@@ -37,21 +37,20 @@ const SellerOrderDetailScreen = () => {
                 { text: t('common.cancel'), style: 'cancel' },
                 {
                     text: t('seller_order_detail.complete'),
-                    onPress: () => {
+                    onPress: async () => {
                         // Generate manual QR string for completion
                         // Format: MAZZA:ORDER_NUMBER:BOOKING_ID
                         const orderNum = order.orderNumber.replace('#', '');
                         const manualQrData = `MAZZA:${orderNum}:${order.id}`;
 
-                        completeOrder({ orderId: order.id, qrCodeData: manualQrData }, {
-                            onSuccess: () => {
-                                Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
-                                navigation.goBack();
-                            },
-                            onError: (error: any) => {
-                                Alert.alert(t('common.error'), error.message || 'Failed to complete order');
-                            },
-                        });
+                        try {
+                            await completeOrderAsync({ orderId: order.id, qrCodeData: manualQrData });
+                            Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
+                            navigation.goBack();
+                        } catch (error: any) {
+                            const msg = error?.response?.data?.error?.message || error?.response?.data?.message || error?.message || 'Failed to complete order';
+                            Alert.alert(t('common.error'), msg);
+                        }
                     },
                 },
             ]
@@ -64,16 +63,17 @@ const SellerOrderDetailScreen = () => {
         Alert.alert(t('seller_order_detail.scan_qr_title'), t('seller_order_detail.scan_mock_msg'), [
             {
                 text: t('seller_order_detail.simulate_success'),
-                onPress: () => {
+                onPress: async () => {
                     const orderNum = order.orderNumber.replace('#', '');
                     const mockQrData = `MAZZA:${orderNum}:${order.id}`;
-                    completeOrder({ orderId: order.id, qrCodeData: mockQrData }, {
-                        onSuccess: () => {
-                            Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
-                            navigation.goBack();
-                        },
-                        onError: (error: any) => Alert.alert(t('common.error'), error.message)
-                    });
+                    try {
+                        await completeOrderAsync({ orderId: order.id, qrCodeData: mockQrData });
+                        Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
+                        navigation.goBack();
+                    } catch (error: any) {
+                        const msg = error?.response?.data?.error?.message || error?.response?.data?.message || error?.message || 'Failed to complete order';
+                        Alert.alert(t('common.error'), msg);
+                    }
                 },
             },
             { text: t('common.cancel'), style: 'cancel' },

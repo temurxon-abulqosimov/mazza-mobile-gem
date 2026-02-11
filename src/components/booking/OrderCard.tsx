@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Booking, BookingStatus } from '../../domain/Booking';
 
 interface OrderCardProps {
@@ -10,17 +11,19 @@ interface OrderCardProps {
 }
 
 const OrderCard = ({ booking, onPress, onReviewPress }: OrderCardProps) => {
+  const { t } = useTranslation();
 
   const isReadyForPickup = booking.status === BookingStatus.CONFIRMED || booking.status === BookingStatus.READY_FOR_PICKUP;
   const isCompleted = booking.status === BookingStatus.COMPLETED;
   const isPastOrder = booking.status === BookingStatus.COMPLETED || booking.status === BookingStatus.CANCELLED || booking.status === BookingStatus.EXPIRED;
+  const canReview = isCompleted && !booking.isReviewed && onReviewPress;
 
   const renderActionButton = () => {
     if (isReadyForPickup) {
       return (
         <TouchableOpacity style={styles.actionButtonPrimary} onPress={onPress}>
           <Ionicons name="qr-code-outline" size={20} color="white" />
-          <Text style={styles.actionButtonTextPrimary}>View Pickup Code</Text>
+          <Text style={styles.actionButtonTextPrimary}>{t('orders.view_pickup_code')}</Text>
         </TouchableOpacity>
       );
     }
@@ -29,30 +32,25 @@ const OrderCard = ({ booking, onPress, onReviewPress }: OrderCardProps) => {
       return (
         <View style={{ gap: 8 }}>
           <TouchableOpacity style={styles.actionButtonSecondary} onPress={onPress}>
-            <Text style={styles.actionButtonTextSecondary}>View Receipt</Text>
+            <Text style={styles.actionButtonTextSecondary}>{t('orders.view_receipt')}</Text>
           </TouchableOpacity>
-          {onReviewPress && !booking.isReviewed && (
-            <TouchableOpacity style={styles.actionButtonOutline} onPress={onReviewPress}>
-              <Ionicons name="star-outline" size={20} color="#FF7A00" />
-              <Text style={styles.actionButtonTextOutline}>Write a Review</Text>
-            </TouchableOpacity>
-          )}
         </View>
-      )
+      );
     }
 
     if (isPastOrder) {
       return (
         <TouchableOpacity style={styles.actionButtonSecondary} onPress={onPress}>
-          <Text style={styles.actionButtonTextSecondary}>View Receipt</Text>
+          <Text style={styles.actionButtonTextSecondary}>{t('orders.view_receipt')}</Text>
         </TouchableOpacity>
-      )
+      );
     }
+
     // Default/other states
     return (
       <TouchableOpacity style={styles.actionButtonSecondary} onPress={onPress}>
         <Ionicons name="eye-outline" size={20} color="#333" />
-        <Text style={styles.actionButtonTextSecondary}>View Details</Text>
+        <Text style={styles.actionButtonTextSecondary}>{t('orders.view_details')}</Text>
       </TouchableOpacity>
     );
   };
@@ -72,13 +70,40 @@ const OrderCard = ({ booking, onPress, onReviewPress }: OrderCardProps) => {
           <Text style={styles.storeName}>{booking.store.name}</Text>
           <Text style={styles.productName}>{booking.quantity}x {booking.product.name}</Text>
           <View style={styles.priceContainer}>
-            {/* TODO: The API's /bookings endpoint does not return the original price. 
-                        It needs to be added to the booking's product object to display the discount. */}
             <Text style={styles.discountedPrice}>${(booking.totalPrice / 100).toFixed(2)}</Text>
           </View>
         </View>
         <Image source={{ uri: booking.product.imageUrl }} style={styles.image} />
       </View>
+
+      {/* Review prompt banner — tapping navigates to order detail where review is inline */}
+      {canReview && (
+        <TouchableOpacity
+          style={styles.reviewBanner}
+          onPress={onPress}
+          activeOpacity={0.7}
+        >
+          <View style={styles.reviewBannerLeft}>
+            <Text style={styles.reviewBannerEmoji}>⭐</Text>
+            <View style={styles.reviewBannerTextGroup}>
+              <Text style={styles.reviewBannerTitle}>{t('review.enjoyed_order')}</Text>
+              <Text style={styles.reviewBannerSubtitle}>{t('review.tap_to_leave_review')}</Text>
+            </View>
+          </View>
+          <View style={styles.reviewBannerArrow}>
+            <Ionicons name="chevron-forward" size={20} color="#FF7A00" />
+          </View>
+        </TouchableOpacity>
+      )}
+
+      {/* Reviewed badge */}
+      {isCompleted && booking.isReviewed && (
+        <View style={styles.reviewedBadge}>
+          <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
+          <Text style={styles.reviewedBadgeText}>{t('review.reviewed')}</Text>
+        </View>
+      )}
+
       <View style={styles.footer}>
         {renderActionButton()}
       </View>
@@ -223,6 +248,61 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+  },
+  // Review prompt banner
+  reviewBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF8F0',
+    marginHorizontal: 12,
+    marginBottom: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFE4CC',
+  },
+  reviewBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  reviewBannerEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  reviewBannerTextGroup: {
+    flex: 1,
+  },
+  reviewBannerTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  reviewBannerSubtitle: {
+    fontSize: 12,
+    color: '#FF7A00',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  reviewBannerArrow: {
+    marginLeft: 8,
+  },
+  // Reviewed badge
+  reviewedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    marginHorizontal: 12,
+    marginBottom: 4,
+    gap: 6,
+  },
+  reviewedBadgeText: {
+    fontSize: 13,
+    color: '#4CAF50',
+    fontWeight: '600',
   },
   statusBadge: {
     flexDirection: 'row',

@@ -1,12 +1,22 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { completeOrder, LiveOrder } from '../api/seller';
-import { ApiResponse } from '../domain/Common';
+import { completeOrder } from '../api/seller';
+
+interface CompleteOrderResponse {
+    success: boolean;
+    data: {
+        order: {
+            id: string;
+            status: string;
+            completedAt: string;
+        };
+    };
+}
 
 export const useCompleteOrder = () => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<ApiResponse<LiveOrder>, Error, { orderId: string; qrCodeData: string }>({
+    const mutation = useMutation<CompleteOrderResponse, Error, { orderId: string; qrCodeData: string }>({
         mutationFn: ({ orderId, qrCodeData }) => completeOrder(orderId, qrCodeData),
         onSuccess: () => {
             // Refresh live orders and dashboard stats
@@ -16,8 +26,9 @@ export const useCompleteOrder = () => {
     });
 
     return {
-        completeOrder: mutation.mutate,
+        completeOrderAsync: mutation.mutateAsync,
         isCompleting: mutation.isPending,
+        resetMutation: mutation.reset,
         error: mutation.error,
     };
 };

@@ -28,11 +28,15 @@ export const apiClient = axios.create({
 // Request Interceptor: Inject bearer token
 apiClient.interceptors.request.use(
   (config) => {
-    const authState = useAuthStore.getState();
-    const accessToken = authState?.accessToken;
-    // Skip auth for discovery endpoints
-    if (accessToken && !config.url?.startsWith('/discovery')) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    try {
+      const authState = useAuthStore.getState();
+      const accessToken = authState?.accessToken;
+      // Skip auth for discovery endpoints
+      if (accessToken && !config.url?.startsWith('/discovery')) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+    } catch (e) {
+      // Auth store not available yet, proceed without token
     }
     return config;
   },
@@ -48,9 +52,17 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    const authState = useAuthStore.getState();
+
+    let authState: any;
+    try {
+      authState = useAuthStore.getState();
+    } catch (e) {
+      return Promise.reject(error);
+    }
+
     const refreshToken = authState?.refreshToken;
-    const { setTokens, clearTokens } = authState?.actions || {};
+    const setTokens = authState?.actions?.setTokens;
+    const clearTokens = authState?.actions?.clearTokens;
 
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -71,8 +83,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       if (!refreshToken) {
-        clearTokens();
-        // Redirect to login would happen here at the app level
+        if (clearTokens) clearTokens();
         return Promise.reject(error);
       }
 
@@ -82,7 +93,7 @@ apiClient.interceptors.response.use(
           accessToken: data.data.tokens.accessToken,
           refreshToken: data.data.tokens.refreshToken,
         };
-        setTokens(newTokens);
+        if (setTokens) setTokens(newTokens);
 
         originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
         processQueue(null, newTokens.accessToken);
@@ -90,8 +101,7 @@ apiClient.interceptors.response.use(
         return axios(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        clearTokens();
-        // Redirect to login would happen here
+        if (clearTokens) clearTokens();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

@@ -115,7 +115,9 @@
         "login_to_save": "Please login to save favorites!",
         "booking_failed": "Booking Failed",
         "could_not_update_favorites": "Could not update favorites. Please try again.",
-        "could_not_open_maps": "Could not open maps app."
+        "could_not_open_maps": "Could not open maps app.",
+        "selling_fast": "Selling fast!",
+        "in_stock": "In stock"
     },
     "store": {
         "follow": "Follow",
@@ -148,11 +150,20 @@
         "contact_support": "Having issues? Contact support",
         "write_review": "Write a Review",
         "back_to_home": "Back to Home",
+        "back_to_orders": "Back to Orders",
         "could_not_load_detail": "Could not load order details.",
+        "order_details": "Order Details",
+        "order_completed": "Order Completed",
+        "total_paid": "Total Paid",
+        "quantity": "Quantity",
+        "order_number": "Order Number",
         "order_success": "Success!",
         "order_confirmed_subtitle": "Your order has been confirmed.",
         "back_to_discover": "Back to Home",
-        "pickup_at": "Pickup at:"
+        "pickup_at": "Pickup at:",
+        "view_pickup_code": "View Pickup Code",
+        "view_receipt": "View Receipt",
+        "view_details": "View Details"
     },
     "favorites": {
         "title": "Favorites",
@@ -320,6 +331,9 @@
         "pickup_duration": "Pickup window:",
         "publish_listing": "Publish Listing",
         "success_product_created": "Your product has been listed successfully",
+        "success_product_updated": "Your product has been updated successfully",
+        "edit_listing": "Edit Listing",
+        "update_listing": "Update Listing",
         "missing_info": "Missing Information",
         "enter_product_name": "Please enter a product name",
         "enter_description": "Please enter a description",
@@ -333,6 +347,11 @@
         "invalid_pickup_time": "Invalid Pickup Time",
         "pickup_time_error": "Pickup start time must be at least 30 minutes from now. Please adjust the time.",
         "pickup_today": "Pickup: Today",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "select_start_time": "Select Start Time",
+        "select_end_time": "Select End Time",
+        "end_after_start_error": "End time must be after start time.",
         "categories": {
             "bakery": "Bakery",
             "desserts": "Desserts",
@@ -352,5 +371,29 @@
             "edit": "Edit",
             "delete": "Delete"
         }
+    },
+    "review": {
+        "title": "Write a Review",
+        "how_was_experience": "How was your experience?",
+        "tap_to_rate": "Tap a star to rate",
+        "rating_poor": "Poor",
+        "rating_fair": "Fair",
+        "rating_good": "Good",
+        "rating_very_good": "Very Good",
+        "rating_excellent": "Excellent",
+        "add_comment": "Add a comment",
+        "optional": "Optional",
+        "comment_placeholder": "Tell us what you liked or what could be better...",
+        "submit": "Submit Review",
+        "maybe_later": "Maybe Later",
+        "validation_title": "Select a Rating",
+        "validation_rating": "Please tap a star to rate your experience.",
+        "submit_error": "Failed to submit review. Please try again.",
+        "thank_you": "Thank you!",
+        "review_submitted": "Your review helps other customers and the store.",
+        "enjoyed_order": "Enjoyed your order?",
+        "tap_to_leave_review": "Tap to leave a review",
+        "rate_your_experience": "Rate your experience",
+        "reviewed": "Review submitted ✓"
     }
 }

@@ -1,5 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../hooks/useAuth';
@@ -8,6 +18,7 @@ import { loginSchema, LoginFormData } from '../../domain/validators/AuthValidato
 import ControlledInput from '../../components/forms/ControlledInput';
 import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 const LoginScreen = () => {
@@ -43,8 +54,20 @@ const LoginScreen = () => {
     });
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoid}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={[styles.container, { paddingBottom: insets.bottom + 40 }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
       <View style={styles.header}>
         <Text style={styles.title}>{t('auth.welcome_back')}</Text>
         <Text style={styles.subtitle}>{t('auth.login_subtitle')}</Text>
@@ -122,10 +145,15 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoid: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   scrollContainer: {
     flex: 1,
     backgroundColor: '#fff',

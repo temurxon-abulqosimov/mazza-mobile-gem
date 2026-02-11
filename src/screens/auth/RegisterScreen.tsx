@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../hooks/useAuth';
@@ -9,6 +19,7 @@ import ControlledInput from '../../components/forms/ControlledInput';
 import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const RegisterScreen = () => {
   const { t } = useTranslation();
@@ -56,8 +67,21 @@ const RegisterScreen = () => {
     });
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.keyboardAvoid}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+    >
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={[styles.container, { paddingBottom: insets.bottom + 40 }]}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
       <View style={styles.header}>
         <Text style={styles.title}>{t('auth.create_account')}</Text>
         <Text style={styles.subtitle}>{t('auth.register_subtitle')}</Text>
@@ -151,10 +175,15 @@ const RegisterScreen = () => {
         </TouchableOpacity>
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoid: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   scrollContainer: {
     flex: 1,
     backgroundColor: '#fff',

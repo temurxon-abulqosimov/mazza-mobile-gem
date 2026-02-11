@@ -56,13 +56,11 @@ export const isGoogleMapsConfigured = (): boolean => {
 
 /**
  * Check if Google Sign-In is properly configured
+ * Only the Web Client ID is required (used by Expo Go on all platforms).
+ * Platform-specific client IDs are optional and used in standalone builds.
  */
 export const isGoogleAuthConfigured = (): boolean => {
-  return !!(
-    config.googleAuth.webClientId ||
-    config.googleAuth.iosClientId ||
-    config.googleAuth.androidClientId
-  );
+  return !!config.googleAuth.webClientId;
 };
 
 /**

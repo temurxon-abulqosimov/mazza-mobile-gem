@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, StatusBar, Dimensions, Platform } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
@@ -8,13 +8,17 @@ import Icon from '../../components/ui/Icon';
 
 const { width, height } = Dimensions.get('window');
 const SCAN_FRAME_SIZE = 280;
+const VERIFICATION_TIMEOUT_MS = 20000;
 
 const QRScannerScreen = () => {
     const navigation = useNavigation();
     const [permission, requestPermission] = useCameraPermissions();
     const [scanned, setScanned] = useState(false);
+    const [verifying, setVerifying] = useState(false);
     const [torchEnabled, setTorchEnabled] = useState(false);
-    const { completeOrder, isCompleting } = useCompleteOrder();
+    const { completeOrderAsync, resetMutation } = useCompleteOrder();
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const isProcessingRef = useRef(false);
 
     // Camera permission check
     useEffect(() => {
@@ -22,6 +26,26 @@ const QRScannerScreen = () => {
             requestPermission();
         }
     }, [permission]);
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
+    const resetScanner = useCallback(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+        isProcessingRef.current = false;
+        setScanned(false);
+        setVerifying(false);
+        resetMutation();
+    }, [resetMutation]);
 
     if (!permission) {
         return <View style={styles.container} />; // Loading permissions
@@ -45,13 +69,19 @@ const QRScannerScreen = () => {
         );
     }
 
-    const handleBarCodeScanned = ({ data }: { data: string }) => {
-        if (scanned || isCompleting) return;
+    const handleBarCodeScanned = (scanResult: { data: string }) => {
+        // Prevent duplicate scans using both state and ref
+        if (scanned || isProcessingRef.current || verifying) return;
+
+        const { data } = scanResult;
+        console.log('[QRScanner] Barcode scanned, raw data:', data);
 
         setScanned(true);
+        isProcessingRef.current = true;
+
         let bookingId: string | null = null;
 
-        // 1. Try Parsing as JSON
+        // 1. Try Parsing as JSON (main format: {"orderNumber":"...","bookingId":"..."})
         try {
             const parsedData = JSON.parse(data);
             if (parsedData && parsedData.bookingId) {
@@ -63,9 +93,16 @@ const QRScannerScreen = () => {
             // Not JSON, continue to other formats
         }
 
-        // 2. Try Extracting UUID from URL
+        // 2. Try MAZZA:ORDER_NUM:UUID format
         if (!bookingId) {
-            // Regex for UUID
+            const mazzaMatch = data.match(/^MAZZA:[^:]+:(.+)$/);
+            if (mazzaMatch) {
+                bookingId = mazzaMatch[1];
+            }
+        }
+
+        // 3. Try Extracting UUID from any text
+        if (!bookingId) {
             const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
             const match = data.match(uuidRegex);
             if (match) {
@@ -73,46 +110,108 @@ const QRScannerScreen = () => {
             }
         }
 
-        // 3. Fallback: Treat strict ID string as bookingId if it looks somewhat reasonable
+        // 4. Fallback
         if (!bookingId && data.length > 20 && !data.includes('http')) {
-            // Basic safe-guard, might be just the ID string
             bookingId = data;
         }
 
         if (!bookingId) {
+            console.log('[QRScanner] Could not extract bookingId from QR data');
+            isProcessingRef.current = false;
             Alert.alert(
                 'Invalid QR Code',
                 'We could not find a valid Booking ID in this QR code.',
-                [{ text: 'Try Again', onPress: () => setScanned(false) }]
+                [{ text: 'Try Again', onPress: resetScanner }]
             );
             return;
         }
 
-        // Call API
-        completeOrder(
-            { orderId: bookingId, qrCodeData: data },
-            {
-                onSuccess: (response: any) => {
-                    const orderStatus = response.order?.status || 'COMPLETED';
-                    Alert.alert(
-                        'Success!',
-                        `Order ${orderStatus} successfully verified.`,
-                        [
-                            { text: 'Scan Another', onPress: () => setScanned(false) },
-                            { text: 'Done', onPress: () => navigation.goBack(), style: 'cancel' }
-                        ]
-                    );
-                },
-                onError: (error: any) => {
-                    const msg = error.response?.data?.message || 'Invalid or expired QR code.';
-                    Alert.alert(
-                        'Verification Failed',
-                        msg,
-                        [{ text: 'Try Again', onPress: () => setScanned(false) }]
-                    );
-                }
+        console.log('[QRScanner] Extracted bookingId:', bookingId);
+
+        // Show loading state immediately via local state
+        setVerifying(true);
+
+        // Set a safety timeout
+        timeoutRef.current = setTimeout(() => {
+            if (isProcessingRef.current) {
+                console.log('[QRScanner] Request timed out');
+                isProcessingRef.current = false;
+                setVerifying(false);
+                resetMutation();
+                Alert.alert(
+                    'Request Timeout',
+                    'Verification took too long. Please check your internet connection and try again.',
+                    [{ text: 'Try Again', onPress: resetScanner }]
+                );
             }
-        );
+        }, VERIFICATION_TIMEOUT_MS);
+
+        // Fire the API call
+        completeOrderAsync({ orderId: bookingId, qrCodeData: data })
+            .then((response) => {
+                console.log('[QRScanner] API success:', JSON.stringify(response));
+
+                // Clear safety timeout
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = null;
+                }
+                isProcessingRef.current = false;
+                setVerifying(false);
+
+                const orderStatus = response?.data?.order?.status || 'COMPLETED';
+
+                Alert.alert(
+                    '✅ Order Completed!',
+                    `Order has been successfully verified and marked as ${orderStatus}.`,
+                    [
+                        { text: 'Scan Another', onPress: resetScanner },
+                        { text: 'Done', onPress: () => navigation.goBack(), style: 'cancel' }
+                    ]
+                );
+            })
+            .catch((error: any) => {
+                console.log('[QRScanner] API error:', error?.message, error?.response?.status, error?.response?.data);
+
+                // Clear safety timeout
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = null;
+                }
+                isProcessingRef.current = false;
+                setVerifying(false);
+
+                // Extract error message from backend format: { success: false, error: { code, message } }
+                let msg = 'Something went wrong. Please try again.';
+                if (error?.response?.data?.error?.message) {
+                    msg = error.response.data.error.message;
+                } else if (error?.response?.data?.message) {
+                    msg = error.response.data.message;
+                } else if (error?.message) {
+                    msg = error.message;
+                }
+
+                // User-friendly messages
+                if (msg.includes('INVALID_QR_CODE') || msg.includes('Invalid QR')) {
+                    msg = 'This QR code is invalid or not recognized.';
+                } else if (msg.includes('not found') || msg.includes('Not Found')) {
+                    msg = 'This order was not found. It may have been already completed or cancelled.';
+                } else if (msg.includes('BOOKING_CANNOT_COMPLETE') || msg.includes('Cannot complete')) {
+                    msg = 'This order cannot be completed. It may have already been picked up or cancelled.';
+                } else if (msg.includes('Unauthorized') || msg.includes('not a seller')) {
+                    msg = 'You are not authorized to complete this order. Please re-login.';
+                } else if (msg.includes('timeout') || msg.includes('ECONNABORTED')) {
+                    msg = 'Request timed out. Please check your internet connection.';
+                } else if (msg.includes('Network Error')) {
+                    msg = 'Network error. Please check your internet connection.';
+                }
+
+                Alert.alert(
+                    'Verification Failed',
+                    msg,
+                    [{ text: 'Try Again', onPress: resetScanner }]
+                );
+            });
     };
 
     return (
@@ -142,7 +241,7 @@ const QRScannerScreen = () => {
                         <View style={[styles.corner, styles.bottomRight]} />
 
                         {/* Scanning Line Animation (Static for now, can animate) */}
-                        {!scanned && !isCompleting && <View style={styles.scanLine} />}
+                        {!scanned && !verifying && <View style={styles.scanLine} />}
                     </View>
                     <View style={styles.overlaySide} />
                 </View>
@@ -168,7 +267,7 @@ const QRScannerScreen = () => {
                 <View style={{ width: 44 }} />
             </View>
 
-            {isCompleting && (
+            {verifying && (
                 <View style={styles.loadingOverlay}>
                     <ActivityIndicator size="large" color={colors.primary} />
                     <Text style={styles.loadingText}>Verifying...</Text>

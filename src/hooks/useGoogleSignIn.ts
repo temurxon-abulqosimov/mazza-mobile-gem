@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { makeRedirectUri } from 'expo-auth-session';
 import { Platform, Alert } from 'react-native';
 import { useAuth } from './useAuth';
-import { config, isGoogleAuthConfigured } from '../config/environment';
+import { config } from '../config/environment';
 
-// Register for the auth session to complete properly
+// Must be called at module scope so the browser auth session can complete
 WebBrowser.maybeCompleteAuthSession();
 
 interface UseGoogleSignInOptions {
@@ -14,71 +14,69 @@ interface UseGoogleSignInOptions {
   onError?: (error: Error) => void;
 }
 
-// Check if we have the required client ID for this platform
-const hasRequiredClientId = (): boolean => {
-  if (Platform.OS === 'ios') {
-    return !!config.googleAuth.iosClientId;
-  }
-  if (Platform.OS === 'android') {
-    return !!config.googleAuth.androidClientId;
-  }
-  return !!config.googleAuth.webClientId;
-};
-
 export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
   const { googleAuth, isGoogleAuthPending } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Only configure Google auth if we have the required credentials
-  const isConfigured = hasRequiredClientId();
+  // For Expo Go on Android/iOS, the web client ID is what drives the OAuth flow.
+  // A dedicated Android/iOS client ID is only needed for standalone/dev-client builds.
+  const webClientId = config.googleAuth.webClientId;
+  const iosClientId = config.googleAuth.iosClientId;
+  const androidClientId = config.googleAuth.androidClientId;
 
-  // Use placeholder values when not configured to avoid hook errors
-  const [request, response, promptAsync] = Google.useAuthRequest(
-    isConfigured
-      ? {
-        webClientId: config.googleAuth.webClientId || undefined,
-        iosClientId: config.googleAuth.iosClientId || undefined,
-        androidClientId: config.googleAuth.androidClientId || undefined,
-        scopes: ['profile', 'email'],
-        redirectUri: makeRedirectUri({
-          scheme: 'mazza'
-        }),
-      }
-      : {
-        // Provide a dummy config when not set up to avoid crash
-        // The hook still needs to be called but won't be used
-        clientId: 'not-configured',
-        scopes: ['profile', 'email'],
-      }
-  );
+  // We need at minimum a web client ID (used by Expo Go on all platforms)
+  const isConfigured = !!webClientId;
+
+  const redirectUri = makeRedirectUri({
+    scheme: 'mazza',
+    // Use native redirect on standalone builds, otherwise the default works for Expo Go
+  });
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    webClientId: webClientId || undefined,
+    iosClientId: iosClientId || undefined,
+    androidClientId: androidClientId || undefined,
+    scopes: ['profile', 'email', 'openid'],
+    redirectUri,
+    // On Expo Go this is ignored; on standalone it uses native redirect
+  });
 
   useEffect(() => {
-    if (isConfigured && request) {
-      console.log('[GoogleSignIn] Redirect URI:', request.redirectUri);
+    if (request) {
+      console.log('[GoogleSignIn] Ready. Redirect URI:', request.redirectUri);
+      console.log('[GoogleSignIn] Platform:', Platform.OS);
     }
-  }, [isConfigured, request]);
+  }, [request]);
 
+  // Handle the OAuth response
   useEffect(() => {
-    if (!isConfigured) return;
+    if (!response) return;
 
-    if (response?.type === 'success') {
-      const { authentication } = response;
-      if (authentication?.accessToken) {
-        handleGoogleAuth(authentication.accessToken);
+    if (response.type === 'success') {
+      const auth = response.authentication;
+      // Prefer ID token if available (from web client), fall back to access token
+      const token = auth?.idToken || auth?.accessToken;
+      if (token) {
+        handleGoogleAuth(token);
+      } else {
+        setIsLoading(false);
+        console.error('[GoogleSignIn] No token in response');
+        options?.onError?.(new Error('No authentication token received'));
       }
-    } else if (response?.type === 'error') {
+    } else if (response.type === 'error') {
       setIsLoading(false);
+      console.error('[GoogleSignIn] Error:', response.error);
       const error = new Error(response.error?.message || 'Google Sign-In failed');
       options?.onError?.(error);
-    } else if (response?.type === 'dismiss') {
+    } else if (response.type === 'dismiss' || response.type === 'cancel') {
       setIsLoading(false);
     }
-  }, [response, isConfigured]);
+  }, [response]);
 
-  const handleGoogleAuth = async (accessToken: string) => {
+  const handleGoogleAuth = useCallback(async (token: string) => {
     try {
       googleAuth(
-        { idToken: accessToken },
+        { idToken: token },
         {
           onSuccess: () => {
             setIsLoading(false);
@@ -86,27 +84,42 @@ export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
           },
           onError: (error: any) => {
             setIsLoading(false);
-            const message = error.response?.data?.message || 'Failed to sign in with Google';
+            const message =
+              error.response?.data?.error?.message ||
+              error.response?.data?.message ||
+              'Failed to sign in with Google';
             Alert.alert('Sign-In Failed', message);
             options?.onError?.(error);
           },
-        }
+        },
       );
     } catch (error: any) {
       setIsLoading(false);
       options?.onError?.(error);
     }
-  };
+  }, [googleAuth, options]);
 
-  const signInWithGoogle = async () => {
-    if (!isConfigured || !request) {
-      // Silently fail - button should be hidden when not configured
-      console.log('Google Sign-In not configured for this platform');
+  const signInWithGoogle = useCallback(async () => {
+    if (!isConfigured) {
+      console.warn('[GoogleSignIn] Not configured — set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
+      Alert.alert(
+        'Not Configured',
+        'Google Sign-In is not set up yet. Please use email login.',
+      );
+      return;
+    }
+    if (!request) {
+      console.warn('[GoogleSignIn] Auth request not ready yet');
       return;
     }
     setIsLoading(true);
-    await promptAsync();
-  };
+    try {
+      await promptAsync();
+    } catch (err) {
+      console.error('[GoogleSignIn] promptAsync error:', err);
+      setIsLoading(false);
+    }
+  }, [isConfigured, request, promptAsync]);
 
   return {
     signInWithGoogle,
