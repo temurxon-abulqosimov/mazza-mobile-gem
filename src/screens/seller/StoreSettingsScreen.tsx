@@ -29,8 +29,8 @@ const StoreSettingsScreen = () => {
           </View>
 
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>{t('store_settings.email')}</Text>
-            <Text style={styles.infoValue}>{userProfile?.email || t('store_settings.not_set')}</Text>
+            <Text style={styles.infoLabel}>{t('store_settings.phone', 'Phone')}</Text>
+            <Text style={styles.infoValue}>{userProfile?.phoneNumber || userProfile?.email || t('store_settings.not_set')}</Text>
           </View>
 
           <View style={styles.infoItem}>

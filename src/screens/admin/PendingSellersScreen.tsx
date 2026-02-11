@@ -136,8 +136,8 @@ const PendingSellersScreen = () => {
               </View>
 
               <View style={styles.infoRow}>
-                <Text style={styles.label}>Email:</Text>
-                <Text style={styles.value}>{seller.user.email}</Text>
+                <Text style={styles.label}>Phone:</Text>
+                <Text style={styles.value}>{seller.user.phoneNumber || seller.user.email || '—'}</Text>
               </View>
 
               <View style={styles.infoRow}>

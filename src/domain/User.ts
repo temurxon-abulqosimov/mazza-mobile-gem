@@ -2,7 +2,8 @@ import { UserRole } from './enums/UserRole';
 
 export interface User {
   id: string;
-  email: string;
+  email?: string | null;
+  phoneNumber?: string | null;
   fullName: string;
   avatarUrl?: string;
   role: UserRole;

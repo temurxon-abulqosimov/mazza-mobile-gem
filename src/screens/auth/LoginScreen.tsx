@@ -37,7 +37,7 @@ const LoginScreen = () => {
   const { control, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
+      phoneNumber: '',
       password: '',
     },
   });
@@ -48,7 +48,7 @@ const LoginScreen = () => {
         navigation.goBack();
       },
       onError: (error: any) => {
-        const message = error.response?.data?.error?.message || error.response?.data?.message || t('auth.invalid_credentials', 'Invalid email or password');
+        const message = error.response?.data?.error?.message || error.response?.data?.message || t('auth.invalid_credentials', 'Invalid phone number or password');
         Alert.alert(t('common.error'), message);
       }
     });
@@ -95,12 +95,12 @@ const LoginScreen = () => {
 
         <ControlledInput
           control={control}
-          name="email"
-          label={t('auth.email')}
-          placeholder="alex@example.com"
-          keyboardType="email-address"
+          name="phoneNumber"
+          label={t('auth.phone', 'Phone Number')}
+          placeholder="998901234567"
+          keyboardType="phone-pad"
           autoCapitalize="none"
-          error={errors.email}
+          error={errors.phoneNumber}
         />
 
         <ControlledInput

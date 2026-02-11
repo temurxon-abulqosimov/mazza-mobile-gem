@@ -20,7 +20,7 @@ const VerifyOtpScreen = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
     const route = useRoute();
-    const { email } = route.params as { email: string };
+    const { phoneNumber } = route.params as { phoneNumber: string };
     const [isLoading, setIsLoading] = useState(false);
 
     const { control, handleSubmit, formState: { errors } } = useForm<VerifyOtpFormData>({
@@ -33,8 +33,8 @@ const VerifyOtpScreen = () => {
     const onSubmit = async (data: VerifyOtpFormData) => {
         setIsLoading(true);
         try {
-            await authApi.verifyOtp(email, data.otp);
-            navigation.navigate('ResetPassword', { email, otp: data.otp });
+            await authApi.verifyOtp(phoneNumber, data.otp);
+            navigation.navigate('ResetPassword', { phoneNumber, otp: data.otp });
         } catch (error: any) {
             const message = error.response?.data?.error?.message || error.response?.data?.message || t('common.error_occurred');
             Alert.alert(t('common.error'), message);
@@ -47,7 +47,7 @@ const VerifyOtpScreen = () => {
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>{t('auth.verify_otp', 'Enter Code')}</Text>
-                <Text style={styles.subtitle}>{t('auth.verify_otp_subtitle', 'Enter the 6-digit code sent to')} {email}</Text>
+                <Text style={styles.subtitle}>{t('auth.verify_otp_subtitle', 'Enter the 6-digit code sent to')} {phoneNumber}</Text>
             </View>
 
             <View style={styles.form}>

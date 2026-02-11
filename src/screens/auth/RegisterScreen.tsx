@@ -39,7 +39,7 @@ const RegisterScreen = () => {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       fullName: '',
-      email: '',
+      phoneNumber: '',
       password: '',
       marketId: '550e8400-e29b-41d4-a716-446655440000',
     },
@@ -118,12 +118,12 @@ const RegisterScreen = () => {
 
         <ControlledInput
           control={control}
-          name="email"
-          label={t('auth.email')}
-          placeholder="alex@example.com"
-          keyboardType="email-address"
+          name="phoneNumber"
+          label={t('auth.phone', 'Phone Number')}
+          placeholder="998901234567"
+          keyboardType="phone-pad"
           autoCapitalize="none"
-          error={errors.email}
+          error={errors.phoneNumber}
         />
 
         <ControlledInput

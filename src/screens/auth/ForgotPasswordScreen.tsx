@@ -11,7 +11,7 @@ import { authApi } from '../../api';
 import { AuthStackParamList } from '../../navigation/AuthNavigator';
 
 const forgotPasswordSchema = z.object({
-    email: z.string().email({ message: 'Invalid email address' }),
+    phoneNumber: z.string().regex(/^998\d{9}$/, { message: 'Telefon raqam 998XXXXXXXXX formatida bo\'lishi kerak' }),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -24,15 +24,15 @@ const ForgotPasswordScreen = () => {
     const { control, handleSubmit, formState: { errors } } = useForm<ForgotPasswordFormData>({
         resolver: zodResolver(forgotPasswordSchema),
         defaultValues: {
-            email: '',
+            phoneNumber: '',
         },
     });
 
     const onSubmit = async (data: ForgotPasswordFormData) => {
         setIsLoading(true);
         try {
-            await authApi.forgotPassword(data.email);
-            navigation.navigate('VerifyOtp', { email: data.email });
+            await authApi.forgotPassword(data.phoneNumber);
+            navigation.navigate('VerifyOtp', { phoneNumber: data.phoneNumber });
         } catch (error: any) {
             const message = error.response?.data?.error?.message || error.response?.data?.message || t('common.error_occurred');
             Alert.alert(t('common.error'), message);
@@ -45,18 +45,18 @@ const ForgotPasswordScreen = () => {
         <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>{t('auth.forgot_password')}</Text>
-                <Text style={styles.subtitle}>{t('auth.forgot_password_subtitle', 'Enter your email to receive a verification code')}</Text>
+                <Text style={styles.subtitle}>{t('auth.forgot_password_subtitle', 'Enter your phone number to receive a verification code')}</Text>
             </View>
 
             <View style={styles.form}>
                 <ControlledInput
                     control={control}
-                    name="email"
-                    label={t('auth.email')}
-                    placeholder="alex@example.com"
-                    keyboardType="email-address"
+                    name="phoneNumber"
+                    label={t('auth.phone', 'Phone Number')}
+                    placeholder="998901234567"
+                    keyboardType="phone-pad"
                     autoCapitalize="none"
-                    error={errors.email}
+                    error={errors.phoneNumber}
                 />
 
                 <TouchableOpacity

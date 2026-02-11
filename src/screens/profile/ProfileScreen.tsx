@@ -94,7 +94,7 @@ const ProfileScreen = () => {
             style={styles.avatar}
           />
           <Text style={styles.fullName}>{userProfile.fullName}</Text>
-          <Text style={styles.email}>{userProfile.email}</Text>
+          <Text style={styles.email}>{userProfile.phoneNumber || userProfile.email || ''}</Text>
           <Text style={styles.memberSince}>
             {t('profile.member_since', { date: new Date(userProfile.memberSince).toLocaleDateString() })}
           </Text>

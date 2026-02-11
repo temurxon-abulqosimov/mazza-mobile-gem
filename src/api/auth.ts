@@ -41,14 +41,18 @@ export const googleAuth = async (idToken: string, marketId?: string): Promise<Go
   return data.data;
 };
 
-export const forgotPassword = async (email: string): Promise<void> => {
-  await apiClient.post('/auth/forgot-password', { email });
+export const forgotPassword = async (phoneNumber: string): Promise<void> => {
+  await apiClient.post('/auth/forgot-password', { phoneNumber });
 };
 
-export const verifyOtp = async (email: string, otp: string): Promise<void> => {
-  await apiClient.post('/auth/verify-otp', { email, otp });
+export const verifyOtp = async (phoneNumber: string, otp: string): Promise<void> => {
+  await apiClient.post('/auth/verify-otp', { phoneNumber, otp });
 };
 
-export const resetPassword = async (data: { email: string; otp: string; newPassword: string }): Promise<void> => {
+export const verifyPhone = async (phoneNumber: string, token: string): Promise<void> => {
+  await apiClient.post('/auth/verify-email', { phoneNumber, token });
+};
+
+export const resetPassword = async (data: { phoneNumber: string; otp: string; newPassword: string }): Promise<void> => {
   await apiClient.post('/auth/reset-password', data);
 };

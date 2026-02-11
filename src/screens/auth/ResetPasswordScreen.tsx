@@ -24,7 +24,7 @@ const ResetPasswordScreen = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
     const route = useRoute();
-    const { email, otp } = route.params as { email: string; otp: string };
+    const { phoneNumber, otp } = route.params as { phoneNumber: string; otp: string };
     const [isLoading, setIsLoading] = useState(false);
 
     const { control, handleSubmit, formState: { errors } } = useForm<ResetPasswordFormData>({
@@ -39,7 +39,7 @@ const ResetPasswordScreen = () => {
         setIsLoading(true);
         try {
             await authApi.resetPassword({
-                email,
+                phoneNumber,
                 otp,
                 newPassword: data.newPassword,
             });

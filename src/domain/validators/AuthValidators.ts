@@ -1,13 +1,19 @@
 import { z } from 'zod';
 
+const phoneRegex = /^998\d{9}$/;
+
 export const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  phoneNumber: z
+    .string()
+    .regex(phoneRegex, 'Telefon raqam 998XXXXXXXXX formatida bo\'lishi kerak'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export const registerSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
+  phoneNumber: z
+    .string()
+    .regex(phoneRegex, 'Telefon raqam 998XXXXXXXXX formatida bo\'lishi kerak'),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
