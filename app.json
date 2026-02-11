@@ -18,6 +18,15 @@
       "bundleIdentifier": "com.mazza.app",
       "config": {
         "googleMapsApiKey": ""
+      },
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.895466978944-bvpd01hlmsa48fovi8d0pu249ikq6ju1"
+            ]
+          }
+        ]
       }
     },
     "android": {

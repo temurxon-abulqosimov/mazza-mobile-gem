@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '../../api/client';
 import { Store } from '../../domain/Store';
+import { useTranslation } from 'react-i18next';
 
 // We need an API endpoint for this
 const getFollowedStores = async () => {
@@ -16,6 +17,7 @@ const getFollowedStores = async () => {
 };
 
 const FollowedStoresScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { data: stores, isLoading, refetch } = useQuery({
         queryKey: ['user', 'followed-stores'],
@@ -60,7 +62,7 @@ const FollowedStoresScreen = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color={colors.text.primary} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Following</Text>
+                <Text style={styles.headerTitle}>{t('favorites.followed_stores')}</Text>
                 <View style={{ width: 44 }} />
             </View>
 
@@ -72,9 +74,9 @@ const FollowedStoresScreen = () => {
                 ListEmptyComponent={
                     <View style={styles.emptyContainer}>
                         <Ionicons name="heart-outline" size={64} color={colors.text.tertiary} />
-                        <Text style={styles.emptyText}>You haven't followed any stores yet.</Text>
+                        <Text style={styles.emptyText}>{t('favorites.no_followed_stores')}</Text>
                         <TouchableOpacity style={styles.exploreButton} onPress={() => navigation.navigate('Discovery')}>
-                            <Text style={styles.exploreButtonText}>Explore Stores</Text>
+                            <Text style={styles.exploreButtonText}>{t('favorites.explore_stores')}</Text>
                         </TouchableOpacity>
                     </View>
                 }

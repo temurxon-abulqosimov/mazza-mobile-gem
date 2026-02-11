@@ -22,3 +22,8 @@ export const getStoreProducts = async (storeId: string): Promise<ApiResponse<Pro
   const { data } = await apiClient.get<ApiResponse<Product[]>>(`/stores/${storeId}/products`);
   return data;
 };
+
+export const updateMyStore = async (data: Partial<Store>): Promise<ApiResponse<Store>> => {
+  const response = await apiClient.put<ApiResponse<Store>>('/seller/store', data);
+  return response.data;
+};

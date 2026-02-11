@@ -1,8 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Localization from 'expo-localization';
-import { AppState, AppStateStatus } from 'react-native';
 
 // Import translation files
 import en from './locales/en.json';
@@ -18,52 +16,36 @@ const resources = {
     uz: { translation: uz },
 };
 
-// Function to get the best available language
-const getLanguage = async () => {
+// Initialize i18n
+i18n
+    .use(initReactI18next)
+    .init({
+        compatibilityJSON: 'v4',
+        resources,
+        lng: 'uz', // Default language
+        fallbackLng: 'uz',
+        interpolation: {
+            escapeValue: false,
+        },
+        react: {
+            useSuspense: false,
+        },
+    });
+
+// Load persisted language - only switch if user explicitly chose a language before
+const loadLanguage = async () => {
     try {
-        // 1. Check saved preference
         const savedLanguage = await AsyncStorage.getItem(LANGUAGE_KEY);
         if (savedLanguage) {
-            return savedLanguage;
+            await i18n.changeLanguage(savedLanguage);
         }
-
-        // 2. Check device locale
-        const deviceLanguage = Localization.getLocales()[0]?.languageCode;
-        const supportedLanguages = ['en', 'ru', 'uz'];
-
-        if (deviceLanguage && supportedLanguages.includes(deviceLanguage)) {
-            return deviceLanguage;
-        }
-
-        // 3. Fallback
-        return 'en';
+        // If no saved language, keep default 'uz' — don't override with device language
     } catch (error) {
-        console.warn('Error reading language preference', error);
-        return 'en';
+        console.warn('Error loading language', error);
     }
 };
 
-// Initialize i18next
-const initI18n = async () => {
-    const language = await getLanguage();
-
-    i18n
-        .use(initReactI18next)
-        .init({
-            compatibilityJSON: 'v3', // For Android
-            resources,
-            lng: language,
-            fallbackLng: 'en',
-            interpolation: {
-                escapeValue: false, // React already safe from XSS
-            },
-            react: {
-                useSuspense: false, // React Native doesn't support Suspense fully yet
-            },
-        });
-};
-
-initI18n();
+loadLanguage();
 
 export default i18n;
 
@@ -72,6 +54,7 @@ export const changeLanguage = async (lang: string) => {
     try {
         await i18n.changeLanguage(lang);
         await AsyncStorage.setItem(LANGUAGE_KEY, lang);
+        console.log(`Language changed to ${lang} and persisted.`);
     } catch (error) {
         console.error('Failed to change language', error);
     }

@@ -31,4 +31,7 @@ export interface UserProfile extends User {
     id: string;
     name: string;
   };
+  // Seller specific fields
+  store?: import('./Store').Store; // Lazy import to avoid circular dependency if any
+  businessName?: string;
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { Header } from '../../components/layout/Header';
 import { NotificationCard, NotificationType } from '../../components/profile/NotificationCard';
 import { EmptyState } from '../../components/ui/EmptyState';
@@ -60,6 +61,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
 ];
 
 const NotificationsScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
 
@@ -106,7 +108,7 @@ const NotificationsScreen = () => {
 
     return (
       <TouchableOpacity onPress={handleMarkAllRead} style={styles.markAllButton}>
-        <Text style={styles.markAllText}>Mark all read</Text>
+        <Text style={styles.markAllText}>{t('notifications.mark_all_read')}</Text>
       </TouchableOpacity>
     );
   };
@@ -127,7 +129,7 @@ const NotificationsScreen = () => {
   return (
     <View style={styles.container}>
       <Header
-        title="Notifications"
+        title={t('notifications.title')}
         showBack
         onBackPress={() => navigation.goBack()}
         rightAction={renderRightAction()}
@@ -136,8 +138,8 @@ const NotificationsScreen = () => {
       {notifications.length === 0 ? (
         <EmptyState
           icon="🔔"
-          title="No notifications"
-          subtitle="You're all caught up! Check back later for updates."
+          title={t('notifications.no_notifications')}
+          subtitle={t('notifications.no_notifications_subtitle')}
         />
       ) : (
         <FlatList

@@ -8,12 +8,16 @@ import AddProductScreen from '../screens/seller/AddProductScreen';
 import SellerOrderDetailScreen from '../screens/seller/SellerOrderDetailScreen';
 import QRScannerScreen from '../screens/seller/QRScannerScreen';
 import AddReviewScreen from '../screens/reviews/AddReviewScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import VerifyOtpScreen from '../screens/auth/VerifyOtpScreen';
+import ResetPasswordScreen from '../screens/auth/ResetPasswordScreen';
 
 export type RootStackParamList = {
   MainApp: undefined;
   Login: undefined;
   Register: undefined;
-  AddProduct: undefined;
+  AddProduct: { product?: any }; // Updated to support editing
+  EditStoreProfile: undefined;
   SellerOrderDetail: { order: any };
   QRScanner: undefined;
   AddReview: {
@@ -23,6 +27,9 @@ export type RootStackParamList = {
     productImage: string | null;
     storeName: string;
   };
+  ForgotPassword: undefined;
+  VerifyOtp: { email: string };
+  ResetPassword: { email: string; otp: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -55,6 +62,11 @@ const RootNavigator = () => {
             options={{ headerShown: true, title: 'Add Product' }}
           />
           <Stack.Screen
+            name="EditStoreProfile"
+            component={require('../screens/seller/EditStoreProfileScreen').default}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
             name="SellerOrderDetail"
             component={SellerOrderDetailScreen}
             options={{ headerShown: false }}
@@ -68,6 +80,21 @@ const RootNavigator = () => {
             name="AddReview"
             component={AddReviewScreen}
             options={{ headerShown: false, presentation: 'modal' }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+            options={{ headerShown: true, title: 'Forgot Password' }}
+          />
+          <Stack.Screen
+            name="VerifyOtp"
+            component={VerifyOtpScreen}
+            options={{ headerShown: true, title: 'Verify OTP' }}
+          />
+          <Stack.Screen
+            name="ResetPassword"
+            component={ResetPasswordScreen}
+            options={{ headerShown: true, title: 'Reset Password' }}
           />
         </Stack.Group>
       </Stack.Navigator>

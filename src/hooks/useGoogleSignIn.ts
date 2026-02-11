@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
 import { Platform, Alert } from 'react-native';
 import { useAuth } from './useAuth';
 import { config, isGoogleAuthConfigured } from '../config/environment';
@@ -35,18 +36,27 @@ export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
   const [request, response, promptAsync] = Google.useAuthRequest(
     isConfigured
       ? {
-          webClientId: config.googleAuth.webClientId || undefined,
-          iosClientId: config.googleAuth.iosClientId || undefined,
-          androidClientId: config.googleAuth.androidClientId || undefined,
-          scopes: ['profile', 'email'],
-        }
+        webClientId: config.googleAuth.webClientId || undefined,
+        iosClientId: config.googleAuth.iosClientId || undefined,
+        androidClientId: config.googleAuth.androidClientId || undefined,
+        scopes: ['profile', 'email'],
+        redirectUri: makeRedirectUri({
+          scheme: 'mazza'
+        }),
+      }
       : {
-          // Provide a dummy config when not set up to avoid crash
-          // The hook still needs to be called but won't be used
-          clientId: 'not-configured',
-          scopes: ['profile', 'email'],
-        }
+        // Provide a dummy config when not set up to avoid crash
+        // The hook still needs to be called but won't be used
+        clientId: 'not-configured',
+        scopes: ['profile', 'email'],
+      }
   );
+
+  useEffect(() => {
+    if (isConfigured && request) {
+      console.log('[GoogleSignIn] Redirect URI:', request.redirectUri);
+    }
+  }, [isConfigured, request]);
 
   useEffect(() => {
     if (!isConfigured) return;

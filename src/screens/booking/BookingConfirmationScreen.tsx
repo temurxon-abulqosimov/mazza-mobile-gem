@@ -5,19 +5,21 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { Booking } from '../../domain/Booking';
 import QRCode from 'react-native-qrcode-svg';
+import { useTranslation } from 'react-i18next';
 
 type ConfirmationRouteProp = RouteProp<DiscoveryStackParamList, 'BookingConfirmation'>;
 type ConfirmationNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'BookingConfirmation'>;
 
 const BookingConfirmationScreen = () => {
+  const { t } = useTranslation();
   const route = useRoute<ConfirmationRouteProp>();
   const navigation = useNavigation<ConfirmationNavigationProp>();
   const { booking } = route.params;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Success!</Text>
-      <Text style={styles.subHeader}>Your order is confirmed.</Text>
+      <Text style={styles.header}>{t('orders.order_success')}</Text>
+      <Text style={styles.subHeader}>{t('orders.order_confirmed_subtitle')}</Text>
       
       <View style={styles.qrContainer}>
         {booking.qrCodeData && (
@@ -32,13 +34,13 @@ const BookingConfirmationScreen = () => {
       <Text style={styles.productName}>{booking.quantity}x {booking.product.name}</Text>
       
       <View style={styles.pickupSection}>
-        <Text style={styles.sectionTitle}>Pickup at:</Text>
+        <Text style={styles.sectionTitle}>{t('orders.pickup_at')}</Text>
         <Text style={styles.storeName}>{booking.store.name}</Text>
         <Text style={styles.storeAddress}>{booking.store.location.address}</Text>
         <Text style={styles.pickupWindow}>{booking.pickupWindow.dateLabel}, {booking.pickupWindow.label}</Text>
       </View>
 
-      <Button title="Back to Discover" onPress={() => navigation.popToTop()} />
+      <Button title={t('orders.back_to_discover')} onPress={() => navigation.popToTop()} />
     </View>
   );
 };

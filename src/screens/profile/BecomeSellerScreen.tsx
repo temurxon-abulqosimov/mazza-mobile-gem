@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Location from 'expo-location';
+import { useTranslation } from 'react-i18next';
 import { useSeller } from '../../hooks/useSeller';
 import { sellerApplicationSchema, SellerApplicationFormData } from '../../domain/validators/SellerValidators';
 import ControlledInput from '../../components/forms/ControlledInput';
@@ -16,6 +17,7 @@ import { Category } from '../../domain/Category';
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'BecomeSeller'>;
 
 const BecomeSellerScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<NavigationProp>();
     const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm<SellerApplicationFormData>({
         resolver: zodResolver(sellerApplicationSchema),
@@ -48,7 +50,7 @@ const BecomeSellerScreen = () => {
             }
         } catch (error) {
             console.error('Failed to load categories', error);
-            Alert.alert('Error', 'Failed to load business categories.');
+            Alert.alert(t('common.error'), t('become_seller.categories_load_failed'));
         } finally {
             setIsCategoriesLoading(false);
         }
@@ -60,9 +62,9 @@ const BecomeSellerScreen = () => {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 Alert.alert(
-                    'Location Permission Required',
-                    'Please enable location permission to automatically fill your business address. You can also enter it manually.',
-                    [{ text: 'OK' }]
+                    t('become_seller.location_permission_required'),
+                    t('become_seller.location_permission_msg'),
+                    [{ text: t('common.ok') }]
                 );
                 setIsGettingLocation(false);
                 return;
@@ -92,13 +94,13 @@ const BecomeSellerScreen = () => {
             }
 
             setLocationObtained(true);
-            Alert.alert('Success', 'Location obtained! Please verify the address and city fields.');
+            Alert.alert(t('common.success'), t('become_seller.location_success_msg'));
         } catch (error) {
             console.error('Location error:', error);
             Alert.alert(
-                'Location Error',
-                'Could not get your location. Please enter your business address manually.',
-                [{ text: 'OK' }]
+                t('become_seller.location_error'),
+                t('become_seller.location_error_msg'),
+                [{ text: t('common.ok') }]
             );
         } finally {
             setIsGettingLocation(false);
@@ -109,25 +111,25 @@ const BecomeSellerScreen = () => {
         try {
             await applyAsSeller(data);
             Alert.alert(
-                'Application Submitted',
-                'Thank you! Your application is under review.',
-                [{ text: 'OK', onPress: () => navigation.goBack() }]
+                t('become_seller.application_submitted'),
+                t('become_seller.application_submitted_msg'),
+                [{ text: t('common.ok'), onPress: () => navigation.goBack() }]
             );
         } catch (error: any) {
             console.error('Seller application error:', error);
             console.error('Error response:', error.response?.data);
             console.error('Error status:', error.response?.status);
             const message = error.response?.data?.message || error.response?.data?.error?.message?.join(', ') || error.message || 'Something went wrong.';
-            Alert.alert('Application Failed', message);
+            Alert.alert(t('become_seller.application_failed'), message);
         }
     };
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Become a Seller</Text>
-            <Text style={styles.subtitle}>Join our community of sellers!</Text>
+            <Text style={styles.title}>{t('become_seller.title')}</Text>
+            <Text style={styles.subtitle}>{t('become_seller.subtitle')}</Text>
 
-            <Text style={styles.label}>Select Business Category</Text>
+            <Text style={styles.label}>{t('become_seller.select_category')}</Text>
             {isCategoriesLoading ? (
                 <ActivityIndicator color="#FF6B35" size="small" style={{ alignSelf: 'flex-start', marginBottom: 16 }} />
             ) : (

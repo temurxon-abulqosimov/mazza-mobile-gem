@@ -10,11 +10,13 @@ import { useFollowStore } from '../../hooks/useFollowStore';
 import { useStore } from '../../hooks/useStore';
 import { useDiscoveryStore } from '../../hooks/useDiscoveryStore';
 import ProductCard from '../../components/discovery/ProductCard';
+import { useTranslation } from 'react-i18next';
 
 type StoreProfileRouteProp = RouteProp<DiscoveryStackParamList, 'StoreProfile'>;
 type StoreProfileNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList, 'StoreProfile'>;
 
 const StoreProfileScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute<StoreProfileRouteProp>();
     const navigation = useNavigation<StoreProfileNavigationProp>();
     const { storeId, storeName, storeImage, storeAddress, storeRating } = route.params;
@@ -44,12 +46,12 @@ const StoreProfileScreen = () => {
             // Check for 401 Unauthorized
             if (error?.response?.status === 401 || error?.message?.includes('401')) {
                 Alert.alert(
-                    'Login Required',
-                    'You need to be logged in to follow stores.',
+                    t('auth.login_required'),
+                    t('store.login_to_follow'),
                     [
-                        { text: 'Cancel', style: 'cancel' },
+                        { text: t('common.cancel'), style: 'cancel' },
                         {
-                            text: 'Login',
+                            text: t('auth.login'),
                             onPress: () => {
                                 // @ts-ignore - Login is in RootNavigator
                                 navigation.navigate('Login');
@@ -58,7 +60,7 @@ const StoreProfileScreen = () => {
                     ]
                 );
             } else {
-                Alert.alert('Error', `Failed to ${newState ? 'follow' : 'unfollow'} store`);
+                Alert.alert(t('common.error'), `Failed to ${newState ? 'follow' : 'unfollow'} store`);
             }
         };
 
@@ -81,7 +83,7 @@ const StoreProfileScreen = () => {
         if (products.length === 0) {
             return (
                 <View style={styles.emptyState}>
-                    <Text style={styles.emptyStateText}>No products available at the moment</Text>
+                    <Text style={styles.emptyStateText}>{t('store.no_products')}</Text>
                 </View>
             );
         }
@@ -139,7 +141,7 @@ const StoreProfileScreen = () => {
                                 <ActivityIndicator size="small" color={isFollowing ? colors.primary : "white"} />
                             ) : (
                                 <Text style={[styles.followButtonText, isFollowing && styles.followingButtonText]}>
-                                    {isFollowing ? 'Following' : 'Follow'}
+                                    {isFollowing ? t('store.following') : t('store.follow')}
                                 </Text>
                             )}
                         </TouchableOpacity>
@@ -151,7 +153,7 @@ const StoreProfileScreen = () => {
                 <View style={styles.infoSection}>
                     <Text style={styles.address}>
                         <Ionicons name="location-outline" size={16} color={colors.text.secondary} />
-                        {' '}{storeAddress || 'Address not available'}
+                        {' '}{storeAddress || t('store.address_not_available')}
                     </Text>
                 </View>
 
@@ -161,13 +163,13 @@ const StoreProfileScreen = () => {
                         style={[styles.tab, activeTab === 'products' && styles.activeTab]}
                         onPress={() => setActiveTab('products')}
                     >
-                        <Text style={[styles.tabText, activeTab === 'products' && styles.activeTabText]}>Products</Text>
+                        <Text style={[styles.tabText, activeTab === 'products' && styles.activeTabText]}>{t('store.products')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.tab, activeTab === 'reviews' && styles.activeTab]}
                         onPress={() => setActiveTab('reviews')}
                     >
-                        <Text style={[styles.tabText, activeTab === 'reviews' && styles.activeTabText]}>Reviews</Text>
+                        <Text style={[styles.tabText, activeTab === 'reviews' && styles.activeTabText]}>{t('store.reviews')}</Text>
                     </TouchableOpacity>
                 </View>
 

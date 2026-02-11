@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-// import i18n from '../../localization/i18n'; // Assuming initialized instance or useTranslation hook
+import { changeLanguage } from '../../localization/i18n';
 
 import { Header } from '../../components/layout/Header';
 import { Section } from '../../components/layout/Section';
@@ -10,29 +10,35 @@ import { MenuItem } from '../../components/ui/MenuItem';
 import { Toggle } from '../../components/ui/Toggle';
 import { colors, spacing } from '../../theme';
 
+const LANGUAGE_LABELS: Record<string, string> = {
+  uz: "O'zbekcha",
+  en: 'English',
+  ru: 'Русский',
+};
+
 const SettingsScreen = () => {
   const navigation = useNavigation();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [locationEnabled, setLocationEnabled] = useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
   return (
     <View style={styles.container}>
       <Header
-        title="Settings"
+        title={t('settings.title')}
         showBack
         onBackPress={() => navigation.goBack()}
       />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* PREFERENCES Section */}
-        <Section title="PREFERENCES" style={styles.section}>
+        <Section title={t('settings.preferences')} style={styles.section}>
           <View style={styles.toggleItem}>
             <View style={styles.toggleItemContent}>
               <MenuItem
                 icon="location"
-                label="Location Services"
-                subtitle="Find deals near you"
+                label={t('settings.location_services')}
+                subtitle={t('settings.location_subtitle')}
                 onPress={() => { }}
                 showBorder={false}
                 style={styles.toggleMenuItem}
@@ -50,8 +56,8 @@ const SettingsScreen = () => {
             <View style={styles.toggleItemContent}>
               <MenuItem
                 icon="moon"
-                label="Dark Mode"
-                subtitle="Coming soon"
+                label={t('settings.dark_mode')}
+                subtitle={t('settings.coming_soon')}
                 onPress={() => { }}
                 showBorder={false}
                 style={styles.toggleMenuItem}
@@ -68,14 +74,14 @@ const SettingsScreen = () => {
 
           <MenuItem
             icon="globe"
-            label="Language"
-            subtitle={i18n.language === 'ru' ? 'Russian' : i18n.language === 'uz' ? 'Uzbek' : 'English'}
+            label={t('settings.language')}
+            subtitle={LANGUAGE_LABELS[i18n.language] || i18n.language}
             onPress={() => {
-              Alert.alert('Select Language', 'Choose your preferred language', [
-                { text: 'English', onPress: () => i18n.changeLanguage('en') },
-                { text: 'Русский', onPress: () => i18n.changeLanguage('ru') },
-                { text: 'O\'zbekcha', onPress: () => i18n.changeLanguage('uz') },
-                { text: 'Cancel', style: 'cancel' }
+              Alert.alert(t('settings.select_language'), t('settings.choose_language'), [
+                { text: 'English', onPress: () => changeLanguage('en') },
+                { text: 'Русский', onPress: () => changeLanguage('ru') },
+                { text: "O'zbekcha", onPress: () => changeLanguage('uz') },
+                { text: t('common.cancel'), style: 'cancel' }
               ])
             }}
             showBorder={false}
@@ -83,15 +89,15 @@ const SettingsScreen = () => {
         </Section>
 
         {/* SUPPORT Section */}
-        <Section title="SUPPORT" style={styles.section}>
+        <Section title={t('settings.support')} style={styles.section}>
           <MenuItem
             icon="help-circle"
-            label="Help Center"
+            label={t('settings.help_center')}
             onPress={() => {/* TODO */ }}
           />
           <MenuItem
             icon="file-text"
-            label="Terms of Service"
+            label={t('settings.terms')}
             onPress={() => {/* TODO */ }}
             showBorder={false}
           />

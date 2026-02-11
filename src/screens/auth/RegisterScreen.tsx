@@ -50,7 +50,7 @@ const RegisterScreen = () => {
         ]);
       },
       onError: (error: any) => {
-        const message = error.response?.data?.message || t('common.error');
+        const message = error.response?.data?.error?.message || error.response?.data?.message || t('common.error');
         Alert.alert(t('auth.registration_failed_title'), message);
       },
     });

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Image, Linking } from 'react-native';
 import * as Location from 'expo-location';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography } from '../../theme';
 import { updateMe } from '../../api/users';
 import { useUserProfile } from '../../hooks/useUserProfile';
@@ -13,20 +14,21 @@ import { useLocation } from '../../hooks/useLocation';
  * Utilizes robust LocationService to fetch coordinates with timeouts/fallbacks.
  */
 const LocationOnboardingScreen = () => {
+    const { t } = useTranslation();
     const { getLocation, requestPermissions, isLoading, error } = useLocation();
     const { refetch } = useUserProfile();
 
     const handleUseCurrentLocation = async () => {
         Alert.alert(
-            "Location Permission",
-            "While using the app, always allow and use it to find the nearest stores.",
+            t('location_onboarding.permission_title'),
+            t('location_onboarding.permission_msg'),
             [
                 {
-                    text: "Cancel",
+                    text: t('common.cancel'),
                     style: "cancel"
                 },
                 {
-                    text: "OK",
+                    text: t('common.ok'),
                     onPress: async () => {
                         try {
                             // 1. Request Permissions
@@ -34,11 +36,11 @@ const LocationOnboardingScreen = () => {
 
                             if (!granted) {
                                 Alert.alert(
-                                    'Permission Denied',
-                                    'Permission to access location was denied. Features will be limited.',
+                                    t('discovery.permission_denied'),
+                                    t('location_onboarding.permission_denied_msg'),
                                     [
-                                        { text: 'Cancel', style: 'cancel' },
-                                        { text: 'Open Settings', onPress: () => Linking.openSettings() }
+                                        { text: t('common.cancel'), style: 'cancel' },
+                                        { text: t('discovery.open_settings'), onPress: () => Linking.openSettings() }
                                     ]
                                 );
                                 return;
@@ -48,7 +50,7 @@ const LocationOnboardingScreen = () => {
                             const location = await getLocation();
 
                             if (!location) {
-                                Alert.alert('Location Error', 'Could not fetch location. Please ensure GPS is enabled.');
+                                Alert.alert(t('become_seller.location_error'), t('location_onboarding.location_error_msg'));
                                 return;
                             }
 
@@ -65,7 +67,7 @@ const LocationOnboardingScreen = () => {
 
                         } catch (err) {
                             console.error('Location Onboarding Error:', err);
-                            Alert.alert('Error', 'Failed to save location. Please try again.');
+                            Alert.alert(t('common.error'), t('location_onboarding.save_error'));
                         }
                     }
                 }
@@ -80,9 +82,9 @@ const LocationOnboardingScreen = () => {
                     <Text style={{ fontSize: 60 }}>📍</Text>
                 </View>
 
-                <Text style={styles.title}>Enable Location</Text>
+                <Text style={styles.title}>{t('location_onboarding.enable_location')}</Text>
                 <Text style={styles.description}>
-                    We need your location to show you the best food rescue offers nearby.
+                    {t('location_onboarding.description')}
                 </Text>
 
                 <TouchableOpacity
@@ -93,16 +95,16 @@ const LocationOnboardingScreen = () => {
                     {isLoading ? (
                         <ActivityIndicator color={colors.text.inverse} />
                     ) : (
-                        <Text style={styles.buttonText}>Use Current Location</Text>
+                        <Text style={styles.buttonText}>{t('location_onboarding.use_current_location')}</Text>
                     )}
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.manualButton}
-                    onPress={() => Alert.alert('Coming Soon', 'Manual location selection is coming soon.')}
+                    onPress={() => Alert.alert(t('settings.coming_soon'), t('location_onboarding.coming_soon_msg'))}
                     disabled={isLoading}
                 >
-                    <Text style={styles.manualButtonText}>Enter Address Manually</Text>
+                    <Text style={styles.manualButtonText}>{t('location_onboarding.enter_manually')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -11,6 +11,7 @@ import {
   Switch,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useDashboardStats } from '../../hooks/useDashboardStats';
 import { useStoreStatus } from '../../hooks/useStoreStatus';
@@ -20,6 +21,7 @@ import { colors } from '../../theme';
 import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
 
 const SellerDashboardScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { userProfile } = useUserProfile();
   const { stats, isLoading, error, refetch } = useDashboardStats();
@@ -30,8 +32,6 @@ const SellerDashboardScreen = () => {
     refetch();
     refetchOrders();
   }, [refetch, refetchOrders]);
-
-  // ... existing hooks from verified content
 
   return (
     <SafeAreaWrapper>
@@ -49,7 +49,7 @@ const SellerDashboardScreen = () => {
             <View style={styles.onlineIndicator} />
           </TouchableOpacity>
           <View>
-            <Text style={styles.welcomeText}>Welcome,</Text>
+            <Text style={styles.welcomeText}>{t('seller.welcome')}</Text>
             <Text style={styles.storeName}>{userProfile?.fullName || 'Seller'}</Text>
           </View>
         </View>
@@ -75,9 +75,9 @@ const SellerDashboardScreen = () => {
               <Icon name="store" size={24} color={colors.primary} />
             </View>
             <View>
-              <Text style={styles.statusLabel}>Store Status</Text>
+              <Text style={styles.statusLabel}>{t('seller.store_status')}</Text>
               <Text style={[styles.statusText, styles.statusTextOpen]}>
-                Open for Orders
+                {t('seller.open_for_orders')}
               </Text>
             </View>
           </View>
@@ -114,7 +114,7 @@ const SellerDashboardScreen = () => {
               </View>
             </View>
             <Text style={styles.statValue}>${stats?.todaysEarnings || '0'}</Text>
-            <Text style={styles.statLabel}>Today's Earnings</Text>
+            <Text style={styles.statLabel}>{t('seller.todays_earnings')}</Text>
           </View>
 
           <View style={[styles.statCard, styles.statCardGreen]}>
@@ -124,24 +124,24 @@ const SellerDashboardScreen = () => {
               </View>
             </View>
             <Text style={styles.statValue}>{stats?.ordersRescued || '0'}</Text>
-            <Text style={styles.statLabel}>Orders Rescued</Text>
+            <Text style={styles.statLabel}>{t('seller.orders_rescued')}</Text>
           </View>
         </View>
 
         {/* Live Orders Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Live Orders</Text>
+            <Text style={styles.sectionTitle}>{t('seller.live_orders')}</Text>
             <TouchableOpacity onPress={() => navigation.navigate('SellerOrders')}>
-              <Text style={styles.seeAllButton}>See All</Text>
+              <Text style={styles.seeAllButton}>{t('seller.see_all')}</Text>
             </TouchableOpacity>
           </View>
 
           {(orders as any[])?.length === 0 ? (
             <View style={styles.emptyState}>
               <Icon name="orders" size={48} color={colors.text.tertiary} style={styles.emptyStateIcon} />
-              <Text style={styles.emptyStateTitle}>No Active Orders</Text>
-              <Text style={styles.emptyStateSubtitle}>New orders will appear here</Text>
+              <Text style={styles.emptyStateTitle}>{t('seller.no_active_orders')}</Text>
+              <Text style={styles.emptyStateSubtitle}>{t('seller.new_orders_hint')}</Text>
             </View>
           ) : (
             <View style={styles.ordersContainer}>
@@ -177,7 +177,7 @@ const SellerDashboardScreen = () => {
         onPress={() => navigation.navigate('AddProduct')}
       >
         <Icon name="plus" size={24} color="white" style={styles.fabIcon} />
-        <Text style={styles.fabText}>Add Product</Text>
+        <Text style={styles.fabText}>{t('seller.add_product')}</Text>
       </TouchableOpacity>
     </SafeAreaWrapper>
   );

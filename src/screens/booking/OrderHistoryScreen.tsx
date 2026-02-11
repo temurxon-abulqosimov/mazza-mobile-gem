@@ -11,6 +11,7 @@ import { RootStackParamList } from '../../navigation/RootNavigator';
 import OrderCard from '../../components/booking/OrderCard';
 import { Booking, BookingStatus } from '../../domain/Booking';
 import OrderCardSkeleton from '../../components/booking/OrderCardSkeleton';
+import { useTranslation } from 'react-i18next';
 
 type OrderHistoryNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<OrdersStackParamList, 'OrderList'>,
@@ -26,7 +27,7 @@ interface BookingSection {
 }
 
 
-const groupBookingsByDate = (bookings: Booking[]): BookingSection[] => {
+const groupBookingsByDate = (bookings: Booking[], t: any): BookingSection[] => {
   const sections: { [key: string]: Booking[] } = {};
 
   bookings.forEach(booking => {
@@ -38,14 +39,14 @@ const groupBookingsByDate = (bookings: Booking[]): BookingSection[] => {
     let sectionTitle: string;
     if (booking.status === BookingStatus.COMPLETED || booking.status === BookingStatus.CANCELLED) {
       if (diffDays <= 1) {
-        sectionTitle = 'TODAY';
+        sectionTitle = t('orders.today');
       } else if (diffDays <= 2) {
-        sectionTitle = 'YESTERDAY';
+        sectionTitle = t('orders.yesterday');
       } else {
         sectionTitle = bookingDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric' });
       }
     } else {
-      sectionTitle = 'CURRENT ORDERS';
+      sectionTitle = t('orders.current_orders');
     }
 
     if (!sections[sectionTitle]) {
@@ -54,7 +55,7 @@ const groupBookingsByDate = (bookings: Booking[]): BookingSection[] => {
     sections[sectionTitle].push(booking);
   });
 
-  const sectionOrder = ['CURRENT ORDERS', 'TODAY', 'YESTERDAY'];
+  const sectionOrder = [t('orders.current_orders'), t('orders.today'), t('orders.yesterday')];
   return Object.entries(sections).sort(([a], [b]) => {
     const indexA = sectionOrder.indexOf(a);
     const indexB = sectionOrder.indexOf(b);
@@ -75,6 +76,7 @@ const LoadingComponent = () => (
 );
 
 const OrderHistoryScreen = () => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<'active' | 'past'>('active');
   const navigation = useNavigation<OrderHistoryNavigationProp>();
   const {
@@ -88,12 +90,12 @@ const OrderHistoryScreen = () => {
     isRefetching,
   } = useUserBookings({ status });
 
-  const sections = useMemo(() => groupBookingsByDate(bookings), [bookings]);
+  const sections = useMemo(() => groupBookingsByDate(bookings, t), [bookings, t]);
 
   const ListEmptyComponent = () => (
     <View style={styles.centered}>
-      <Text style={styles.emptyText}>You have no {status} orders yet.</Text>
-      <Text style={styles.emptySubText}>New orders you make will appear here.</Text>
+      <Text style={styles.emptyText}>{t('orders.no_orders', { status })}</Text>
+      <Text style={styles.emptySubText}>{t('orders.no_orders_subtitle')}</Text>
     </View>
   );
 
@@ -108,13 +110,13 @@ const OrderHistoryScreen = () => {
           style={[styles.tab, status === 'active' && styles.activeTab]}
           onPress={() => setStatus('active')}
         >
-          <Text style={[styles.tabText, status === 'active' && styles.activeTabText]}>Active</Text>
+          <Text style={[styles.tabText, status === 'active' && styles.activeTabText]}>{t('orders.active')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, status === 'past' && styles.activeTab]}
           onPress={() => setStatus('past')}
         >
-          <Text style={[styles.tabText, status === 'past' && styles.activeTabText]}>Past</Text>
+          <Text style={[styles.tabText, status === 'past' && styles.activeTabText]}>{t('orders.past')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -122,8 +124,8 @@ const OrderHistoryScreen = () => {
         <LoadingComponent />
       ) : isError ? (
         <View style={styles.centered}>
-          <Text style={styles.errorText}>Could not load your orders.</Text>
-          <Button title="Try Again" onPress={() => refetch()} color="#FF7A00" />
+          <Text style={styles.errorText}>{t('orders.could_not_load')}</Text>
+          <Button title={t('common.try_again')} onPress={() => refetch()} color="#FF7A00" />
         </View>
       ) : (
         <SectionList

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Product } from '../../domain/Product';
 import { colors, spacing, typography } from '../../theme';
@@ -13,6 +13,8 @@ interface SellerProductCardProps {
 }
 
 const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProductCardProps) => {
+  const { t } = useTranslation();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'ACTIVE':
@@ -31,15 +33,15 @@ const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProduct
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'ACTIVE':
-        return 'Active';
+        return t('seller.product.status.active');
       case 'DRAFT':
-        return 'Draft';
+        return t('seller.product.status.draft');
       case 'SOLD_OUT':
-        return 'Sold Out';
+        return t('seller.product.status.sold_out');
       case 'EXPIRED':
-        return 'Expired';
+        return t('seller.product.status.expired');
       case 'DEACTIVATED':
-        return 'Deactivated';
+        return t('seller.product.status.deactivated');
       default:
         return status;
     }
@@ -91,7 +93,7 @@ const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProduct
           {/* Quantity & Pickup Time */}
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>
-              📦 {product.quantityAvailable}/{product.quantity} left
+              📦 {product.quantityAvailable}/{product.quantity} {t('seller.product.left')}
             </Text>
             <Text style={styles.separator}>•</Text>
             <Text style={styles.metaText} numberOfLines={1}>
@@ -110,7 +112,7 @@ const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProduct
             onEdit();
           }}
         >
-          <Text style={styles.editButtonText}>✏️ Edit</Text>
+          <Text style={styles.editButtonText}>✏️ {t('seller.product.edit')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -120,7 +122,7 @@ const SellerProductCard = ({ product, onEdit, onDelete, onPress }: SellerProduct
             onDelete();
           }}
         >
-          <Text style={styles.deleteButtonText}>🗑️ Delete</Text>
+          <Text style={styles.deleteButtonText}>🗑️ {t('seller.product.delete')}</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

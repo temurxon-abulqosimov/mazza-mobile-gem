@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '../../hooks/useUserProfile';
 
 const StoreSettingsScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { userProfile } = useUserProfile();
 
@@ -13,50 +15,53 @@ const StoreSettingsScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Store Settings</Text>
+        <Text style={styles.headerTitle}>{t('store_settings.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView style={styles.content}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Business Information</Text>
+          <Text style={styles.sectionTitle}>{t('store_settings.business_info')}</Text>
 
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Store Name</Text>
-            <Text style={styles.infoValue}>{userProfile?.fullName || 'Not set'}</Text>
+            <Text style={styles.infoLabel}>{t('store_settings.store_name')}</Text>
+            <Text style={styles.infoValue}>{userProfile?.fullName || t('store_settings.not_set')}</Text>
           </View>
 
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Email</Text>
-            <Text style={styles.infoValue}>{userProfile?.email || 'Not set'}</Text>
+            <Text style={styles.infoLabel}>{t('store_settings.email')}</Text>
+            <Text style={styles.infoValue}>{userProfile?.email || t('store_settings.not_set')}</Text>
           </View>
 
           <View style={styles.infoItem}>
-            <Text style={styles.infoLabel}>Status</Text>
+            <Text style={styles.infoLabel}>{t('store_settings.status')}</Text>
             <View style={styles.statusBadge}>
-              <Text style={styles.statusText}>Active</Text>
+              <Text style={styles.statusText}>{t('store_settings.active')}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Store Actions</Text>
+          <Text style={styles.sectionTitle}>{t('store_settings.store_actions')}</Text>
 
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('EditStoreProfile')}
+          >
             <Text style={styles.actionIcon}>📝</Text>
-            <Text style={styles.actionText}>Edit Business Info</Text>
+            <Text style={styles.actionText}>{t('store_settings.edit_business_info')}</Text>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton}>
             <Text style={styles.actionIcon}>📍</Text>
-            <Text style={styles.actionText}>Update Location</Text>
+            <Text style={styles.actionText}>{t('store_settings.update_location')}</Text>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton}>
             <Text style={styles.actionIcon}>⏰</Text>
-            <Text style={styles.actionText}>Business Hours</Text>
+            <Text style={styles.actionText}>{t('store_settings.business_hours')}</Text>
             <Text style={styles.actionArrow}>›</Text>
           </TouchableOpacity>
         </View>

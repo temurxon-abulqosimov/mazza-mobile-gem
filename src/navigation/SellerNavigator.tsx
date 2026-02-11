@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../theme';
 import SellerDashboardScreen from '../screens/seller/SellerDashboardScreen';
 import ManageProductsScreen from '../screens/seller/ManageProductsScreen';
@@ -18,6 +19,8 @@ export type SellerTabParamList = {
 const Tab = createBottomTabNavigator<SellerTabParamList>();
 
 const SellerNavigator = () => {
+    const { t } = useTranslation();
+
     return (
         <Tab.Navigator
             id="SellerTabs"
@@ -43,7 +46,7 @@ const SellerNavigator = () => {
                 name="Dashboard"
                 component={SellerDashboardScreen}
                 options={{
-                    tabBarLabel: 'Home',
+                    tabBarLabel: t('navigation.home'),
                     tabBarIcon: ({ size, focused, color }) => (
                         <Icon name={focused ? "dashboard-filled" : "dashboard"} size={size} color={color} />
                     ),
@@ -53,18 +56,17 @@ const SellerNavigator = () => {
                 name="Inventory"
                 component={ManageProductsScreen}
                 options={{
-                    tabBarLabel: 'Inventory',
+                    tabBarLabel: t('navigation.inventory'),
                     tabBarIcon: ({ size, focused, color }) => (
                         <Icon name={focused ? "package-filled" : "package"} size={size} color={color} />
                     ),
                 }}
             />
-            {/* Wallet / Finance - Using Orders for now as placeholder or combined view */}
             <Tab.Screen
                 name="SellerOrders"
                 component={SellerOrdersScreen}
                 options={{
-                    tabBarLabel: 'Orders',
+                    tabBarLabel: t('navigation.orders'),
                     tabBarIcon: ({ size, focused, color }) => (
                         <Icon name={focused ? "orders-filled" : "orders"} size={size} color={color} />
                     ),
@@ -74,7 +76,7 @@ const SellerNavigator = () => {
                 name="Account"
                 component={StoreSettingsScreen}
                 options={{
-                    tabBarLabel: 'Account',
+                    tabBarLabel: t('navigation.account'),
                     tabBarIcon: ({ size, color }) => (
                         <Icon name="settings" size={size} color={color} />
                     ),

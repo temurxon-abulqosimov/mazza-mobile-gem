@@ -11,6 +11,7 @@ import { MainTabParamList } from '../../navigation/MainAppNavigator';
 import { RootStackParamList } from '../../navigation/RootNavigator';
 import { useBookingDetail } from '../../hooks/useBookingDetail';
 import { BookingStatus } from '../../domain/Booking';
+import { useTranslation } from 'react-i18next';
 
 type OrderDetailProps = NativeStackScreenProps<OrdersStackParamList, 'OrderDetail'>;
 type OrderDetailRouteProp = OrderDetailProps['route'];
@@ -24,6 +25,7 @@ type OrderDetailNavigationProp = CompositeNavigationProp<
 >;
 
 const OrderDetailScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute<OrderDetailRouteProp>();
     const navigation = useNavigation<OrderDetailNavigationProp>();
     const { bookingId } = route.params;
@@ -46,8 +48,8 @@ const OrderDetailScreen = () => {
     if (isError || !booking) {
         return (
             <View style={styles.centered}>
-                <Text style={styles.errorText}>Could not load the order details.</Text>
-                <Button title="Try Again" onPress={() => refetch()} color="#FF7A00" />
+                <Text style={styles.errorText}>{t('orders.could_not_load_detail')}</Text>
+                <Button title={t('common.try_again')} onPress={() => refetch()} color="#FF7A00" />
             </View>
         );
     }
@@ -59,22 +61,21 @@ const OrderDetailScreen = () => {
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
                         <Ionicons name="close" size={28} color="#333" />
                     </TouchableOpacity>
-                    <Text style={styles.headerTitle}>Confirmation</Text>
+                    <Text style={styles.headerTitle}>{t('orders.confirmation')}</Text>
                 </View>
 
                 <View style={styles.confirmationContainer}>
                     <View style={styles.checkCircle}>
                         <Ionicons name="checkmark-sharp" size={32} color="#FF7A00" />
                     </View>
-                    <Text style={styles.woohooText}>Woohoo! It's yours.</Text>
+                    <Text style={styles.woohooText}>{t('orders.order_confirmed')}</Text>
                     <Text style={styles.subText}>
-                        Show this code to the staff at{' '}
-                        <Text style={{ fontWeight: 'bold' }}>{booking.store.name}</Text> to pick up your bag.
+                        {t('orders.show_code_msg', { storeName: booking.store.name })}
                     </Text>
                 </View>
 
                 <View style={styles.qrCard}>
-                    <Text style={styles.scanText}>SCAN AT PICKUP</Text>
+                    <Text style={styles.scanText}>{t('orders.scan_at_pickup')}</Text>
                     <View style={styles.qrContainer}>
                         {booking.qrCodeData ? (
                             <QRCode
@@ -86,14 +87,14 @@ const OrderDetailScreen = () => {
                     </View>
                     <Text style={styles.orderNumber}>{booking.orderNumber}</Text>
                     <Text style={styles.paidStatus}>
-                        <Ionicons name="checkmark-circle" size={14} color="#4CAF50" /> Paid & Confirmed
+                        <Ionicons name="checkmark-circle" size={14} color="#4CAF50" /> {t('orders.paid_confirmed')}
                     </Text>
                 </View>
 
                 <View style={styles.pickupCard}>
                     <Ionicons name="time-outline" size={24} color="#FF7A00" style={{ marginRight: 12 }} />
                     <View>
-                        <Text style={styles.cardTitle}>PICKUP WINDOW</Text>
+                        <Text style={styles.cardTitle}>{t('orders.pickup_window')}</Text>
                         <Text style={styles.pickupTime}>{booking.pickupWindow.label}</Text>
                     </View>
                     <View style={styles.todayBadge}>
@@ -108,13 +109,13 @@ const OrderDetailScreen = () => {
                         <Text style={styles.storeAddress}>{booking.store.location.address}</Text>
                         <TouchableOpacity style={styles.directionsButton} onPress={openMaps}>
                             <Ionicons name="navigate-outline" size={20} color="white" />
-                            <Text style={styles.directionsText}>Get Directions</Text>
+                            <Text style={styles.directionsText}>{t('orders.get_directions')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <TouchableOpacity onPress={() => { /* Contact Support */ }}>
-                    <Text style={styles.supportText}>Having trouble? Contact Support</Text>
+                    <Text style={styles.supportText}>{t('orders.contact_support')}</Text>
                 </TouchableOpacity>
 
             </ScrollView>
@@ -133,11 +134,11 @@ const OrderDetailScreen = () => {
                         }}
                     >
                         <Ionicons name="star-outline" size={20} color="#FF7A00" style={{ marginRight: 8 }} />
-                        <Text style={styles.reviewButtonText}>Write a Review</Text>
+                        <Text style={styles.reviewButtonText}>{t('orders.write_review')}</Text>
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('MainApp' as never)}>
-                    <Text style={styles.homeButtonText}>Back to Home</Text>
+                    <Text style={styles.homeButtonText}>{t('orders.back_to_home')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

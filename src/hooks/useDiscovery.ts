@@ -8,12 +8,13 @@ interface DiscoveryParams {
   lat: number;
   lng: number;
   radius?: number;
+  category?: string;
   enabled?: boolean;
 }
 
-export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryParams) => {
+export const useDiscovery = ({ lat, lng, radius, category, enabled = true }: DiscoveryParams) => {
   const queryClient = useQueryClient();
-  const queryKey = ['discovery', { lat, lng, radius }];
+  const queryKey = ['discovery', { lat, lng, radius, category }];
 
   const {
     data,
@@ -30,6 +31,7 @@ export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryPara
       lat,
       lng,
       radius,
+      category,
       cursor: pageParam as string | undefined
     }),
     getNextPageParam: (lastPage) => lastPage.meta.pagination.hasMore ? lastPage.meta.pagination.cursor : undefined,
@@ -59,3 +61,52 @@ export const useDiscovery = ({ lat, lng, radius, enabled = true }: DiscoveryPara
     isFetchingNextPage
   };
 };
+
+export const useDiscoveryStores = ({ lat, lng, radius, category, enabled = true }: DiscoveryParams) => {
+  const queryClient = useQueryClient();
+  const queryKey = ['discoveryStores', { lat, lng, radius, category }];
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    isRefetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery<PaginatedResponse<{ stores: import('../domain/Store').Store[] }>>({
+    queryKey,
+    queryFn: ({ pageParam }) => discoveryApi.discoverStores({
+      lat,
+      lng,
+      radius,
+      category,
+      cursor: pageParam as string | undefined
+    }),
+    getNextPageParam: (lastPage) => lastPage.meta.pagination.hasMore ? lastPage.meta.pagination.cursor : undefined,
+    initialPageParam: undefined,
+    enabled: enabled && !!lat && !!lng,
+    staleTime: 0,
+    gcTime: 0,
+  });
+
+  const resetAndRefetch = useCallback(async () => {
+    await queryClient.resetQueries({ queryKey });
+  }, [queryClient, queryKey]);
+
+  const stores = data?.pages.flatMap(page => page.data.stores) ?? [];
+
+  return {
+    stores,
+    isLoading,
+    isError,
+    error,
+    refetch: resetAndRefetch,
+    isRefetching,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  };
+};
+

@@ -17,6 +17,7 @@ const DiscoveryNavigator = () => {
       <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
       <Stack.Screen name="StoreProfile" component={StoreProfileScreen} />
       <Stack.Screen name="BookingConfirmation" component={BookingConfirmationScreen} options={{ presentation: 'modal' }} />
+      <Stack.Screen name="SellerList" component={require('../screens/discovery/SellerListScreen').default} />
     </Stack.Navigator>
   );
 };

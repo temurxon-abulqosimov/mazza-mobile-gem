@@ -16,8 +16,10 @@ import { useFavorites } from '../../hooks/useFavorites';
 import FavoriteProductCard from '../../components/favorites/FavoriteProductCard';
 import FavoriteStoreCardSkeleton from '../../components/favorites/FavoriteStoreCardSkeleton';
 import { favoriteApi } from '../../api';
+import { useTranslation } from 'react-i18next';
 
 const FavoritesScreen = () => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -75,7 +77,7 @@ const FavoritesScreen = () => {
       refetch();
     } catch (e) {
       console.error('Failed to remove favorite product', e);
-      Alert.alert('Error', 'Could not remove product from favorites.');
+      Alert.alert(t('common.error'), t('favorites.could_not_load'));
     }
   };
 
@@ -94,13 +96,13 @@ const FavoritesScreen = () => {
           />
         </View>
         <Text style={styles.emptyTitle}>
-          No favorite products yet
+          {t('favorites.no_favorites')}
         </Text>
         <Text style={styles.emptySubtitle}>
-          Tap the heart icon on a product to save it here for easy access.
+          {t('favorites.no_favorites_subtitle')}
         </Text>
         <TouchableOpacity style={styles.exploreButton} onPress={handleStartExploring}>
-          <Text style={styles.exploreButtonText}>Start Exploring</Text>
+          <Text style={styles.exploreButtonText}>{t('favorites.start_exploring')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -137,7 +139,7 @@ const FavoritesScreen = () => {
         >
           <Ionicons name="chevron-back" size={24} color="#1a1a1a" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Favorites</Text>
+        <Text style={styles.headerTitle}>{t('favorites.title')}</Text>
         <View style={styles.headerRight} />
       </View>
 
@@ -147,9 +149,9 @@ const FavoritesScreen = () => {
       ) : isError ? (
         <View style={styles.errorContainer}>
           <Ionicons name="cloud-offline-outline" size={48} color="#ccc" />
-          <Text style={styles.errorText}>Could not load your favorites.</Text>
+          <Text style={styles.errorText}>{t('favorites.could_not_load')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
-            <Text style={styles.retryButtonText}>Try Again</Text>
+            <Text style={styles.retryButtonText}>{t('common.try_again')}</Text>
           </TouchableOpacity>
         </View>
       ) : (

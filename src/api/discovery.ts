@@ -9,7 +9,7 @@ interface DiscoveryParams {
   radius?: number;
   limit?: number;
   cursor?: string;
-  categoryId?: string;
+  category?: string;
   storeId?: string;
 }
 

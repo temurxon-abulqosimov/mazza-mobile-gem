@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform, View, ActivityIndicator } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import DiscoveryNavigator from './DiscoveryNavigator';
 import OrdersNavigator from './OrdersNavigator';
 import FavoritesScreen from '../screens/favorites/FavoritesScreen';
@@ -28,6 +29,7 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainAppNavigator = () => {
+  const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
   const isAuthenticated = !!accessToken;
   const { userProfile, isLoading } = useUserProfile();
@@ -75,7 +77,7 @@ const MainAppNavigator = () => {
           component={AdminNavigator}
           options={{
             headerShown: false,
-            tabBarLabel: 'Dashboard',
+            tabBarLabel: t('navigation.dashboard'),
             tabBarIcon: ({ size, color }) => (
               <Icon name="dashboard" size={size} color={color} />
             ),
@@ -117,7 +119,7 @@ const MainAppNavigator = () => {
         component={DiscoveryNavigator}
         options={{
           headerShown: false,
-          tabBarLabel: 'Home',
+          tabBarLabel: t('navigation.home'),
           tabBarIcon: ({ size, focused, color }) => (
             <Icon name={focused ? "home-filled" : "home"} size={size} color={color} />
           ),
@@ -128,7 +130,7 @@ const MainAppNavigator = () => {
         component={MapScreen}
         options={{
           headerShown: false,
-          tabBarLabel: 'Map',
+          tabBarLabel: t('navigation.map'),
           tabBarIcon: ({ size, focused, color }) => (
             <Icon name={focused ? "discovery-filled" : "discovery"} size={size} color={color} />
           ),
@@ -139,7 +141,7 @@ const MainAppNavigator = () => {
         component={OrdersNavigator}
         options={{
           headerShown: false,
-          tabBarLabel: 'Orders',
+          tabBarLabel: t('navigation.orders'),
           tabBarIcon: ({ size, focused, color }) => (
             <Icon name={focused ? "orders-filled" : "orders"} size={size} color={color} />
           ),
@@ -150,7 +152,7 @@ const MainAppNavigator = () => {
         component={FavoritesScreen}
         options={{
           headerShown: false,
-          tabBarLabel: 'Saved',
+          tabBarLabel: t('navigation.saved'),
           tabBarIcon: ({ size, focused, color }) => (
             <Icon name={focused ? "heart-filled" : "heart"} size={size} color={color} />
           ),
@@ -161,7 +163,7 @@ const MainAppNavigator = () => {
         component={ProfileNavigator}
         options={{
           headerShown: false,
-          tabBarLabel: 'Profile',
+          tabBarLabel: t('navigation.profile'),
           tabBarIcon: ({ size, focused, color }) => (
             <Icon name={focused ? "user-filled" : "user"} size={size} color={color} />
           ),

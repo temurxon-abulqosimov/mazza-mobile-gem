@@ -11,35 +11,64 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useCreateProduct } from '../../hooks/useCreateProduct';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { useCreateProduct, useUpdateProduct } from '../../hooks/useCreateProduct';
 import { CATEGORY_IMAGES } from '../../theme/images';
-
-// Product categories for sellers (excludes cafe/restaurant which are business types)
-const PRODUCT_CATEGORIES = [
-  { id: 'bakery', name: 'Bakery', slug: 'bakery', image: CATEGORY_IMAGES.bakery },
-  { id: 'desserts', name: 'Desserts', slug: 'desserts', image: CATEGORY_IMAGES.desserts },
-  { id: 'fast-food', name: 'Fast Food', slug: 'fast-food', image: CATEGORY_IMAGES['fast-food'] },
-  { id: 'traditional', name: 'Traditional', slug: 'traditional', image: CATEGORY_IMAGES.traditional },
-  { id: 'salad', name: 'Salads & Healthy', slug: 'salad', image: CATEGORY_IMAGES.salad },
-];
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const AddProductScreen = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const productToEdit = route.params?.product;
+  const isEditMode = !!productToEdit;
+
+  const { t } = useTranslation();
   const { createProduct, isCreating } = useCreateProduct();
+  const { updateProduct, isUpdating } = useUpdateProduct();
+
+  // Product categories for sellers (excludes cafe/restaurant which are business types)
+  const PRODUCT_CATEGORIES = [
+    { id: 'bakery', name: t('seller.categories.bakery'), slug: 'bakery', image: CATEGORY_IMAGES.bakery },
+    { id: 'desserts', name: t('seller.categories.desserts'), slug: 'desserts', image: CATEGORY_IMAGES.desserts },
+    { id: 'fast-food', name: t('seller.categories.fast_food'), slug: 'fast-food', image: CATEGORY_IMAGES['fast-food'] },
+    { id: 'traditional', name: t('seller.categories.traditional'), slug: 'traditional', image: CATEGORY_IMAGES.traditional },
+    { id: 'salad', name: t('seller.categories.salad'), slug: 'salad', image: CATEGORY_IMAGES.salad },
+  ];
 
   // Form state
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState('');
-  const [originalPrice, setOriginalPrice] = useState('');
-  const [salePrice, setSalePrice] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  // ... (rest of the file content with t() replacements)
+
+  // ... existing useState initializers ...
+  // Form state - Initialize with product data if editing
+  const [name, setName] = useState(productToEdit?.name || '');
+  const [description, setDescription] = useState(productToEdit?.description || '');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(productToEdit?.categoryId || '');
+  // Helper to safely convert price from cents to dollars string
+  const formatPrice = (priceCent: number) => (priceCent ? (priceCent / 100).toFixed(2) : '');
+
+  const [originalPrice, setOriginalPrice] = useState(
+    productToEdit ? formatPrice(productToEdit.originalPrice) : ''
+  );
+  const [salePrice, setSalePrice] = useState(
+    productToEdit ? formatPrice(productToEdit.discountedPrice) : ''
+  );
+  const [quantity, setQuantity] = useState(productToEdit?.quantity || 1);
 
   // Calculate default pickup times using useState initializer function
   const [pickupStart, setPickupStart] = useState(() => {
+    if (productToEdit?.pickupWindowStart) {
+      // Assuming format HH:MM or ISO string. Backend usually sends ISO.
+      // If ISO, extract HH:MM. If HH:MM, use as is.
+      const time = new Date(productToEdit.pickupWindowStart);
+      if (!isNaN(time.getTime())) {
+        const hours = time.getHours().toString().padStart(2, '0');
+        const minutes = time.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+      return '12:00'; // Fallback
+    }
     const now = new Date();
     const startTime = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours from now
     const hours = startTime.getHours().toString().padStart(2, '0');
@@ -48,6 +77,15 @@ const AddProductScreen = () => {
   });
 
   const [pickupEnd, setPickupEnd] = useState(() => {
+    if (productToEdit?.pickupWindowEnd) {
+      const time = new Date(productToEdit.pickupWindowEnd);
+      if (!isNaN(time.getTime())) {
+        const hours = time.getHours().toString().padStart(2, '0');
+        const minutes = time.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+      }
+      return '17:00'; // Fallback
+    }
     const now = new Date();
     const endTime = new Date(now.getTime() + 5 * 60 * 60 * 1000); // 5 hours from now
     const hours = endTime.getHours().toString().padStart(2, '0');
@@ -114,12 +152,12 @@ const AddProductScreen = () => {
   const handleSubmit = async () => {
     // Validation
     if (!name.trim()) {
-      Alert.alert('Missing Information', 'Please enter a product name');
+      Alert.alert(t('seller.missing_info'), t('seller.enter_product_name'));
       return;
     }
 
     if (!description.trim()) {
-      Alert.alert('Missing Information', 'Please enter a description');
+      Alert.alert(t('seller.missing_info'), t('seller.enter_description'));
       return;
     }
 
@@ -127,27 +165,27 @@ const AddProductScreen = () => {
     const salePriceNum = parseFloat(salePrice);
 
     if (!originalPrice || isNaN(originalPriceNum) || originalPriceNum <= 0) {
-      Alert.alert('Invalid Price', 'Please enter a valid original price');
+      Alert.alert(t('seller.invalid_price'), t('seller.enter_valid_original_price'));
       return;
     }
 
     if (!salePrice || isNaN(salePriceNum) || salePriceNum <= 0) {
-      Alert.alert('Invalid Price', 'Please enter a valid sale price');
+      Alert.alert(t('seller.invalid_price'), t('seller.enter_valid_sale_price'));
       return;
     }
 
     if (salePriceNum >= originalPriceNum) {
-      Alert.alert('Invalid Prices', 'Sale price must be less than original price');
+      Alert.alert(t('seller.invalid_price'), t('seller.sale_price_error'));
       return;
     }
 
     if (quantity < 1) {
-      Alert.alert('Invalid Quantity', 'Quantity must be at least 1');
+      Alert.alert(t('seller.invalid_quantity'), t('seller.quantity_error'));
       return;
     }
 
     if (!selectedCategoryId) {
-      Alert.alert('Missing Information', 'Please select a category');
+      Alert.alert(t('seller.missing_info'), t('seller.select_category_error'));
       return;
     }
 
@@ -176,8 +214,8 @@ const AddProductScreen = () => {
     const minFutureTime = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes from now
     if (startTime < minFutureTime) {
       Alert.alert(
-        'Invalid Pickup Time',
-        'Pickup start time must be at least 30 minutes from now. Please adjust the time.'
+        t('seller.invalid_pickup_time'),
+        t('seller.pickup_time_error')
       );
       return;
     }
@@ -194,20 +232,33 @@ const AddProductScreen = () => {
         pickupWindowEnd: pickupEnd,
       };
 
-      console.log('Creating product with payload:', JSON.stringify(payload, null, 2));
+      console.log(`${isEditMode ? 'Updating' : 'Creating'} product with payload:`, JSON.stringify(payload, null, 2));
 
-      await createProduct(payload);
-
-      Alert.alert(
-        'Success! 🎉',
-        'Your product has been listed successfully',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ]
-      );
+      if (isEditMode) {
+        await updateProduct({ id: productToEdit.id, payload });
+        Alert.alert(
+          t('common.success'),
+          t('seller.success_product_updated'),
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.goBack(),
+            },
+          ]
+        );
+      } else {
+        await createProduct(payload);
+        Alert.alert(
+          t('common.success'),
+          t('seller.success_product_created'),
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.goBack(),
+            },
+          ]
+        );
+      }
     } catch (error: any) {
       console.error('Product creation error:', error);
       console.error('Error response:', JSON.stringify(error.response?.data, null, 2));
@@ -226,7 +277,7 @@ const AddProductScreen = () => {
         errorMessage = error.message;
       }
 
-      Alert.alert('Error', errorMessage);
+      Alert.alert(t('common.error'), errorMessage);
     }
   };
 
@@ -241,15 +292,15 @@ const AddProductScreen = () => {
         >
           <Text style={styles.closeIcon}>✕</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>New Listing</Text>
+        <Text style={styles.headerTitle}>{isEditMode ? t('seller.edit_listing') : t('seller.new_listing')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Category Selection - Visual Grid */}
         <View style={styles.categorySectionHeader}>
-          <Text style={styles.categorySectionTitle}>Select Category</Text>
-          <Text style={styles.categorySectionSubtitle}>Help customers find your food faster</Text>
+          <Text style={styles.categorySectionTitle}>{t('seller.select_category')}</Text>
+          <Text style={styles.categorySectionSubtitle}>{t('seller.category_subtitle')}</Text>
         </View>
 
         <View style={styles.categoryImageGrid}>
@@ -285,10 +336,10 @@ const AddProductScreen = () => {
         <View style={styles.formSection}>
           {/* Item Name */}
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Item Name *</Text>
+            <Text style={styles.inputLabel}>{t('seller.item_name')}</Text>
             <TextInput
               style={styles.textInput}
-              placeholder="e.g. Surprise Bag"
+              placeholder={t('seller.item_name_placeholder')}
               placeholderTextColor="#9c6549"
               value={name}
               onChangeText={setName}
@@ -298,10 +349,10 @@ const AddProductScreen = () => {
 
           {/* Description */}
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Description *</Text>
+            <Text style={styles.inputLabel}>{t('seller.description')}</Text>
             <TextInput
               style={[styles.textInput, styles.textArea]}
-              placeholder="What's in the bag? Mention any allergens."
+              placeholder={t('seller.description_placeholder')}
               placeholderTextColor="#9c6549"
               multiline
               numberOfLines={3}
@@ -315,11 +366,11 @@ const AddProductScreen = () => {
 
         {/* Pricing & Stock Card */}
         <View style={styles.pricingCard}>
-          <Text style={styles.pricingCardTitle}>Pricing & Stock</Text>
+          <Text style={styles.pricingCardTitle}>{t('seller.pricing_stock')}</Text>
 
           <View style={styles.priceRow}>
             <View style={styles.priceInputGroup}>
-              <Text style={styles.priceLabel}>ORIGINAL PRICE *</Text>
+              <Text style={styles.priceLabel}>{t('seller.original_price')}</Text>
               <View style={styles.priceInputContainer}>
                 <Text style={styles.currencySymbol}>$</Text>
                 <TextInput
@@ -336,11 +387,11 @@ const AddProductScreen = () => {
 
             <View style={styles.priceInputGroup}>
               <View style={styles.priceLabelRow}>
-                <Text style={styles.priceLabel}>SALE PRICE *</Text>
+                <Text style={styles.priceLabel}>{t('seller.sale_price')}</Text>
                 {originalPrice && salePrice && (
                   <View style={styles.discountBadge}>
                     <Text style={styles.discountBadgeText}>
-                      {Math.round(((parseFloat(originalPrice) - parseFloat(salePrice)) / parseFloat(originalPrice)) * 100)}% off
+                      {Math.round(((parseFloat(originalPrice) - parseFloat(salePrice)) / parseFloat(originalPrice)) * 100)}% {t('seller.off')}
                     </Text>
                   </View>
                 )}
@@ -361,7 +412,7 @@ const AddProductScreen = () => {
           </View>
 
           <View style={styles.quantityGroup}>
-            <Text style={styles.priceLabel}>QUANTITY</Text>
+            <Text style={styles.priceLabel}>{t('seller.quantity')}</Text>
             <View style={styles.quantityControls}>
               <TouchableOpacity
                 style={styles.quantityButton}
@@ -384,8 +435,8 @@ const AddProductScreen = () => {
 
         {/* Pickup Time */}
         <View style={styles.timeSection}>
-          <Text style={styles.inputLabel}>Pickup Window</Text>
-          <Text style={styles.helpText}>When can customers collect their orders?</Text>
+          <Text style={styles.inputLabel}>{t('seller.pickup_window')}</Text>
+          <Text style={styles.helpText}>{t('seller.pickup_subtitle')}</Text>
 
           {/* Visual Timeline */}
           <View style={styles.timelineContainer}>
@@ -397,7 +448,7 @@ const AddProductScreen = () => {
               <View style={styles.timeMarkerStart}>
                 <View style={styles.timeMarkerDot} />
                 <View style={styles.timeMarkerLabel}>
-                  <Text style={styles.timeMarkerLabelText}>Start</Text>
+                  <Text style={styles.timeMarkerLabelText}>{t('seller.start')}</Text>
                   <Text style={styles.timeMarkerTime}>{formatTimeDisplay(pickupStart)}</Text>
                 </View>
               </View>
@@ -406,7 +457,7 @@ const AddProductScreen = () => {
               <View style={styles.timeMarkerEnd}>
                 <View style={styles.timeMarkerDot} />
                 <View style={styles.timeMarkerLabel}>
-                  <Text style={styles.timeMarkerLabelText}>End</Text>
+                  <Text style={styles.timeMarkerLabelText}>{t('seller.end')}</Text>
                   <Text style={styles.timeMarkerTime}>{formatTimeDisplay(pickupEnd)}</Text>
                 </View>
               </View>
@@ -418,7 +469,7 @@ const AddProductScreen = () => {
             <View style={styles.timeAdjusterGroup}>
               <View style={styles.timeAdjusterHeader}>
                 <Text style={styles.timeAdjusterIcon}>🕐</Text>
-                <Text style={styles.timeAdjusterTitle}>Start Time</Text>
+                <Text style={styles.timeAdjusterTitle}>{t('seller.start_time')}</Text>
               </View>
               <View style={styles.timeControls}>
                 <TouchableOpacity
@@ -444,7 +495,7 @@ const AddProductScreen = () => {
             <View style={styles.timeAdjusterGroup}>
               <View style={styles.timeAdjusterHeader}>
                 <Text style={styles.timeAdjusterIcon}>🕐</Text>
-                <Text style={styles.timeAdjusterTitle}>End Time</Text>
+                <Text style={styles.timeAdjusterTitle}>{t('seller.end_time')}</Text>
               </View>
               <View style={styles.timeControls}>
                 <TouchableOpacity
@@ -472,7 +523,7 @@ const AddProductScreen = () => {
           <View style={styles.durationInfo}>
             <Text style={styles.durationIcon}>⏱️</Text>
             <Text style={styles.durationText}>
-              Pickup window: {calculateDuration(pickupStart, pickupEnd)}
+              {t('seller.pickup_duration')} {calculateDuration(pickupStart, pickupEnd)}
             </Text>
           </View>
         </View>
@@ -485,12 +536,12 @@ const AddProductScreen = () => {
         <TouchableOpacity
           style={[styles.submitButton, isCreating && styles.submitButtonDisabled]}
           onPress={handleSubmit}
-          disabled={isCreating}
+          disabled={isCreating || isUpdating}
         >
-          {isCreating ? (
+          {isCreating || isUpdating ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text style={styles.submitButtonText}>Publish Listing</Text>
+            <Text style={styles.submitButtonText}>{isEditMode ? t('seller.update_listing') : t('seller.publish_listing')}</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -563,13 +614,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',
+    borderWidth: 3,
+    borderColor: 'transparent',
   },
   categoryImageCardFull: {
     width: SCREEN_WIDTH - 32, // Full width for last odd item
     height: 120,
   },
   categoryImageCardSelected: {
-    borderWidth: 3,
     borderColor: '#ff7a33',
   },
   categoryImage: {

@@ -34,6 +34,7 @@ import { SellerCardSkeleton } from '../../components/discovery/SellerCardSkeleto
 import { colors, spacing, typography } from '../../theme';
 import Icon from '../../components/ui/Icon';
 import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
+import { useTranslation } from 'react-i18next';
 
 type DiscoveryScreenNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList>;
 
@@ -48,7 +49,12 @@ const CATEGORIES: Category[] = [
   { id: 'cafe', label: 'Café', icon: 'coffee' },
 ];
 
+import { DEFAULT_LOCATION, DEFAULT_LOCATION_NAME } from '../../constants/location';
+
+// ... (imports)
+
 const DiscoveryScreen = () => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<DiscoveryScreenNavigationProp>();
 
@@ -63,10 +69,14 @@ const DiscoveryScreen = () => {
   } = useLocation();
 
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [usingFallback, setUsingFallback] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Discovery Hook - Only enabled when we have location
+  // Use effective location for discovery
+  const effectiveLocation = location || (isLocationLoading ? null : DEFAULT_LOCATION);
+
+  // Discovery Hook
   const {
     products,
     isLoading: isDiscoveryLoading,
@@ -76,10 +86,11 @@ const DiscoveryScreen = () => {
     hasNextPage,
     isFetchingNextPage
   } = useDiscovery({
-    lat: deviceLocation?.coords.latitude || 0,
-    lng: deviceLocation?.coords.longitude || 0,
-    radius: 50, // 50 km radius (backend expects km, not meters)
-    enabled: !!deviceLocation,
+    lat: effectiveLocation?.coords.latitude || 0,
+    lng: effectiveLocation?.coords.longitude || 0,
+    radius: 50, // 50 km radius
+    category: selectedCategory === 'all' ? undefined : selectedCategory,
+    enabled: !!effectiveLocation,
   });
 
   // Initial Location Check
@@ -87,7 +98,7 @@ const DiscoveryScreen = () => {
     const initLocation = async () => {
       const { status } = await Location.getForegroundPermissionsAsync();
       if (status === 'granted') {
-        const hasLocation = await getLocation();
+        getLocation();
       }
     };
     initLocation();
@@ -97,8 +108,17 @@ const DiscoveryScreen = () => {
   useEffect(() => {
     if (deviceLocation) {
       setLocation(deviceLocation);
+      setUsingFallback(false);
+    } else if (!isLocationLoading && !location) {
+      // Only falls back if no location and not loading
+      // We handle this via effectiveLocation for the hook, 
+      // but for state we want to be explicit if permission is denied
+      if (permissionStatus === Location.PermissionStatus.DENIED || locationError) {
+        setLocation(DEFAULT_LOCATION as any);
+        setUsingFallback(true);
+      }
     }
-  }, [deviceLocation]);
+  }, [deviceLocation, isLocationLoading, permissionStatus, locationError, location]);
 
 
   const handleRefresh = async () => {
@@ -127,18 +147,18 @@ const DiscoveryScreen = () => {
 
   const handleRequestLocation = async () => {
     Alert.alert(
-      "Location Permission",
-      "We need your location to show stores nearby.",
+      t('discovery.location_permission'),
+      t('discovery.location_permission_msg'),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t('common.cancel'), style: "cancel" },
         {
-          text: "OK",
+          text: t('common.ok'),
           onPress: async () => {
             const granted = await requestPermissions();
             if (granted) {
               getLocation();
             } else {
-              Alert.alert('Permission Denied', 'Unable to find nearby stores without location.');
+              Alert.alert(t('discovery.permission_denied'), t('discovery.permission_denied_msg'));
             }
           }
         }
@@ -160,7 +180,7 @@ const DiscoveryScreen = () => {
       refetchDiscovery();
     } catch (e) {
       console.error('Failed to toggle favorite', e);
-      Alert.alert('Error', 'Could not update favorites');
+      Alert.alert(t('common.error'), t('discovery.could_not_update_favorites'));
     }
   };
 
@@ -199,7 +219,11 @@ const DiscoveryScreen = () => {
     <View style={styles.header}>
       {/* Location Selector */}
       <LocationSelector
-        location={location ? "Current Location" : "Set Location"}
+        location={
+          usingFallback
+            ? `${DEFAULT_LOCATION_NAME} (Demo)`
+            : (location ? t('discovery.current_location') : t('discovery.set_location'))
+        }
         onPress={location ? handleLocationPress : handleRequestLocation}
       />
 
@@ -216,7 +240,7 @@ const DiscoveryScreen = () => {
 
       {/* Search Bar */}
       <SearchBar
-        placeholder="Search for food..."
+        placeholder={t('discovery.search_placeholder')}
         value={searchQuery}
         onChangeText={setSearchQuery}
         showVoice={false}
@@ -237,7 +261,7 @@ const DiscoveryScreen = () => {
       return (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+            <Text style={styles.sectionTitle}>{t('discovery.nearby_sellers')}</Text>
           </View>
           <ScrollView
             horizontal
@@ -259,9 +283,9 @@ const DiscoveryScreen = () => {
     return (
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Nearby Sellers</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllLink}>See all ›</Text>
+          <Text style={styles.sectionTitle}>{t('discovery.nearby_sellers')}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SellerList')}>
+            <Text style={styles.seeAllLink}>{t('discovery.see_all')}</Text>
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -285,10 +309,10 @@ const DiscoveryScreen = () => {
   const renderAvailableNowHeader = () => {
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Available Now</Text>
+        <Text style={styles.sectionTitle}>{t('discovery.available_now')}</Text>
         <View style={styles.offersIndicator}>
           <View style={styles.offersIndicatorDot} />
-          <Text style={styles.offersIndicatorText}>{products ? products.length : 0} offers</Text>
+          <Text style={styles.offersIndicatorText}>{`${products ? products.length : 0} ${t('discovery.offers')}`}</Text>
         </View>
       </View>
     );
@@ -296,16 +320,16 @@ const DiscoveryScreen = () => {
 
   const renderContent = () => {
     // 1. Initial State (No Location)
-    if (!deviceLocation && !isLocationLoading) {
+    if (!effectiveLocation && !isLocationLoading) {
       return (
         <View style={styles.container}>
           {renderHeader()}
           <EmptyState
             icon="location"
-            title="Location Required"
-            subtitle="Please enable location to see nearby stores and products."
+            title={t('discovery.location_required')}
+            subtitle={t('discovery.location_required_msg')}
             action={{
-              label: "Enable Location",
+              label: t('discovery.enable_location'),
               onPress: handleRequestLocation
             }}
           />
@@ -323,14 +347,14 @@ const DiscoveryScreen = () => {
 
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Nearby Sellers</Text>
+              <Text style={styles.sectionTitle}>{t('discovery.nearby_sellers')}</Text>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
               {[1, 2, 3].map((key) => <SellerCardSkeleton key={key} />)}
             </ScrollView>
           </View>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Available Now</Text>
+            <Text style={styles.sectionTitle}>{t('discovery.available_now')}</Text>
             {[1, 2, 3].map((key) => <ProductCardSkeleton key={key} />)}
           </View>
         </View>
@@ -383,8 +407,8 @@ const DiscoveryScreen = () => {
         ListEmptyComponent={
           <EmptyState
             icon="search"
-            title="No products found"
-            subtitle="Try adjusting your filters or check back later"
+            title={t('discovery.no_products')}
+            subtitle={t('discovery.no_products_subtitle')}
           />
         }
         contentContainerStyle={styles.listContent}

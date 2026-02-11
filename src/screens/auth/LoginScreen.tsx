@@ -37,7 +37,7 @@ const LoginScreen = () => {
         navigation.goBack();
       },
       onError: (error: any) => {
-        const message = error.response?.data?.message || t('auth.invalid_credentials', 'Invalid email or password');
+        const message = error.response?.data?.error?.message || error.response?.data?.message || t('auth.invalid_credentials', 'Invalid email or password');
         Alert.alert(t('common.error'), message);
       }
     });
@@ -90,7 +90,10 @@ const LoginScreen = () => {
         />
 
         {/* Forgot Password Link */}
-        <TouchableOpacity style={styles.forgotPassword}>
+        <TouchableOpacity
+          style={styles.forgotPassword}
+          onPress={() => navigation.navigate('ForgotPassword' as never)}
+        >
           <Text style={styles.forgotPasswordText}>{t('auth.forgot_password')}</Text>
         </TouchableOpacity>
 

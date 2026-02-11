@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { colors, spacing, typography } from '../../theme';
 import { useMyProducts } from '../../hooks/useMyProducts';
@@ -9,6 +10,7 @@ import { deleteProduct } from '../../api/products';
 import Icon from '../../components/ui/Icon';
 
 const ManageProductsScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const queryClient = useQueryClient();
   const { products, isLoading, refetch } = useMyProducts();
@@ -18,10 +20,10 @@ const ManageProductsScreen = () => {
     mutationFn: deleteProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['myProducts'] });
-      Alert.alert('Success', 'Product deleted successfully');
+      Alert.alert(t('common.success'), t('manage_products.product_deleted'));
     },
     onError: (error: any) => {
-      Alert.alert('Error', error?.response?.data?.message || 'Failed to delete product');
+      Alert.alert(t('common.error'), error?.response?.data?.message || 'Failed to delete product');
     },
   });
 
@@ -37,12 +39,12 @@ const ManageProductsScreen = () => {
 
   const handleDelete = (productId: string, productName: string) => {
     Alert.alert(
-      'Delete Product',
-      `Are you sure you want to delete "${productName}"?`,
+      t('manage_products.delete_title'),
+      t('manage_products.delete_confirm', { name: productName }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: () => deleteMutation.mutate(productId),
         },
@@ -53,22 +55,22 @@ const ManageProductsScreen = () => {
   const handleProductPress = (productId: string) => {
     // Navigation to edit screen temporarily disabled as the screen does not exist
     // navigation.navigate('EditProduct', { productId });
-    Alert.alert('Info', 'Edit feature coming soon');
+    Alert.alert(t('common.info'), t('manage_products.edit_coming_soon'));
   };
 
   const renderEmpty = () => (
     <View style={styles.emptyState}>
       <Icon name="package" size={64} color="#e8d7ce" style={styles.emptyIcon} />
-      <Text style={styles.emptyTitle}>No Products Yet</Text>
+      <Text style={styles.emptyTitle}>{t('manage_products.no_products')}</Text>
       <Text style={styles.emptySubtitle}>
-        Tap the + button above to add your first product
+        {t('manage_products.no_products_subtitle')}
       </Text>
 
       <TouchableOpacity
         style={styles.addProductButton}
         onPress={() => navigation.navigate('AddProduct')}
       >
-        <Text style={styles.addProductButtonText}>Add Your First Product</Text>
+        <Text style={styles.addProductButtonText}>{t('manage_products.add_first_product')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -79,7 +81,7 @@ const ManageProductsScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Manage Products</Text>
+        <Text style={styles.headerTitle}>{t('manage_products.title')}</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('AddProduct')}
           style={styles.addButton}
@@ -91,7 +93,7 @@ const ManageProductsScreen = () => {
       {isLoading && products.length === 0 ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Loading products...</Text>
+          <Text style={styles.loadingText}>{t('manage_products.loading')}</Text>
         </View>
       ) : (
         <FlatList

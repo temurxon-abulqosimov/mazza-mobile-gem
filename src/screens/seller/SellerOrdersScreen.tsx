@@ -10,10 +10,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useLiveOrders } from '../../hooks/useLiveOrders';
 import { colors, spacing, typography } from '../../theme';
 
 const SellerOrdersScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { orders, isLoading, refetch } = useLiveOrders();
   const [refreshing, setRefreshing] = useState(false);
@@ -30,7 +32,7 @@ const SellerOrdersScreen = () => {
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')} style={styles.backButton}>
           <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Orders</Text>
+        <Text style={styles.headerTitle}>{t('seller_orders.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -43,14 +45,14 @@ const SellerOrdersScreen = () => {
         {isLoading && !refreshing && orders.length === 0 ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={styles.loadingText}>Loading orders...</Text>
+            <Text style={styles.loadingText}>{t('seller_orders.loading')}</Text>
           </View>
         ) : orders.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyIcon}>📋</Text>
-            <Text style={styles.emptyTitle}>No Orders Yet</Text>
+            <Text style={styles.emptyTitle}>{t('seller_orders.no_orders')}</Text>
             <Text style={styles.emptySubtitle}>
-              Orders from customers will appear here
+              {t('seller_orders.no_orders_subtitle')}
             </Text>
           </View>
         ) : (
@@ -93,16 +95,17 @@ const SellerOrdersScreen = () => {
                         ]}
                       >
                         {order.payment.status === 'PAID' || order.payment.status === 'COMPLETED'
-                          ? 'PAID'
-                          : 'PENDING'}
+                          ? t('seller_orders.paid')
+                          : t('seller_orders.pending')}
                       </Text>
                     </View>
                   </View>
                   <Text style={styles.pickupTime}>
-                    🕐 Pickup:{' '}
-                    {new Date(order.pickupWindowEnd).toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      minute: '2-digit',
+                    {t('seller_orders.pickup', {
+                      time: new Date(order.pickupWindowEnd).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      }),
                     })}
                   </Text>
                   <Text style={styles.orderInfo}>

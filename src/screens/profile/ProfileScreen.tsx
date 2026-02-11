@@ -18,6 +18,7 @@ import { colors, spacing, typography } from '../../theme';
 import Icon from '../../components/ui/Icon';
 import { IconName } from '../../theme/icons';
 import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
+import { useTranslation } from 'react-i18next';
 
 type ProfileNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<ProfileStackParamList, 'ProfileHome'>,
@@ -25,6 +26,7 @@ type ProfileNavigationProp = CompositeNavigationProp<
 >;
 
 const ProfileScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<ProfileNavigationProp>();
   const accessToken = useAuthStore((state) => state.accessToken);
   const isAuthenticated = !!accessToken;
@@ -40,9 +42,9 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert("Sign Out", "Are you sure you want to sign out?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Sign Out", onPress: () => logout(), style: "destructive" }
+    Alert.alert(t('auth.sign_out'), t('auth.sign_out_confirm'), [
+      { text: t('common.cancel'), style: "cancel" },
+      { text: t('auth.sign_out'), onPress: () => logout(), style: "destructive" }
     ]);
   };
 
@@ -52,17 +54,17 @@ const ProfileScreen = () => {
   }
 
   if (isLoading) {
-    return <LoadingScreen message="Loading your profile..." />;
+    return <LoadingScreen message={t('profile.loading')} />;
   }
 
   if (isError || !userProfile) {
     return (
       <EmptyState
         icon="alert-circle"
-        title="Could not load profile"
-        subtitle="Please check your connection and try again"
+        title={t('profile.could_not_load')}
+        subtitle={t('profile.check_connection')}
         action={{
-          label: "Retry",
+          label: t('common.retry'),
           onPress: () => refetch(),
         }}
       />
@@ -94,19 +96,19 @@ const ProfileScreen = () => {
           <Text style={styles.fullName}>{userProfile.fullName}</Text>
           <Text style={styles.email}>{userProfile.email}</Text>
           <Text style={styles.memberSince}>
-            Member since {new Date(userProfile.memberSince).toLocaleDateString()}
+            {t('profile.member_since', { date: new Date(userProfile.memberSince).toLocaleDateString() })}
           </Text>
           {isSeller && (
             <View style={styles.sellerBadgeContainer}>
               <Icon name="store" size={14} color={colors.primary} style={{ marginRight: 4 }} />
-              <Text style={styles.sellerBadgeText}>Seller</Text>
+              <Text style={styles.sellerBadgeText}>{t('profile.seller_badge')}</Text>
             </View>
           )}
         </View>
 
         {/* Gamification Section */}
         <View style={styles.gamificationSection}>
-          <Text style={styles.levelName}>{userProfile.level.name} Food Saver</Text>
+          <Text style={styles.levelName}>{userProfile.level.name} {t('profile.food_saver')}</Text>
           <View style={styles.progressBarContainer}>
             <View style={[styles.progressBar, { width: `${userProfile.level.progress}%` }]} />
           </View>
@@ -123,20 +125,20 @@ const ProfileScreen = () => {
         <Section title="HISTORY" style={styles.section}>
           <MenuItem
             icon="heart"
-            label="Saved Deals"
-            subtitle="Your favorite picks"
+            label={t('profile.saved_deals')}
+            subtitle={t('profile.saved_deals_subtitle')}
             onPress={() => navigation.navigate('Favorites' as never)}
           />
           <MenuItem
             icon="star"
-            label="Followed Stores"
-            subtitle="Stores you follow"
+            label={t('profile.followed_stores')}
+            subtitle={t('profile.followed_stores_subtitle')}
             onPress={() => navigation.navigate('FollowedStores')}
           />
           <MenuItem
             icon="notification"
-            label="Notifications"
-            subtitle="Manage your alerts"
+            label={t('profile.notifications')}
+            subtitle={t('profile.notifications_subtitle')}
             onPress={() => navigation.navigate('Notifications')}
             badge={2}
           />
@@ -147,8 +149,8 @@ const ProfileScreen = () => {
           {canBecomeSeller ? (
             <MenuItem
               icon="store"
-              label="Become a Seller"
-              subtitle="Start selling surplus food"
+              label={t('profile.become_seller')}
+              subtitle={t('profile.become_seller_subtitle')}
               onPress={() => navigation.navigate('BecomeSeller')}
               showBorder={false}
             />
@@ -156,22 +158,22 @@ const ProfileScreen = () => {
             <>
               <MenuItem
                 icon="dashboard"
-                label="Dashboard & Analytics"
+                label={t('profile.dashboard_analytics')}
                 onPress={() => navigation.navigate('SellerDashboard' as never)}
               />
               <MenuItem
                 icon="package"
-                label="Manage Products"
+                label={t('profile.manage_products')}
                 onPress={() => navigation.navigate('ManageProducts' as never)}
               />
               <MenuItem
                 icon="orders"
-                label="View Orders"
+                label={t('profile.view_orders')}
                 onPress={() => navigation.navigate('SellerOrders' as never)}
               />
               <MenuItem
                 icon="settings"
-                label="Store Settings"
+                label={t('profile.store_settings')}
                 onPress={() => navigation.navigate('StoreSettings' as never)}
                 showBorder={false}
               />
@@ -183,14 +185,14 @@ const ProfileScreen = () => {
         <Section title="SETTINGS" style={styles.section}>
           <MenuItem
             icon="settings"
-            label="Settings"
-            subtitle="App preferences"
+            label={t('profile.settings')}
+            subtitle={t('profile.settings_subtitle')}
             onPress={() => navigation.navigate('Settings')}
           />
           <MenuItem
             icon="help-circle"
-            label="Help & Support"
-            subtitle="Get help with the app"
+            label={t('profile.help_support')}
+            subtitle={t('profile.help_subtitle')}
             onPress={() => {/* TODO: Navigate to help */ }}
             showBorder={false}
           />
@@ -200,7 +202,7 @@ const ProfileScreen = () => {
         <View style={styles.signOutSection}>
           <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
             <Icon name="log-out" size={20} color={colors.error} style={styles.signOutIcon} />
-            <Text style={styles.signOutText}>Sign Out</Text>
+            <Text style={styles.signOutText}>{t('auth.sign_out')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -223,6 +225,7 @@ const StatCard = ({ label, value }: { label: string; value: string | number }) =
  * Shown when user is not authenticated
  */
 function GuestProfileView() {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
 
   return (
@@ -234,26 +237,26 @@ function GuestProfileView() {
           style={styles.guestHeroImage}
         />
         <View style={styles.guestHeroOverlay}>
-          <Text style={styles.guestHeroText}>Join thousands of food savers</Text>
+          <Text style={styles.guestHeroText}>{t('profile.guest_hero')}</Text>
         </View>
       </View>
 
       {/* CTA Section */}
       <View style={styles.guestCTA}>
-        <Text style={styles.guestTitle}>Join the fight against food waste</Text>
+        <Text style={styles.guestTitle}>{t('profile.guest_cta_title')}</Text>
         <Text style={styles.guestSubtitle}>
-          Save money and save the planet by rescuing delicious food nearby.
+          {t('profile.guest_cta_subtitle')}
         </Text>
 
         <Button
-          title="Create Account"
+          title={t('auth.create_account')}
           onPress={() => navigation.navigate('Register')}
           fullWidth
           style={styles.createAccountButton}
         />
 
         <Button
-          title="Login"
+          title={t('auth.login')}
           onPress={() => navigation.navigate('Login')}
           variant="secondary"
           fullWidth
@@ -262,15 +265,15 @@ function GuestProfileView() {
       </View>
 
       {/* About Mazza Section */}
-      <Section title="ABOUT MAZZA" style={styles.guestAboutSection}>
+      <Section title={t('profile.about_mazza')} style={styles.guestAboutSection}>
         <MenuItem
           icon="info"
-          label="How it Works"
+          label={t('profile.how_it_works')}
           onPress={() => {/* TODO */ }}
         />
         <MenuItem
           icon="message-circle"
-          label="Support"
+          label={t('profile.support')}
           onPress={() => {/* TODO */ }}
           showBorder={false}
         />

@@ -11,6 +11,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { colors, spacing, typography, shadows } from '../../theme';
 import { Button } from '../../components/ui/Button';
 import { useCompleteOrder } from '../../hooks/useCompleteOrder';
@@ -22,6 +23,7 @@ type SellerOrderDetailParams = {
 };
 
 const SellerOrderDetailScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const route = useRoute<RouteProp<{ params: SellerOrderDetailParams }, 'params'>>();
     const { order } = route.params;
@@ -29,12 +31,12 @@ const SellerOrderDetailScreen = () => {
 
     const handleCompleteOrder = () => {
         Alert.alert(
-            'Complete Order',
-            'Are you sure you want to verify and complete this order? Usually this happens after scanning the QR code.',
+            t('seller_order_detail.complete_order'),
+            t('seller_order_detail.complete_confirm_msg'),
             [
-                { text: 'Cancel', style: 'cancel' },
+                { text: t('common.cancel'), style: 'cancel' },
                 {
-                    text: 'Complete',
+                    text: t('seller_order_detail.complete'),
                     onPress: () => {
                         // Generate manual QR string for completion
                         // Format: MAZZA:ORDER_NUMBER:BOOKING_ID
@@ -43,11 +45,11 @@ const SellerOrderDetailScreen = () => {
 
                         completeOrder({ orderId: order.id, qrCodeData: manualQrData }, {
                             onSuccess: () => {
-                                Alert.alert('Success', 'Order completed successfully!');
+                                Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
                                 navigation.goBack();
                             },
                             onError: (error: any) => {
-                                Alert.alert('Error', error.message || 'Failed to complete order');
+                                Alert.alert(t('common.error'), error.message || 'Failed to complete order');
                             },
                         });
                     },
@@ -59,22 +61,22 @@ const SellerOrderDetailScreen = () => {
     const handleScanQr = () => {
         // In a real app, navigate to a QR scanner screen
         // For now, shortcut to completion logic or mock the scan result
-        Alert.alert('Scan QR', 'Opening camera... (Mock: QR Scanned Successfully)', [
+        Alert.alert(t('seller_order_detail.scan_qr_title'), t('seller_order_detail.scan_mock_msg'), [
             {
-                text: 'Simulate Success',
+                text: t('seller_order_detail.simulate_success'),
                 onPress: () => {
                     const orderNum = order.orderNumber.replace('#', '');
                     const mockQrData = `MAZZA:${orderNum}:${order.id}`;
                     completeOrder({ orderId: order.id, qrCodeData: mockQrData }, {
                         onSuccess: () => {
-                            Alert.alert('Success', 'Order completed successfully!');
+                            Alert.alert(t('common.success'), t('seller_order_detail.order_completed'));
                             navigation.goBack();
                         },
-                        onError: (error: any) => Alert.alert('Error', error.message)
+                        onError: (error: any) => Alert.alert(t('common.error'), error.message)
                     });
                 },
             },
-            { text: 'Cancel', style: 'cancel' },
+            { text: t('common.cancel'), style: 'cancel' },
         ]);
     };
 
@@ -85,7 +87,7 @@ const SellerOrderDetailScreen = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Text style={styles.backIcon}>←</Text>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Order Details</Text>
+                <Text style={styles.headerTitle}>{t('seller_order_detail.title')}</Text>
                 <View style={styles.headerSpacer} />
             </View>
 
@@ -109,22 +111,24 @@ const SellerOrderDetailScreen = () => {
                             ]}
                         >
                             {order.payment.status === 'COMPLETED'
-                                ? 'COMPLETED'
+                                ? t('seller_order_detail.completed')
                                 : order.payment.status === 'PAID'
-                                    ? 'READY FOR PICKUP'
-                                    : 'PENDING PAYMENT'}
+                                    ? t('seller_order_detail.ready_for_pickup')
+                                    : t('seller_order_detail.pending_payment')}
                         </Text>
                     </View>
-                    <Text style={styles.orderNumber}>Order #{order.orderNumber}</Text>
+                    <Text style={styles.orderNumber}>{t('seller_order_detail.order_number', { number: order.orderNumber })}</Text>
                     <Text style={styles.date}>
-                        Placed on {new Date(order.createdAt).toLocaleDateString()} at{' '}
-                        {new Date(order.createdAt).toLocaleTimeString()}
+                        {t('seller_order_detail.placed_on', {
+                            date: new Date(order.createdAt).toLocaleDateString(),
+                            time: new Date(order.createdAt).toLocaleTimeString(),
+                        })}
                     </Text>
                 </View>
 
                 {/* Customer Info */}
                 <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Customer</Text>
+                    <Text style={styles.cardTitle}>{t('seller_order_detail.customer')}</Text>
                     <View style={styles.customerRow}>
                         <View style={styles.avatarPlaceholder}>
                             <Text style={styles.avatarText}>
@@ -133,14 +137,14 @@ const SellerOrderDetailScreen = () => {
                         </View>
                         <View>
                             <Text style={styles.customerName}>{order.customer.fullName}</Text>
-                            <Text style={styles.customerSubtitle}>Customer</Text>
+                            <Text style={styles.customerSubtitle}>{t('seller_order_detail.customer')}</Text>
                         </View>
                     </View>
                 </View>
 
                 {/* Order Items */}
                 <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Items</Text>
+                    <Text style={styles.cardTitle}>{t('seller_order_detail.items')}</Text>
                     <View style={styles.itemRow}>
                         <Image
                             source={{ uri: order.product.imageUrl || 'https://via.placeholder.com/64' }}
@@ -148,14 +152,14 @@ const SellerOrderDetailScreen = () => {
                         />
                         <View style={styles.itemDetails}>
                             <Text style={styles.productName}>{order.product.name}</Text>
-                            <Text style={styles.quantity}>Quantity: x{order.quantity}</Text>
+                            <Text style={styles.quantity}>{t('seller_order_detail.quantity_x', { quantity: order.quantity })}</Text>
                             <Text style={styles.price}>
                                 ${(order.totalPrice / 100).toFixed(2)}
                             </Text>
                         </View>
                     </View>
                     <View style={styles.totalRow}>
-                        <Text style={styles.totalLabel}>Total</Text>
+                        <Text style={styles.totalLabel}>{t('seller_order_detail.total')}</Text>
                         <Text style={styles.totalValue}>${(order.totalPrice / 100).toFixed(2)}</Text>
                     </View>
                 </View>
@@ -163,10 +167,10 @@ const SellerOrderDetailScreen = () => {
                 {/* Actions */}
                 <View style={styles.actionContainer}>
                     <Text style={styles.actionHint}>
-                        Scan the customer's QR code to verify and complete this order.
+                        {t('seller_order_detail.scan_hint')}
                     </Text>
                     <Button
-                        title="Scan QR Code"
+                        title={t('seller_order_detail.scan_qr')}
                         onPress={handleScanQr}
                         size="large"
                         disabled={isCompleting || order.status === 'COMPLETED'}
@@ -178,7 +182,7 @@ const SellerOrderDetailScreen = () => {
                             disabled={isCompleting}
                         >
                             <Text style={styles.manualButtonText}>
-                                {isCompleting ? 'Completing...' : 'Manually Complete Order'}
+                                {isCompleting ? t('seller_order_detail.completing') : t('seller_order_detail.manually_complete')}
                             </Text>
                         </TouchableOpacity>
                     )}

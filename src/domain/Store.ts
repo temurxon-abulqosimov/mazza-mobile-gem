@@ -17,6 +17,8 @@ export interface Store {
   location: StoreLocation;
   distance?: number; // Optional, as it's context-dependent (e.g., in discovery)
   description?: string;
+  address?: string;
+  city?: string;
   reviewCount?: number;
   categories?: Category[];
   totalProductsSold?: number;

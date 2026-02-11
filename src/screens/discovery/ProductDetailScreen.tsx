@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, Linking, Platform } from 'react-native';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { useProduct } from '../../hooks/useProduct';
@@ -26,6 +27,7 @@ type ProductDetailNavigationProp = NativeStackNavigationProp<DiscoveryStackParam
 const ProductDetailScreen = () => {
   const route = useRoute<ProductDetailRouteProp>();
   const navigation = useNavigation<ProductDetailNavigationProp>();
+  const { t } = useTranslation();
   const { productId } = route.params;
 
   const { product, isLoading, isError, refetch } = useProduct(productId);
@@ -44,7 +46,7 @@ const ProductDetailScreen = () => {
   }, [product?.isFavorited]);
 
   const handleBooking = async () => {
-    if (!requireAuth('Please login to reserve products and save meals!')) {
+    if (!requireAuth(t('product_detail.login_to_reserve'))) {
       return;
     }
 
@@ -59,12 +61,12 @@ const ProductDetailScreen = () => {
       navigation.navigate('BookingConfirmation', { booking: result.data.booking });
     } catch (error: any) {
       const message = error.response?.data?.message || 'Could not create booking.';
-      Alert.alert('Booking Failed', message);
+      Alert.alert(t('product_detail.booking_failed'), message);
     }
   };
 
   const handleFavoriteToggle = async () => {
-    if (!requireAuth('Please login to save favorites!')) {
+    if (!requireAuth(t('product_detail.login_to_save'))) {
       return;
     }
 
@@ -122,17 +124,17 @@ const ProductDetailScreen = () => {
   };
 
   if (isLoading) {
-    return <LoadingScreen message="Loading product details..." />;
+    return <LoadingScreen message={t('product_detail.loading')} />;
   }
 
   if (isError || !product) {
     return (
       <EmptyState
         icon="alert-circle"
-        title="Could not load product"
-        subtitle="Please check your connection and try again"
+        title={t('product_detail.error_title')}
+        subtitle={t('product_detail.error_subtitle')}
         action={{
-          label: "Retry",
+          label: t('common.retry'),
           onPress: () => refetch(),
         }}
       />
@@ -194,7 +196,7 @@ const ProductDetailScreen = () => {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Icon name="location-fill" size={12} color={colors.text.secondary} style={{ marginRight: 4 }} />
               <Text style={styles.storeDistance}>
-                {product.distance ? `${product.distance.toFixed(1)} km` : '0.5 km away'}
+                {t('product_detail.km_away', { distance: product.distance ? product.distance.toFixed(1) : '0.5' })}
               </Text>
             </View>
           </View>
@@ -210,7 +212,7 @@ const ProductDetailScreen = () => {
             <View style={styles.infoRow}>
               <Icon name="clock" size={24} color={colors.primary} style={styles.infoIcon} />
               <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Pickup Time</Text>
+                <Text style={styles.infoLabel}>{t('product_detail.pickup_time')}</Text>
                 <Text style={styles.infoValue}>
                   {product.pickupWindow.dateLabel}: {product.pickupWindow.label}
                 </Text>
@@ -223,9 +225,9 @@ const ProductDetailScreen = () => {
             <View style={styles.infoRow}>
               <Icon name="package" size={24} color={colors.primary} style={styles.infoIcon} />
               <View style={styles.infoContent}>
-                <Text style={styles.infoLabel}>Available</Text>
+                <Text style={styles.infoLabel}>{t('product_detail.available')}</Text>
                 <Text style={styles.infoValue}>
-                  {product.quantityAvailable} {product.quantityAvailable === 1 ? 'item' : 'items'} left
+                  {product.quantityAvailable === 1 ? t('product_detail.item_left', { count: product.quantityAvailable }) : t('product_detail.items_left', { count: product.quantityAvailable })}
                 </Text>
               </View>
             </View>
@@ -233,7 +235,7 @@ const ProductDetailScreen = () => {
 
           {/* Store Location */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Store Location</Text>
+            <Text style={styles.sectionTitle}>{t('product_detail.store_location')}</Text>
             <TouchableOpacity
               style={styles.mapContainer}
               onPress={handleOpenMaps}
@@ -263,7 +265,7 @@ const ProductDetailScreen = () => {
               </MapView>
               <View style={styles.mapOverlay}>
                 <Icon name="location-fill" size={24} color={colors.primary} />
-                <Text style={styles.openMapText}>Tap to open in Maps</Text>
+                <Text style={styles.openMapText}>{t('product_detail.open_in_maps')}</Text>
               </View>
             </TouchableOpacity>
 
@@ -277,9 +279,9 @@ const ProductDetailScreen = () => {
 
           {/* What You Get */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>What You Get</Text>
+            <Text style={styles.sectionTitle}>{t('product_detail.what_you_get')}</Text>
             <Text style={styles.sectionText}>
-              {product.description || 'A surprise selection of delicious surplus food items.'}
+              {product.description || t('product_detail.default_description')}
             </Text>
           </View>
 
@@ -294,7 +296,7 @@ const ProductDetailScreen = () => {
           {/* Quantity Selector */}
           <View style={styles.footerTop}>
             <View>
-              <Text style={styles.footerLabel}>Quantity</Text>
+              <Text style={styles.footerLabel}>{t('product_detail.quantity')}</Text>
               <QuantitySelector
                 value={quantity}
                 min={1}
@@ -305,18 +307,18 @@ const ProductDetailScreen = () => {
 
             {/* Price Summary */}
             <View style={styles.priceSection}>
-              <Text style={styles.priceLabel}>Total</Text>
+              <Text style={styles.priceLabel}>{t('product_detail.total')}</Text>
               <View style={styles.priceRow}>
                 <Text style={styles.originalPrice}>${((product.originalPrice / 100) * quantity).toFixed(2)}</Text>
                 <Text style={styles.discountedPrice}>${totalPrice.toFixed(2)}</Text>
               </View>
-              <Text style={styles.savingsText}>You save ${totalSavings.toFixed(2)}</Text>
+              <Text style={styles.savingsText}>{t('product_detail.you_save', { amount: totalSavings.toFixed(2) })}</Text>
             </View>
           </View>
 
           {/* Reserve Button */}
           <Button
-            title={isCreatingBooking ? 'Reserving...' : 'Reserve Now'}
+            title={isCreatingBooking ? t('product_detail.reserving') : t('product_detail.reserve_now')}
             onPress={handleBooking}
             loading={isCreatingBooking}
             disabled={isCreatingBooking}
@@ -330,7 +332,7 @@ const ProductDetailScreen = () => {
       {!canReserve && (
         <View style={styles.footer}>
           <Button
-            title="Sold Out"
+            title={t('product_detail.sold_out')}
             onPress={() => { }}
             disabled
             fullWidth
