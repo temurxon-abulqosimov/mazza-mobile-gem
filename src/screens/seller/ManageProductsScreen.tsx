@@ -34,7 +34,10 @@ const ManageProductsScreen = () => {
   };
 
   const handleEdit = (productId: string) => {
-    navigation.navigate('EditProduct', { productId });
+    const product = products.find((p: any) => p.id === productId);
+    if (product) {
+      navigation.navigate('AddProduct', { product });
+    }
   };
 
   const handleDelete = (productId: string, productName: string) => {
@@ -53,9 +56,10 @@ const ManageProductsScreen = () => {
   };
 
   const handleProductPress = (productId: string) => {
-    // Navigation to edit screen temporarily disabled as the screen does not exist
-    // navigation.navigate('EditProduct', { productId });
-    Alert.alert(t('common.info'), t('manage_products.edit_coming_soon'));
+    const product = products.find((p: any) => p.id === productId);
+    if (product) {
+      navigation.navigate('AddProduct', { product });
+    }
   };
 
   const renderEmpty = () => (

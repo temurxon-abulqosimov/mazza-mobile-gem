@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     View,
     Text,
@@ -12,7 +12,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useDiscoveryStores } from '../../hooks/useDiscovery';
+import { useDiscovery } from '../../hooks/useDiscovery';
 import { useLocation } from '../../hooks/useLocation';
 import { colors, spacing, typography } from '../../theme';
 import Icon from '../../components/ui/Icon';
@@ -20,6 +20,7 @@ import { SafeAreaWrapper } from '../../components/layout/SafeAreaWrapper';
 import { SellerCard } from '../../components/discovery/SellerCard';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { DiscoveryStackParamList } from '../../navigation/types';
+import { DEFAULT_LOCATION } from '../../constants/location';
 
 type DiscoveryScreenNavigationProp = NativeStackNavigationProp<DiscoveryStackParamList>;
 
@@ -28,25 +29,55 @@ const SellerListScreen = () => {
     const navigation = useNavigation<DiscoveryScreenNavigationProp>();
     const insets = useSafeAreaInsets();
 
-    // Get location
+    // Get location — always fall back to DEFAULT_LOCATION so the query fires immediately
     const { location } = useLocation();
-    const lat = location?.coords.latitude || 0;
-    const lng = location?.coords.longitude || 0;
+    const effectiveLocation = location || DEFAULT_LOCATION;
+    const lat = effectiveLocation.coords.latitude;
+    const lng = effectiveLocation.coords.longitude;
 
+    // Use the same discovery hook as DiscoveryScreen and extract unique sellers
     const {
-        stores,
+        products,
         isLoading,
         refetch,
         isRefetching,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage
-    } = useDiscoveryStores({
+    } = useDiscovery({
         lat,
         lng,
-        radius: 50, // 50km
-        enabled: !!location
+        radius: 50,
+        enabled: true,
     });
+
+    // Extract unique stores from products — same logic as DiscoveryScreen
+    const stores = useMemo(() => {
+        if (!products) return [];
+        const uniqueStores = new Map<string, any>();
+        products.forEach((product: any) => {
+            if (!product.store) return;
+            const existing = uniqueStores.get(product.store.id);
+            if (!existing) {
+                uniqueStores.set(product.store.id, {
+                    id: product.store.id,
+                    name: product.store.name,
+                    imageUrl: product.store.imageUrl,
+                    category: 'Store',
+                    rating: product.store.rating || 0,
+                    distance: product.distance || 0,
+                    address: product.store.location?.address || 'Unknown Address',
+                    location: product.store.location,
+                    products: [product],
+                });
+            } else {
+                if (!existing.products.find((p: any) => p.id === product.id)) {
+                    existing.products.push(product);
+                }
+            }
+        });
+        return Array.from(uniqueStores.values());
+    }, [products]);
 
     const handleStorePress = (store: any) => {
         navigation.navigate('StoreProfile', {
@@ -83,6 +114,7 @@ const SellerListScreen = () => {
                             seller={item}
                             onPress={() => handleStorePress(item)}
                             onProductPress={handleProductPress}
+                            fullWidth
                         />
                     </View>
                 )}
@@ -139,7 +171,6 @@ const styles = StyleSheet.create({
     },
     cardWrapper: {
         marginBottom: spacing.md,
-        alignItems: 'center', // Center cards since SellerCard has fixed width
     },
 });
 

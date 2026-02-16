@@ -30,8 +30,12 @@ interface SearchParams {
   limit?: number;
 }
 
-export const search = async (params: SearchParams): Promise<any> => {
+interface SearchResults {
+  products: Product[];
+  stores: Store[];
+}
+
+export const search = async (params: SearchParams): Promise<SearchResults> => {
   const { data } = await apiClient.get('/discovery/search', { params });
-  // Define specific type for search results if needed
-  return data.data;
+  return data.data ?? { products: [], stores: [] };
 }

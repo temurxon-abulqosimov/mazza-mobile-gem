@@ -34,9 +34,10 @@ interface SellerCardProps {
   seller: Seller;
   onPress: () => void;
   onProductPress?: (productId: string) => void;
+  fullWidth?: boolean;
 }
 
-export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress, onProductPress }) => {
+export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress, onProductPress, fullWidth }) => {
   const getCategoryIcon = (): IconName => {
     const category = (typeof seller.category === 'string' ? seller.category : '').toLowerCase();
     if (category.includes('bakery')) return 'bread';
@@ -50,9 +51,10 @@ export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress, onProdu
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, fullWidth && styles.containerFullWidth]}
       onPress={onPress}
-      activeOpacity={0.95}
+      activeOpacity={0.85}
+      delayPressIn={0}
     >
       <View style={styles.mainContent}>
         {/* Image */}
@@ -102,41 +104,56 @@ export const SellerCard: React.FC<SellerCardProps> = ({ seller, onPress, onProdu
         </View>
       </View>
 
-      {/* Product Thumbnails */}
-      {productsToShow.length > 0 && (
-        <View style={styles.productsContainer}>
-          {productsToShow.map((product) => (
-            <TouchableOpacity
-              key={product.id}
-              style={styles.productThumbnail}
-              onPress={() => onProductPress && onProductPress(product.id)}
-            >
-              <ProductImage
-                imageUrl={product.images[0]?.url || product.images[0]?.thumbnailUrl}
-                categorySlug={product.category?.slug}
-                style={styles.productImage}
-                resizeMode="cover"
-              />
-              <View style={styles.priceTag}>
-                <Text style={styles.priceText}>${(product.discountedPrice / 100).toFixed(2)}</Text>
+      {/* Product Thumbnails — always 3 slots */}
+      <View style={styles.productsContainer}>
+        {[0, 1, 2].map((index) => {
+          const product = productsToShow[index];
+          if (product) {
+            return (
+              <TouchableOpacity
+                key={product.id}
+                style={styles.productThumbnail}
+                onPress={() => onProductPress && onProductPress(product.id)}
+              >
+                <ProductImage
+                  imageUrl={product.images[0]?.url || product.images[0]?.thumbnailUrl}
+                  categorySlug={product.category?.slug}
+                  style={styles.productImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.priceTag}>
+                  <Text style={styles.priceText}>${(product.discountedPrice / 100).toFixed(2)}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }
+          // Empty placeholder slot
+          return (
+            <View key={`empty-${index}`} style={styles.productThumbnail}>
+              <View style={styles.emptySlot}>
+                <Icon name="grid" size={16} color={colors.text.tertiary} />
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+            </View>
+          );
+        })}
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 280, // Wider card
+    width: 280,
     marginRight: spacing.md,
     backgroundColor: colors.card,
     borderRadius: spacing.radiusLg,
     ...shadows.card,
     overflow: 'hidden',
     padding: spacing.sm,
+  },
+  containerFullWidth: {
+    width: '100%',
+    marginRight: 0,
   },
   mainContent: {
     flexDirection: 'row',
@@ -225,7 +242,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 10,
     fontWeight: 'bold',
-  }
+  },
+  emptySlot: {
+    flex: 1,
+    backgroundColor: colors.backgroundDark || '#f5f5f5',
+    borderRadius: spacing.radiusSm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default SellerCard;

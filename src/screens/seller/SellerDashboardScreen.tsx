@@ -39,7 +39,7 @@ const SellerDashboardScreen = () => {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Profile')}
+            onPress={() => navigation.navigate('Account')}
             style={styles.profileImageContainer}
           >
             <Image

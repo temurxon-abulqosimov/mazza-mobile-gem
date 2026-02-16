@@ -36,9 +36,7 @@
         "login_subtitle": "Ovqatni asrash va pulni tejash uchun kiring",
         "create_account": "Hisob yaratish",
         "register_subtitle": "Oziq-ovqat isrofiga qarshi kurashga qo'shiling",
-        "continue_google": "Google orqali davom etish",
-        "signup_google": "Google orqali ro'yxatdan o'tish",
-        "or": "yoki",
+
         "terms_agree": "Men roziman",
         "terms_conditions": "Foydalanish shartlari",
         "terms_required_title": "Rozilik talab qilinadi",
@@ -101,7 +99,13 @@
         "no_products": "Mahsulotlar topilmadi",
         "no_products_subtitle": "Filtrlarni o'zgartiring yoki keyinroq qayta tekshiring",
         "could_not_update_favorites": "Sevimlilarni yangilab bo'lmadi",
-        "open_settings": "Sozlamalarni ochish"
+        "open_settings": "Sozlamalarni ochish",
+        "searching": "Qidirilmoqda...",
+        "stores": "Do'konlar",
+        "products": "Mahsulotlar",
+        "found": "topildi",
+        "no_search_results": "Natijalar topilmadi",
+        "no_search_results_subtitle": "\"{{query}}\" bo'yicha natijalar topilmadi. Boshqa so'z bilan qidirib ko'ring."
     },
     "product_detail": {
         "pickup_time": "Olib ketish vaqti",

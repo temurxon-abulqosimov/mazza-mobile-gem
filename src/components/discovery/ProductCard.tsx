@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useCallback, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, Animated } from 'react-native';
 import { Product } from '../../domain/Product';
 import Icon from '../ui/Icon';
 import { IconName } from '../../theme/icons';
@@ -26,6 +26,26 @@ interface ProductCardProps {
  * - Orange "Add" button
  */
 const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const onPressIn = useCallback(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.97,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  }, [scaleAnim]);
+
+  const onPressOut = useCallback(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  }, [scaleAnim]);
+
   const getCategoryIcon = (): IconName => {
     const category = product.category?.name?.toLowerCase() || '';
     if (category.includes('bakery')) return 'bread';
@@ -36,7 +56,8 @@ const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) =
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.95}>
+    <Pressable onPress={onPress} onPressIn={onPressIn} onPressOut={onPressOut}>
+      <Animated.View style={[styles.container, { transform: [{ scale: scaleAnim }] }]}>
       {/* Product Image with Overlays */}
       <View style={styles.imageContainer}>
         <ProductImage
@@ -121,18 +142,19 @@ const ProductCard = ({ product, onPress, onToggleFavorite }: ProductCardProps) =
             </Text>
           </View>
 
-          <TouchableOpacity
-            style={styles.addButton}
+          <Pressable
+            style={({ pressed }) => [styles.addButton, pressed && { opacity: 0.7, transform: [{ scale: 0.95 }] }]}
             onPress={(e) => {
               e.stopPropagation();
               onPress();
             }}
           >
             <Text style={styles.addButtonText}>Add</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
-    </TouchableOpacity>
+      </Animated.View>
+    </Pressable>
   );
 };
 

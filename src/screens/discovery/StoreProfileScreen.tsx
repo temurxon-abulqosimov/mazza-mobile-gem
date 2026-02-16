@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DiscoveryStackParamList } from '../../navigation/types';
@@ -132,8 +132,12 @@ const StoreProfileScreen = () => {
                                 <Text style={styles.ratingText}>{storeRating?.toFixed(1) || 'N/A'}</Text>
                             </View>
                         </View>
-                        <TouchableOpacity
-                            style={[styles.followButton, isFollowing && styles.followingButton]}
+                        <Pressable
+                            style={({ pressed }) => [
+                                styles.followButton,
+                                isFollowing && styles.followingButton,
+                                pressed && { opacity: 0.7 },
+                            ]}
                             onPress={handleFollowToggle}
                             disabled={isFollowingLoading}
                         >
@@ -144,7 +148,7 @@ const StoreProfileScreen = () => {
                                     {isFollowing ? t('store.following') : t('store.follow')}
                                 </Text>
                             )}
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </View>
             </View>
@@ -159,18 +163,26 @@ const StoreProfileScreen = () => {
 
                 {/* Tabs */}
                 <View style={styles.tabContainer}>
-                    <TouchableOpacity
-                        style={[styles.tab, activeTab === 'products' && styles.activeTab]}
+                    <Pressable
+                        style={({ pressed }) => [
+                            styles.tab,
+                            activeTab === 'products' && styles.activeTab,
+                            pressed && { opacity: 0.7 },
+                        ]}
                         onPress={() => setActiveTab('products')}
                     >
                         <Text style={[styles.tabText, activeTab === 'products' && styles.activeTabText]}>{t('store.products')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.tab, activeTab === 'reviews' && styles.activeTab]}
+                    </Pressable>
+                    <Pressable
+                        style={({ pressed }) => [
+                            styles.tab,
+                            activeTab === 'reviews' && styles.activeTab,
+                            pressed && { opacity: 0.7 },
+                        ]}
                         onPress={() => setActiveTab('reviews')}
                     >
                         <Text style={[styles.tabText, activeTab === 'reviews' && styles.activeTabText]}>{t('store.reviews')}</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
 
                 {activeTab === 'products' ? renderProducts() : <ReviewsList storeId={storeId} />}

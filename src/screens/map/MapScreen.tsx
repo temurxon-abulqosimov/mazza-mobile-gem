@@ -17,6 +17,7 @@ import { LoadingScreen } from '../../components/ui/LoadingScreen';
 import { Store } from '../../domain/Store';
 import { Product } from '../../domain/Product';
 import { colors, spacing, shadows } from '../../theme';
+import { Ionicons } from '@expo/vector-icons';
 import { config, isGoogleMapsConfigured } from '../../config/environment';
 
 type MapScreenNavigationProp = NativeStackNavigationProp<any>;
@@ -28,7 +29,12 @@ const MapScreen = () => {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
-  const [region, setRegion] = useState<Region | null>(null);
+  const [region, setRegion] = useState<Region>({
+    latitude: 41.2995,
+    longitude: 69.2401,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  });
   const [isMapReady, setIsMapReady] = useState(false);
 
   // Request location permissions and get current location
@@ -50,24 +56,17 @@ const MapScreen = () => {
         });
         setLocation(currentLocation);
 
-        // Set initial region centered on user's location
+        // Set region centered on user's location
         setRegion({
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
-          latitudeDelta: 0.05, // ~5km zoom
+          latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         });
       } catch (error) {
         setLocationError('Could not fetch location.');
         console.error('Location error:', error);
-        // Set default location (San Francisco as fallback)
-        const defaultRegion = {
-          latitude: 37.7749,
-          longitude: -122.4194,
-          latitudeDelta: 0.1,
-          longitudeDelta: 0.1,
-        };
-        setRegion(defaultRegion);
+        // Region already initialized with Tashkent defaults
         Alert.alert(
           'Location Error',
           'Could not get your current location. Showing default area.'
@@ -76,24 +75,41 @@ const MapScreen = () => {
     })();
   }, []);
 
-  // Fetch nearby products/stores based on location
+  // Fetch nearby products/stores — region is always set (Tashkent default or GPS)
   const { products, isLoading } = useDiscovery({
-    lat: location?.coords.latitude ?? 0,
-    lng: location?.coords.longitude ?? 0,
-    radius: 50, // 50 km radius (backend expects km, not meters)
-    enabled: !!location,
+    lat: region.latitude,
+    lng: region.longitude,
+    radius: 50,
+    enabled: true,
   });
 
-  // Extract unique stores from products
-  const stores: Store[] = React.useMemo(() => {
-    const storeMap = new Map<string, Store>();
+  // Group products by store — includes cheapest price for marker labels
+  interface StoreGroup {
+    store: Store;
+    products: Product[];
+    cheapestPrice: number;
+  }
+  const storeGroups: StoreGroup[] = React.useMemo(() => {
+    const map = new Map<string, StoreGroup>();
     products.forEach((product: Product) => {
-      if (!storeMap.has(product.store.id)) {
-        storeMap.set(product.store.id, product.store);
+      const sid = product.store.id;
+      if (!map.has(sid)) {
+        map.set(sid, {
+          store: product.store,
+          products: [product],
+          cheapestPrice: product.discountedPrice,
+        });
+      } else {
+        const g = map.get(sid)!;
+        g.products.push(product);
+        if (product.discountedPrice < g.cheapestPrice) g.cheapestPrice = product.discountedPrice;
       }
     });
-    return Array.from(storeMap.values());
+    return Array.from(map.values());
   }, [products]);
+
+  // For backward compat with bottom sheet
+  const stores = storeGroups.map(g => g.store);
 
   const handleMarkerPress = (store: Store) => {
     setSelectedStore(store);
@@ -141,7 +157,7 @@ const MapScreen = () => {
     setIsMapReady(true);
   };
 
-  if (isLoading || !region) {
+  if (isLoading && stores.length === 0) {
     return <LoadingScreen message="Loading map..." />;
   }
 
@@ -172,45 +188,45 @@ const MapScreen = () => {
         loadingBackgroundColor={colors.background}
       >
         {/* Store Markers */}
-        {isMapReady && stores.map((store) => (
-          <Marker
-            key={store.id}
-            coordinate={{
-              latitude: store.location.lat,
-              longitude: store.location.lng,
-            }}
-            onPress={() => handleMarkerPress(store)}
-            tracksViewChanges={false}
-          >
-            <View style={styles.markerContainer}>
-              <View style={[
-                styles.marker,
-                selectedStore?.id === store.id && styles.markerSelected
-              ]}>
-                <Text style={styles.markerText}>🏪</Text>
+        {isMapReady && storeGroups.map((group) => {
+          const isSelected = selectedStore?.id === group.store.id;
+          const price = `$${(group.cheapestPrice / 100).toFixed(0)}`;
+          return (
+            <Marker
+              key={group.store.id}
+              coordinate={{
+                latitude: group.store.location.lat,
+                longitude: group.store.location.lng,
+              }}
+              onPress={() => handleMarkerPress(group.store)}
+              tracksViewChanges={isSelected}
+              anchor={{ x: 0.5, y: 1 }}
+            >
+              <View style={styles.markerWrapper}>
+                <View style={[styles.markerBubble, isSelected && styles.markerBubbleSelected]}>
+                  <View style={[styles.markerIcon, isSelected && styles.markerIconSelected]}>
+                    <Ionicons name="storefront" size={14} color={isSelected ? '#fff' : colors.primary} />
+                  </View>
+                  <View style={styles.markerInfo}>
+                    <Text style={[styles.markerName, isSelected && styles.markerNameSelected]} numberOfLines={1}>
+                      {group.store.name}
+                    </Text>
+                    <View style={styles.markerMeta}>
+                      <Text style={[styles.markerPrice, isSelected && styles.markerPriceSelected]}>
+                        From {price}
+                      </Text>
+                      <View style={[styles.markerDot, isSelected && styles.markerDotSelected]} />
+                      <Text style={[styles.markerCount, isSelected && styles.markerCountSelected]}>
+                        {group.products.length} {group.products.length === 1 ? 'item' : 'items'}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={[styles.markerArrow, isSelected && styles.markerArrowSelected]} />
               </View>
-              {store.distance !== undefined && (
-                <View style={styles.markerBadge}>
-                  <Text style={styles.markerBadgeText}>
-                    {store.distance.toFixed(1)}km
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            {/* Callout on Android */}
-            {Platform.OS === 'android' && (
-              <Callout onPress={() => handleMarkerPress(store)}>
-                <View style={styles.callout}>
-                  <Text style={styles.calloutTitle}>{store.name}</Text>
-                  <Text style={styles.calloutSubtitle}>
-                    {store.distance !== undefined ? `${store.distance.toFixed(1)}km away` : 'Nearby'}
-                  </Text>
-                </View>
-              </Callout>
-            )}
-          </Marker>
-        ))}
+            </Marker>
+          );
+        })}
       </MapView>
 
       {/* Recenter Button */}
@@ -259,57 +275,98 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  markerContainer: {
+  markerWrapper: {
     alignItems: 'center',
   },
-  marker: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  markerBubble: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0,0,0,0.06)',
+    maxWidth: 180,
+  },
+  markerBubbleSelected: {
     backgroundColor: colors.primary,
-    justifyContent: 'center',
+    borderColor: colors.success,
+    shadowOpacity: 0.3,
+    elevation: 12,
+  },
+  markerIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(76,175,80,0.12)',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: colors.card,
-    ...shadows.md,
+    justifyContent: 'center',
+    marginRight: 8,
   },
-  markerSelected: {
-    backgroundColor: colors.success,
-    borderColor: colors.primary,
-    borderWidth: 4,
-    transform: [{ scale: 1.2 }],
+  markerIconSelected: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
   },
-  markerText: {
-    fontSize: 22,
+  markerInfo: {
+    flex: 1,
   },
-  markerBadge: {
-    marginTop: 2,
-    backgroundColor: colors.card,
-    paddingHorizontal: spacing.xs,
-    paddingVertical: 2,
-    borderRadius: spacing.radiusSm,
-    borderWidth: 1,
-    borderColor: colors.divider,
-    ...shadows.sm,
+  markerName: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: colors.text.primary,
+    marginBottom: 2,
   },
-  markerBadgeText: {
+  markerNameSelected: {
+    color: '#fff',
+  },
+  markerMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  markerPrice: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  markerPriceSelected: {
+    color: '#E8F5E9',
+  },
+  markerDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: colors.text.tertiary,
+    marginHorizontal: 5,
+  },
+  markerDotSelected: {
+    backgroundColor: 'rgba(255,255,255,0.5)',
+  },
+  markerCount: {
     fontSize: 10,
     fontWeight: '600',
-    color: colors.text.primary,
+    color: colors.text.tertiary,
   },
-  callout: {
-    padding: spacing.sm,
-    minWidth: 150,
+  markerCountSelected: {
+    color: 'rgba(255,255,255,0.8)',
   },
-  calloutTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: 4,
+  markerArrow: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderTopWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: '#fff',
+    marginTop: -1,
   },
-  calloutSubtitle: {
-    fontSize: 12,
-    color: colors.text.secondary,
+  markerArrowSelected: {
+    borderTopColor: colors.primary,
   },
   recenterButton: {
     position: 'absolute',

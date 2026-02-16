@@ -32,15 +32,6 @@ export const refreshToken = async (token: string): Promise<{ accessToken: string
   return data.data.tokens; // Extract tokens from the nested data structure
 }
 
-interface GoogleAuthResponse extends AuthResponse {
-  isNewUser: boolean;
-}
-
-export const googleAuth = async (idToken: string, marketId?: string): Promise<GoogleAuthResponse> => {
-  const { data } = await apiClient.post('/auth/google', { idToken, marketId });
-  return data.data;
-};
-
 export const forgotPassword = async (phoneNumber: string): Promise<void> => {
   await apiClient.post('/auth/forgot-password', { phoneNumber });
 };

@@ -1,7 +1,7 @@
 export const DEFAULT_LOCATION = {
     coords: {
-        latitude: 40.7128,
-        longitude: -74.0060,
+        latitude: 41.2995,
+        longitude: 69.2401,
         altitude: 0,
         accuracy: 0,
         altitudeAccuracy: 0,
@@ -11,4 +11,4 @@ export const DEFAULT_LOCATION = {
     timestamp: Date.now(),
 };
 
-export const DEFAULT_LOCATION_NAME = 'New York, NY';
+export const DEFAULT_LOCATION_NAME = 'Toshkent';

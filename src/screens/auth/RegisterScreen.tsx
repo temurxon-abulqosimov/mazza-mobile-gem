@@ -13,10 +13,8 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../hooks/useAuth';
-import { useGoogleSignIn } from '../../hooks/useGoogleSignIn';
 import { registerSchema, RegisterFormData } from '../../domain/validators/AuthValidators';
 import ControlledInput from '../../components/forms/ControlledInput';
-import GoogleSignInButton from '../../components/auth/GoogleSignInButton';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,14 +23,6 @@ const RegisterScreen = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { register, isRegistering } = useAuth();
-  const { signInWithGoogle, isLoading: isGoogleLoading, isReady: isGoogleReady, isConfigured: isGoogleConfigured } = useGoogleSignIn({
-    onSuccess: () => {
-      navigation.goBack();
-    },
-    onError: (error) => {
-      console.error('Google Sign-In error:', error);
-    },
-  });
   const [agreed, setAgreed] = useState(false);
 
   const { control, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
@@ -88,25 +78,6 @@ const RegisterScreen = () => {
       </View>
 
       <View style={styles.form}>
-        {/* Google Sign-In Button - only show when configured */}
-        {isGoogleConfigured && (
-          <>
-            <GoogleSignInButton
-              onPress={signInWithGoogle}
-              isLoading={isGoogleLoading}
-              disabled={!isGoogleReady}
-              label={t('auth.signup_google')}
-            />
-
-            {/* Divider */}
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{t('auth.or')}</Text>
-              <View style={styles.dividerLine} />
-            </View>
-          </>
-        )}
-
         <ControlledInput
           control={control}
           name="fullName"
@@ -207,21 +178,6 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#999',
-    fontSize: 14,
   },
   checkboxRow: {
     flexDirection: 'row',

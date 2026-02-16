@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, Region, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { DiscoveryStackParamList } from '../../navigation/DiscoveryNavigator';
 import { useDiscovery } from '../../hooks/useDiscovery';
@@ -78,7 +78,7 @@ const MapScreen = () => {
     const { products, isLoading } = useDiscovery({
         lat: region.latitude,
         lng: region.longitude,
-        radius: 10000,
+        radius: 50,
     });
 
     // Group products by store — each store becomes a pin
@@ -96,6 +96,16 @@ const MapScreen = () => {
                 map.get(sid)!.products.push(p);
             }
         }
+
+        // Sort products by createdAt desc (latest first)
+        for (const group of map.values()) {
+            group.products.sort((a, b) => {
+                if (!a.createdAt) return 1;
+                if (!b.createdAt) return -1;
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            });
+        }
+
         return Array.from(map.values());
     }, [products]);
 
@@ -189,7 +199,7 @@ const MapScreen = () => {
             return (
                 <TouchableOpacity
                     activeOpacity={0.95}
-                    onPress={() => navigation.navigate('ProductDetail', { productId: cheapest.id })}
+                    onPress={() => navigation.navigate('Discover', { screen: 'ProductDetail', params: { productId: cheapest.id } } as any)}
                     style={styles.cardOuter}
                 >
                     <View style={styles.card}>
@@ -268,7 +278,11 @@ const MapScreen = () => {
     const renderMarker = useCallback(
         (group: StoreWithProducts, index: number) => {
             const isSelected = selectedStoreId === group.store.id;
+            // Use the first product (latest) because we sorted them in storeGroups
+            const latestProduct = group.products[0];
+            const price = `$${(latestProduct.discountedPrice / 100).toFixed(0)}`;
             const itemCount = group.products.length;
+
             return (
                 <Marker
                     key={group.store.id}
@@ -277,29 +291,47 @@ const MapScreen = () => {
                         longitude: group.store.location.lng,
                     }}
                     onPress={() => handleMarkerPress(group, index)}
-                    tracksViewChanges={false}
+                    tracksViewChanges={isSelected}
+                    anchor={{ x: 0.5, y: 1 }}
                 >
                     <View style={styles.markerWrapper}>
-                        {/* Pin body */}
-                        <View style={[styles.pin, isSelected && styles.pinSelected]}>
-                            <Ionicons
-                                name="storefront"
-                                size={isSelected ? 20 : 16}
-                                color={isSelected ? '#fff' : colors.primary}
-                            />
-                            {itemCount > 1 && (
-                                <View style={[styles.pinCount, isSelected && styles.pinCountSelected]}>
-                                    <Text style={styles.pinCountText}>{itemCount}</Text>
+                        {/* Bubble label */}
+                        <View style={[styles.markerBubble, isSelected && styles.markerBubbleSelected]}>
+                            {/* Store icon */}
+                            <View style={[styles.markerIcon, isSelected && styles.markerIconSelected]}>
+                                <Ionicons
+                                    name="storefront"
+                                    size={16}
+                                    color={isSelected ? '#fff' : '#fff'}
+                                />
+                            </View>
+                            {/* Store info */}
+                            <View style={styles.markerInfo}>
+                                <Text
+                                    style={[styles.markerName, isSelected && styles.markerNameSelected]}
+                                    numberOfLines={1}
+                                >
+                                    {group.store.name}
+                                </Text>
+                                <View style={styles.markerMeta}>
+                                    <Text style={[styles.markerPrice, isSelected && styles.markerPriceSelected]}>
+                                        {/* {t('discovery.from', 'From')} {price} */}
+                                        {price}
+                                    </Text>
+                                    <View style={[styles.markerDot, isSelected && styles.markerDotSelected]} />
+                                    <Text style={[styles.markerLabel, isSelected && styles.markerLabelSelected]}>
+                                        Latest
+                                    </Text>
                                 </View>
-                            )}
+                            </View>
                         </View>
-                        {/* Pin pointer */}
-                        <View style={[styles.pinPointer, isSelected && styles.pinPointerSelected]} />
+                        {/* Arrow pointer */}
+                        <View style={[styles.markerArrow, isSelected && styles.markerArrowSelected]} />
                     </View>
                 </Marker>
             );
         },
-        [selectedStoreId, handleMarkerPress],
+        [selectedStoreId, handleMarkerPress, t],
     );
 
     // ─────────────────── Render ───────────────────
@@ -524,69 +556,99 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
-    // ── Custom Marker / Pin ──
+    // ── Custom Marker / Bubble ──
     markerWrapper: {
         alignItems: 'center',
     },
-    pin: {
-        width: 42,
-        height: 42,
-        borderRadius: 21,
-        backgroundColor: '#fff',
+    markerBubble: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2.5,
-        borderColor: colors.primary,
+        backgroundColor: '#fff',
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 16,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        elevation: 6,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+        elevation: 10,
+        borderWidth: 0,
+        maxWidth: 200,
     },
-    pinSelected: {
+    markerBubbleSelected: {
         backgroundColor: colors.primary,
         borderColor: colors.primaryDark,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        transform: [{ translateY: -4 }],
+        shadowOpacity: 0.4,
+        elevation: 14,
     },
-    pinCount: {
-        position: 'absolute',
-        top: -5,
-        right: -5,
-        minWidth: 18,
-        height: 18,
-        borderRadius: 9,
-        backgroundColor: colors.error,
+    markerIcon: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        backgroundColor: colors.primary,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 4,
+        marginRight: 10,
     },
-    pinCountSelected: {
-        backgroundColor: '#fff',
+    markerIconSelected: {
+        backgroundColor: 'rgba(255,255,255,0.25)',
     },
-    pinCountText: {
-        fontSize: 10,
+    markerInfo: {
+        flex: 1,
+    },
+    markerName: {
+        fontSize: 13,
         fontWeight: '800',
+        color: colors.text.primary,
+        marginBottom: 2,
+    },
+    markerNameSelected: {
         color: '#fff',
     },
-    pinPointer: {
+    markerMeta: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    markerPrice: {
+        fontSize: 13,
+        fontWeight: '900',
+        color: colors.primary,
+    },
+    markerPriceSelected: {
+        color: '#fff',
+    },
+    markerDot: {
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: colors.text.tertiary,
+        marginHorizontal: 6,
+    },
+    markerDotSelected: {
+        backgroundColor: 'rgba(255,255,255,0.6)',
+    },
+    markerLabel: {
+        fontSize: 11,
+        fontWeight: '700',
+        color: colors.text.secondary,
+        textTransform: 'uppercase',
+    },
+    markerLabelSelected: {
+        color: 'rgba(255,255,255,0.9)',
+    },
+    markerArrow: {
         width: 0,
         height: 0,
-        borderLeftWidth: 6,
-        borderRightWidth: 6,
-        borderTopWidth: 8,
+        borderLeftWidth: 10,
+        borderRightWidth: 10,
+        borderTopWidth: 12,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderTopColor: colors.primary,
+        borderTopColor: '#fff',
         marginTop: -1,
     },
-    pinPointerSelected: {
-        borderTopColor: colors.primaryDark,
-        borderLeftWidth: 7,
-        borderRightWidth: 7,
-        borderTopWidth: 9,
+    markerArrowSelected: {
+        borderTopColor: colors.primary,
     },
 
     // ── Bottom carousel ──

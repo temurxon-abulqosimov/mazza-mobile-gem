@@ -13,17 +13,6 @@ import { Platform } from 'react-native';
  * 2. Google Maps API keys (for map functionality):
  *    EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID=your_android_key
  *    EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS=your_ios_key
- *
- * 3. Google OAuth Client IDs (for Google Sign-In):
- *    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=your_web_client_id.apps.googleusercontent.com
- *    EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your_ios_client_id.apps.googleusercontent.com
- *    EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=your_android_client_id.apps.googleusercontent.com
- *
- * To set up Google Sign-In:
- * 1. Go to Google Cloud Console: https://console.cloud.google.com/
- * 2. Create OAuth 2.0 credentials for Web, iOS, and Android
- * 3. Add the client IDs to your .env file
- * 4. Restart the Expo server
  */
 
 export const config = {
@@ -39,12 +28,6 @@ export const config = {
     }),
   },
 
-  // Google OAuth Client IDs
-  googleAuth: {
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '',
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '',
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || '',
-  },
 };
 
 /**
@@ -52,15 +35,6 @@ export const config = {
  */
 export const isGoogleMapsConfigured = (): boolean => {
   return !!config.googleMaps.apiKey;
-};
-
-/**
- * Check if Google Sign-In is properly configured
- * Only the Web Client ID is required (used by Expo Go on all platforms).
- * Platform-specific client IDs are optional and used in standalone builds.
- */
-export const isGoogleAuthConfigured = (): boolean => {
-  return !!config.googleAuth.webClientId;
 };
 
 /**
@@ -73,12 +47,6 @@ export const getConfigWarnings = (): string[] => {
     warnings.push(
       'Google Maps API key not configured. Map functionality will be limited. ' +
       'Please add your API key to the .env file.'
-    );
-  }
-
-  if (!isGoogleAuthConfigured()) {
-    warnings.push(
-      'Google Sign-In not configured. Add Google OAuth client IDs to enable Google Sign-In.'
     );
   }
 

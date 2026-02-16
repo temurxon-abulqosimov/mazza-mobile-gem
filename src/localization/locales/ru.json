@@ -36,9 +36,7 @@
         "login_subtitle": "Войдите, чтобы спасать еду и экономить",
         "create_account": "Создать аккаунт",
         "register_subtitle": "Присоединяйтесь к борьбе с пищевыми отходами",
-        "continue_google": "Войти через Google",
-        "signup_google": "Регистрация через Google",
-        "or": "или",
+
         "terms_agree": "Я согласен с",
         "terms_conditions": "Условиями использования",
         "terms_required_title": "Требуется согласие",
@@ -101,7 +99,13 @@
         "no_products": "Товары не найдены",
         "no_products_subtitle": "Попробуйте изменить фильтры или проверьте позже",
         "could_not_update_favorites": "Не удалось обновить избранное",
-        "open_settings": "Открыть настройки"
+        "open_settings": "Открыть настройки",
+        "searching": "Поиск...",
+        "stores": "Магазины",
+        "products": "Товары",
+        "found": "найдено",
+        "no_search_results": "Ничего не найдено",
+        "no_search_results_subtitle": "По запросу \"{{query}}\" ничего не найдено. Попробуйте другой запрос."
     },
     "product_detail": {
         "pickup_time": "Время самовывоза",

@@ -36,9 +36,9 @@ export const useDiscovery = ({ lat, lng, radius, category, enabled = true }: Dis
     }),
     getNextPageParam: (lastPage) => lastPage.meta.pagination.hasMore ? lastPage.meta.pagination.cursor : undefined,
     initialPageParam: undefined,
-    enabled: enabled && !!lat && !!lng,
-    staleTime: 0, // Always fetch fresh data on refetch
-    gcTime: 0, // Don't cache old data
+    enabled: enabled && (lat !== 0 || lng !== 0),
+    staleTime: 1000 * 30, // Consider data fresh for 30 seconds
+    gcTime: 1000 * 60 * 5, // Keep cached data for 5 minutes
   });
 
   // Reset and refetch - removes cache and fetches fresh data
@@ -46,8 +46,10 @@ export const useDiscovery = ({ lat, lng, radius, category, enabled = true }: Dis
     await queryClient.resetQueries({ queryKey });
   }, [queryClient, queryKey]);
 
-  // Flatten pages into a single array
-  const products = data?.pages.flatMap(page => page.data.products) ?? [];
+  // Flatten pages into a single array and deduplicate by ID
+  const products = (data?.pages.flatMap(page => page.data.products) ?? []).filter(
+    (product, index, self) => self.findIndex(p => p.id === product.id) === index
+  );
 
   return {
     products,
@@ -86,16 +88,18 @@ export const useDiscoveryStores = ({ lat, lng, radius, category, enabled = true 
     }),
     getNextPageParam: (lastPage) => lastPage.meta.pagination.hasMore ? lastPage.meta.pagination.cursor : undefined,
     initialPageParam: undefined,
-    enabled: enabled && !!lat && !!lng,
-    staleTime: 0,
-    gcTime: 0,
+    enabled: enabled && (lat !== 0 || lng !== 0),
+    staleTime: 1000 * 30,
+    gcTime: 1000 * 60 * 5,
   });
 
   const resetAndRefetch = useCallback(async () => {
     await queryClient.resetQueries({ queryKey });
   }, [queryClient, queryKey]);
 
-  const stores = data?.pages.flatMap(page => page.data.stores) ?? [];
+  const stores = (data?.pages.flatMap(page => page.data.stores) ?? []).filter(
+    (store, index, self) => self.findIndex(s => s.id === store.id) === index
+  );
 
   return {
     stores,

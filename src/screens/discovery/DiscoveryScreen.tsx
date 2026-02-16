@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,17 +10,20 @@ import {
   Image,
   RefreshControl,
   StatusBar,
-  ActivityIndicator
+  ActivityIndicator,
+  Animated,
+  Platform,
+  Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Location from 'expo-location';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 
 import { useDiscovery } from '../../hooks/useDiscovery';
 import { useCategories } from '../../hooks/useCategories';
 import { useLocation } from '../../hooks/useLocation';
+import { useSearch } from '../../hooks/useSearch';
 import { favoriteApi } from '../../api';
 import ProductCard from '../../components/discovery/ProductCard';
 import { DiscoveryStackParamList } from '../../navigation/types';
@@ -51,7 +54,35 @@ const CATEGORIES: Category[] = [
 
 import { DEFAULT_LOCATION, DEFAULT_LOCATION_NAME } from '../../constants/location';
 
-// ... (imports)
+// Animated wrapper for product cards — fade in + slide up on mount
+const AnimatedProductItem = React.memo(({ children, index }: { children: React.ReactNode; index: number }) => {
+  const animValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(animValue, {
+      toValue: 1,
+      duration: 350,
+      delay: Math.min(index * 60, 300),
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: animValue,
+        transform: [{
+          translateY: animValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [24, 0],
+          }),
+        }],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
+});
 
 const DiscoveryScreen = () => {
   const { t } = useTranslation();
@@ -73,8 +104,9 @@ const DiscoveryScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Use effective location for discovery
-  const effectiveLocation = location || (isLocationLoading ? null : DEFAULT_LOCATION);
+  // Use effective location for discovery — ALWAYS fall back to DEFAULT_LOCATION
+  // Never return null (prevents query from being disabled during GPS loading on Android)
+  const effectiveLocation = location || DEFAULT_LOCATION;
 
   // Discovery Hook
   const {
@@ -86,11 +118,22 @@ const DiscoveryScreen = () => {
     hasNextPage,
     isFetchingNextPage
   } = useDiscovery({
-    lat: effectiveLocation?.coords.latitude || 0,
-    lng: effectiveLocation?.coords.longitude || 0,
+    lat: effectiveLocation.coords.latitude,
+    lng: effectiveLocation.coords.longitude,
     radius: 50, // 50 km radius
     category: selectedCategory === 'all' ? undefined : selectedCategory,
-    enabled: !!effectiveLocation,
+    enabled: true,
+  });
+
+  // Search Hook
+  const {
+    products: searchProducts,
+    stores: searchStores,
+    isSearchActive,
+    isSearching,
+  } = useSearch(searchQuery, {
+    lat: effectiveLocation.coords.latitude,
+    lng: effectiveLocation.coords.longitude,
   });
 
   // Initial Location Check
@@ -170,6 +213,10 @@ const DiscoveryScreen = () => {
     getLocation();
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
   const handleToggleFavorite = async (product: any) => {
     try {
       if (product.isFavorited) {
@@ -215,7 +262,8 @@ const DiscoveryScreen = () => {
     return Array.from(uniqueStores.values()).slice(0, 5);
   }, [products]);
 
-  const renderHeader = () => (
+  // ── Sticky Header: rendered OUTSIDE FlatList so it never unmounts ──
+  const renderStickyHeader = () => (
     <View style={styles.header}>
       {/* Location Selector */}
       <LocationSelector
@@ -238,21 +286,24 @@ const DiscoveryScreen = () => {
         </View>
       </TouchableOpacity>
 
-      {/* Search Bar */}
+      {/* Search Bar — lives outside FlatList to keep focus */}
       <SearchBar
         placeholder={t('discovery.search_placeholder')}
         value={searchQuery}
         onChangeText={setSearchQuery}
-        showVoice={false}
+        onSubmit={() => Keyboard.dismiss()}
+        onClear={handleClearSearch}
         style={styles.searchBar}
       />
 
-      {/* Category Filter */}
-      <CategoryFilter
-        categories={CATEGORIES}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-      />
+      {/* Category Filter — hide during search */}
+      {!isSearchActive && (
+        <CategoryFilter
+          categories={CATEGORIES}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+        />
+      )}
     </View>
   );
 
@@ -318,30 +369,102 @@ const DiscoveryScreen = () => {
     );
   };
 
-  const renderContent = () => {
-    // 1. Initial State (No Location)
-    if (!effectiveLocation && !isLocationLoading) {
-      return (
-        <View style={styles.container}>
-          {renderHeader()}
-          <EmptyState
-            icon="location"
-            title={t('discovery.location_required')}
-            subtitle={t('discovery.location_required_msg')}
-            action={{
-              label: t('discovery.enable_location'),
-              onPress: handleRequestLocation
-            }}
-          />
+  // Memoized search list header — no arrow fn in ListHeaderComponent
+  const SearchListHeader = useMemo(() => (
+    <>
+      {/* Searching indicator */}
+      {isSearching && (
+        <View style={styles.searchingContainer}>
+          <ActivityIndicator size="small" color={colors.primary} />
+          <Text style={styles.searchingText}>{t('discovery.searching')}</Text>
         </View>
-      );
+      )}
+
+      {/* Store search results */}
+      {searchStores.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>{t('discovery.stores')}</Text>
+            <Text style={styles.searchResultCount}>
+              {searchStores.length} {t('discovery.found')}
+            </Text>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+            keyboardShouldPersistTaps="handled"
+          >
+            {searchStores.map((store: any) => (
+              <SellerCard
+                key={store.id}
+                seller={store}
+                onPress={() => handleStorePress(store)}
+                onProductPress={handleProductPress}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      {/* Products header */}
+      {searchProducts.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>{t('discovery.products')}</Text>
+            <Text style={styles.searchResultCount}>
+              {searchProducts.length} {t('discovery.found')}
+            </Text>
+          </View>
+        </View>
+      )}
+    </>
+  ), [isSearching, searchStores, searchProducts, t]);
+
+  const SearchEmptyComponent = useMemo(() => (
+    !isSearching ? (
+      <EmptyState
+        icon="search"
+        title={t('discovery.no_search_results')}
+        subtitle={t('discovery.no_search_results_subtitle', { query: searchQuery })}
+      />
+    ) : null
+  ), [isSearching, searchQuery, t]);
+
+  const renderSearchResults = () => {
+    return (
+      <FlatList
+        data={searchProducts}
+        keyExtractor={(item) => item.id}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        renderItem={({ item, index }) => (
+          <AnimatedProductItem index={index}>
+            <ProductCard
+              product={item}
+              onPress={() => handleProductPress(item.id)}
+              onToggleFavorite={() => handleToggleFavorite(item)}
+            />
+          </AnimatedProductItem>
+        )}
+        ListHeaderComponent={SearchListHeader}
+        ListEmptyComponent={SearchEmptyComponent}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
+    );
+  };
+
+  const renderContent = () => {
+    // Search mode — show search results instead of discovery feed
+    if (isSearchActive) {
+      return renderSearchResults();
     }
 
-    // 2. Loading State (Location found but query loading)
-    if ((isDiscoveryLoading || isLocationLoading) && (!products || products.length === 0)) {
+    // 1. Loading State
+    if (isDiscoveryLoading && (!products || products.length === 0)) {
       return (
         <View style={styles.loadingContainer}>
-          {renderHeader()}
           {/* Banner Skeleton */}
           <View style={[styles.bannerContainer, { backgroundColor: '#f0f0f0' }]} />
 
@@ -365,17 +488,41 @@ const DiscoveryScreen = () => {
     // if (isError) { ... } -> handled by empty state on list empty component if desired, or explicitly here
 
     // 4. Data Content
+    // Stable header element — no inline arrow function
+    const DiscoveryListHeader = (
+      <>
+        {/* Banner */}
+        <View style={styles.bannerContainer}>
+          <Image source={{ uri: MOCK_BANNER }} style={styles.bannerImage} />
+          <View style={styles.bannerContent}>
+            <Text style={styles.bannerTitle}>Fresh Halal Meat</Text>
+            <Text style={styles.bannerSubtitle}>Up to 20% off this week</Text>
+          </View>
+        </View>
+
+        {renderNearbySellers()}
+
+        <View style={styles.section}>
+          {renderAvailableNowHeader()}
+        </View>
+      </>
+    );
+
     return (
       <FlatList
         data={products}
-        renderItem={({ item }) => (
-          <ProductCard
-            product={item}
-            onPress={() => handleProductPress(item.id)}
-            onToggleFavorite={() => handleToggleFavorite(item)}
-          />
+        renderItem={({ item, index }) => (
+          <AnimatedProductItem index={index}>
+            <ProductCard
+              product={item}
+              onPress={() => handleProductPress(item.id)}
+              onToggleFavorite={() => handleToggleFavorite(item)}
+            />
+          </AnimatedProductItem>
         )}
         keyExtractor={(item) => item.id}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={handleRefresh} tintColor={colors.primary} />
         }
@@ -383,27 +530,9 @@ const DiscoveryScreen = () => {
           if (hasNextPage) fetchNextPage();
         }}
         onEndReachedThreshold={0.5}
+        removeClippedSubviews={Platform.OS === 'android'}
         ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" color={colors.primary} style={{ padding: 16 }} /> : null}
-        ListHeaderComponent={() => (
-          <>
-            {renderHeader()}
-
-            {/* Banner */}
-            <View style={styles.bannerContainer}>
-              <Image source={{ uri: MOCK_BANNER }} style={styles.bannerImage} />
-              <View style={styles.bannerContent}>
-                <Text style={styles.bannerTitle}>Fresh Halal Meat</Text>
-                <Text style={styles.bannerSubtitle}>Up to 20% off this week</Text>
-              </View>
-            </View>
-
-            {renderNearbySellers()}
-
-            <View style={styles.section}>
-              {renderAvailableNowHeader()}
-            </View>
-          </>
-        )}
+        ListHeaderComponent={DiscoveryListHeader}
         ListEmptyComponent={
           <EmptyState
             icon="search"
@@ -420,7 +549,10 @@ const DiscoveryScreen = () => {
   return (
     <SafeAreaWrapper>
       <StatusBar barStyle="dark-content" />
-      {renderContent()}
+      {renderStickyHeader()}
+      <View style={styles.contentContainer}>
+        {renderContent()}
+      </View>
     </SafeAreaWrapper>
   );
 };
@@ -429,6 +561,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  contentContainer: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -466,6 +601,21 @@ const styles = StyleSheet.create({
   searchBar: {
     marginHorizontal: spacing.lg,
     marginTop: spacing.sm,
+  },
+  searchingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: spacing.lg,
+  },
+  searchingText: {
+    marginLeft: spacing.sm,
+    fontSize: 14,
+    color: colors.text.secondary,
+  },
+  searchResultCount: {
+    fontSize: 14,
+    color: colors.text.tertiary,
   },
   section: {
     marginTop: spacing.sectionMargin,

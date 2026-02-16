@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
@@ -16,11 +16,38 @@ import { Category } from '../../domain/Category';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'BecomeSeller'>;
 
+const STORE_TYPE_ICONS: Record<string, string> = {
+    bakery: '🍞',
+    cafe: '☕',
+    desserts: '🍰',
+    'fast-food': '🍔',
+    grocery: '🛒',
+    restaurant: '🍽️',
+    supermarket: '🏪',
+    pharmacy: '💊',
+    default: '🏬',
+};
+
+const getStoreTypeIcon = (name: string, slug?: string): string => {
+    const key = (slug || name || '').toLowerCase().replace(/\s+/g, '-');
+    return STORE_TYPE_ICONS[key] || STORE_TYPE_ICONS.default;
+};
+
 const BecomeSellerScreen = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<NavigationProp>();
     const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm<SellerApplicationFormData>({
         resolver: zodResolver(sellerApplicationSchema),
+        defaultValues: {
+            businessName: '',
+            description: '',
+            address: '',
+            city: '',
+            phone: '',
+            categoryId: '' as any,
+            lat: 0,
+            lng: 0,
+        },
     });
     const { applyAsSeller, isApplying } = useSeller();
     const [isGettingLocation, setIsGettingLocation] = useState(false);
@@ -41,16 +68,12 @@ const BecomeSellerScreen = () => {
     const loadCategories = async () => {
         try {
             const data = await getCategories();
-            // data.categories is the array
-            if (data && Array.isArray(data)) { // Check if data itself is array or data.categories
-                // api/categories says returns data.data which is { categories: [] } ?
-                // checking api/categories.ts: return data.data; // Backend returns {..., data: { categories: [...] } }
-                // Wait, getCategories return type is Promise<{ categories: Category[] }>
-                setCategories(data.categories || []);
+            if (data && data.categories && Array.isArray(data.categories)) {
+                setCategories(data.categories);
             }
         } catch (error) {
             console.error('Failed to load categories', error);
-            Alert.alert(t('common.error'), t('become_seller.categories_load_failed'));
+            Alert.alert(t('common.error'), t('become_seller.categories_load_failed', 'Failed to load categories'));
         } finally {
             setIsCategoriesLoading(false);
         }
@@ -94,12 +117,11 @@ const BecomeSellerScreen = () => {
             }
 
             setLocationObtained(true);
-            Alert.alert(t('common.success'), t('become_seller.location_success_msg'));
         } catch (error) {
             console.error('Location error:', error);
             Alert.alert(
-                t('become_seller.location_error'),
-                t('become_seller.location_error_msg'),
+                t('become_seller.location_error', 'Location Error'),
+                t('become_seller.location_error_msg', 'Could not get your location. Please enter address manually.'),
                 [{ text: t('common.ok') }]
             );
         } finally {
@@ -107,107 +129,315 @@ const BecomeSellerScreen = () => {
         }
     };
 
+    const onValidationError = (formErrors: any) => {
+        const firstError = Object.values(formErrors)[0] as any;
+        const message = firstError?.message || t('common.error');
+        Alert.alert(t('common.error'), message);
+    };
+
     const onSubmit = async (data: SellerApplicationFormData) => {
+        if (!locationObtained) {
+            Alert.alert(t('common.error'), t('become_seller.location_required', 'Please set your store location first'));
+            return;
+        }
         try {
             await applyAsSeller(data);
             Alert.alert(
-                t('become_seller.application_submitted'),
-                t('become_seller.application_submitted_msg'),
+                t('become_seller.application_submitted', 'Application Submitted!'),
+                t('become_seller.application_submitted_msg', 'Your seller application has been submitted. We will review it shortly.'),
                 [{ text: t('common.ok'), onPress: () => navigation.goBack() }]
             );
         } catch (error: any) {
-            console.error('Seller application error:', error);
-            console.error('Error response:', error.response?.data);
-            console.error('Error status:', error.response?.status);
             const message = error.response?.data?.message || error.response?.data?.error?.message?.join(', ') || error.message || 'Something went wrong.';
-            Alert.alert(t('become_seller.application_failed'), message);
+            Alert.alert(t('become_seller.application_failed', 'Submission Failed'), message);
         }
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>{t('become_seller.title')}</Text>
-            <Text style={styles.subtitle}>{t('become_seller.subtitle')}</Text>
-
-            <Text style={styles.label}>{t('become_seller.select_category')}</Text>
-            {isCategoriesLoading ? (
-                <ActivityIndicator color="#FF6B35" size="small" style={{ alignSelf: 'flex-start', marginBottom: 16 }} />
-            ) : (
-                <View style={styles.categoryContainer}>
-                    {categories.map((cat) => (
-                        <TouchableOpacity
-                            key={cat.id}
-                            style={[
-                                styles.categoryCard,
-                                selectedCategoryId === cat.id && styles.categoryCardSelected
-                            ]}
-                            onPress={() => setValue('categoryId', cat.id, { shouldValidate: true })}
-                        >
-                            {/* Handle icon being URL or emoji */}
-                            {cat.icon?.startsWith('http') ? (
-                                <Image source={{ uri: cat.icon }} style={styles.categoryImage} />
-                            ) : (
-                                <Text style={styles.categoryIcon}>{cat.icon || '📦'}</Text>
-                            )}
-                            <Text style={[
-                                styles.categoryName,
-                                selectedCategoryId === cat.id && styles.categoryNameSelected
-                            ]}>{cat.name}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            )}
-            {errors.categoryId && <Text style={styles.errorText}>{errors.categoryId.message}</Text>}
-
-            <ControlledInput name="businessName" label="Business Name" control={control} error={errors.businessName} />
-            <ControlledInput name="description" label="Description" control={control} error={errors.description} multiline numberOfLines={4} />
-            <ControlledInput name="address" label="Address" control={control} error={errors.address} />
-            <ControlledInput name="city" label="City" control={control} error={errors.city} />
-
-            <View style={styles.locationSection}>
-                <TouchableOpacity style={styles.locationButton} onPress={getCurrentLocation} disabled={isGettingLocation}>
-                    {isGettingLocation ? <ActivityIndicator color="#FF6B35" /> : <Text style={styles.locationButtonText}>📍 {locationObtained ? 'Update Location' : 'Use Current Location'}</Text>}
-                </TouchableOpacity>
-                {locationObtained && lat && lng && (
-                    <Text style={styles.locationInfo}>
-                        ✓ Location: {lat.toFixed(6)}, {lng.toFixed(6)}
-                    </Text>
-                )}
+        <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerEmoji}>🏪</Text>
+                <Text style={styles.title}>{t('become_seller.title', 'Become a Seller')}</Text>
+                <Text style={styles.subtitle}>{t('become_seller.subtitle', 'Join our community of sellers!')}</Text>
             </View>
 
-            <ControlledInput name="phone" label="Phone Number" control={control} error={errors.phone} keyboardType="phone-pad" />
+            {/* Step 1: Store Type */}
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                    <Text style={styles.stepBadge}>1</Text>  {t('become_seller.select_category', 'Store Type')}
+                </Text>
+                {isCategoriesLoading ? (
+                    <ActivityIndicator color="#FF6B35" size="small" style={{ marginVertical: 20 }} />
+                ) : (
+                    <View style={styles.categoryContainer}>
+                        {categories.map((cat) => {
+                            const isSelected = selectedCategoryId === cat.id;
+                            return (
+                                <TouchableOpacity
+                                    key={cat.id}
+                                    style={[styles.categoryChip, isSelected && styles.categoryChipSelected]}
+                                    onPress={() => setValue('categoryId', cat.id, { shouldValidate: true })}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={styles.categoryChipIcon}>
+                                        {getStoreTypeIcon(cat.name, cat.slug)}
+                                    </Text>
+                                    <Text style={[styles.categoryChipText, isSelected && styles.categoryChipTextSelected]}>
+                                        {cat.name}
+                                    </Text>
+                                    {isSelected && <Text style={styles.checkMark}>✓</Text>}
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                )}
+                {errors.categoryId && <Text style={styles.errorText}>{errors.categoryId.message}</Text>}
+            </View>
 
-            {isApplying ? (
-                <ActivityIndicator size="large" color="#FF6B35" />
-            ) : (
-                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)}>
-                    <Text style={styles.submitButtonText}>Submit Application</Text>
+            {/* Step 2: Business Info */}
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                    <Text style={styles.stepBadge}>2</Text>  {t('become_seller.business_info', 'Business Info')}
+                </Text>
+                <ControlledInput
+                    name="businessName"
+                    label={t('become_seller.business_name', 'Business Name')}
+                    placeholder={t('become_seller.business_name_placeholder', 'e.g. Fresh Bakery')}
+                    control={control}
+                    error={errors.businessName}
+                />
+                <ControlledInput
+                    name="description"
+                    label={t('become_seller.description', 'Description')}
+                    placeholder={t('become_seller.description_placeholder', 'Tell customers about your business...')}
+                    control={control}
+                    error={errors.description}
+                    multiline
+                    numberOfLines={3}
+                />
+                <ControlledInput
+                    name="phone"
+                    label={t('become_seller.phone', 'Business Phone')}
+                    placeholder="998901234567"
+                    control={control}
+                    error={errors.phone}
+                    keyboardType="phone-pad"
+                />
+            </View>
+
+            {/* Step 3: Location */}
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>
+                    <Text style={styles.stepBadge}>3</Text>  {t('become_seller.location', 'Location')}
+                </Text>
+
+                <TouchableOpacity
+                    style={[styles.locationButton, locationObtained && styles.locationButtonObtained]}
+                    onPress={getCurrentLocation}
+                    disabled={isGettingLocation}
+                    activeOpacity={0.7}
+                >
+                    {isGettingLocation ? (
+                        <ActivityIndicator color="#FF6B35" />
+                    ) : (
+                        <>
+                            <Text style={styles.locationButtonIcon}>{locationObtained ? '✅' : '📍'}</Text>
+                            <Text style={[styles.locationButtonText, locationObtained && styles.locationButtonTextObtained]}>
+                                {locationObtained
+                                    ? t('become_seller.location_detected', 'Location detected')
+                                    : t('become_seller.use_current_location', 'Detect my location')}
+                            </Text>
+                        </>
+                    )}
                 </TouchableOpacity>
-            )}
+                {locationObtained && lat !== 0 && lng !== 0 && (
+                    <Text style={styles.locationCoords}>
+                        📌 {Number(lat).toFixed(5)}, {Number(lng).toFixed(5)}
+                    </Text>
+                )}
+
+                <ControlledInput
+                    name="address"
+                    label={t('become_seller.address', 'Address')}
+                    placeholder={t('become_seller.address_placeholder', 'Street name, building number')}
+                    control={control}
+                    error={errors.address}
+                />
+                <ControlledInput
+                    name="city"
+                    label={t('become_seller.city', 'City')}
+                    placeholder={t('become_seller.city_placeholder', 'e.g. Tashkent')}
+                    control={control}
+                    error={errors.city}
+                />
+            </View>
+
+            {/* Submit */}
+            <TouchableOpacity
+                style={[styles.submitButton, isApplying && styles.submitButtonDisabled]}
+                onPress={handleSubmit(onSubmit, onValidationError)}
+                disabled={isApplying}
+                activeOpacity={0.8}
+            >
+                {isApplying ? (
+                    <ActivityIndicator color="#fff" />
+                ) : (
+                    <Text style={styles.submitButtonText}>{t('become_seller.submit', 'Submit Application')}</Text>
+                )}
+            </TouchableOpacity>
+
+            <View style={{ height: 40 }} />
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 8 },
-    subtitle: { fontSize: 16, color: '#666', marginBottom: 24 },
-    locationSection: { marginBottom: 16 },
-    locationButton: { backgroundColor: '#FFF5F2', borderColor: '#FF6B35', borderWidth: 1, borderRadius: 8, paddingVertical: 14, alignItems: 'center' },
-    locationButtonText: { color: '#FF6B35', fontSize: 16, fontWeight: '600' },
-    locationInfo: { marginTop: 8, fontSize: 12, color: '#28a745', textAlign: 'center' },
-    submitButton: { backgroundColor: '#FF6B35', borderRadius: 8, paddingVertical: 16, alignItems: 'center', marginTop: 20, marginBottom: 40 },
-    submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-
-    label: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#333' },
-    categoryContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 },
-    categoryCard: { width: '48%', backgroundColor: '#f9f9f9', borderRadius: 12, padding: 16, alignItems: 'center', borderWidth: 1, borderColor: '#eee', marginBottom: 10 },
-    categoryCardSelected: { backgroundColor: '#FFF5F2', borderColor: '#FF6B35' },
-    categoryIcon: { fontSize: 32, marginBottom: 8 },
-    categoryImage: { width: 50, height: 50, borderRadius: 25, marginBottom: 8 },
-    categoryName: { fontSize: 14, color: '#666', textAlign: 'center', fontWeight: '500' },
-    categoryNameSelected: { color: '#FF6B35', fontWeight: 'bold' },
-    errorText: { color: 'red', fontSize: 12, marginBottom: 12 },
+    container: {
+        flex: 1,
+        backgroundColor: '#F8F9FA',
+    },
+    header: {
+        alignItems: 'center',
+        paddingTop: 24,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+    },
+    headerEmoji: {
+        fontSize: 48,
+        marginBottom: 12,
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: '700',
+        color: '#1A1A2E',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 15,
+        color: '#888',
+        textAlign: 'center',
+    },
+    section: {
+        backgroundColor: '#fff',
+        marginHorizontal: 16,
+        marginBottom: 12,
+        borderRadius: 16,
+        padding: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 1,
+    },
+    sectionTitle: {
+        fontSize: 17,
+        fontWeight: '700',
+        color: '#1A1A2E',
+        marginBottom: 14,
+    },
+    stepBadge: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#FF6B35',
+    },
+    categoryContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    categoryChip: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F5F5F5',
+        borderRadius: 24,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderWidth: 1.5,
+        borderColor: '#EBEBEB',
+    },
+    categoryChipSelected: {
+        backgroundColor: '#FFF2EC',
+        borderColor: '#FF6B35',
+    },
+    categoryChipIcon: {
+        fontSize: 18,
+        marginRight: 6,
+    },
+    categoryChipText: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#555',
+    },
+    categoryChipTextSelected: {
+        color: '#FF6B35',
+        fontWeight: '700',
+    },
+    checkMark: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#FF6B35',
+        marginLeft: 6,
+    },
+    errorText: {
+        color: '#E53E3E',
+        fontSize: 12,
+        marginTop: 6,
+    },
+    locationButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#FFF5F2',
+        borderColor: '#FFD4C2',
+        borderWidth: 1.5,
+        borderRadius: 12,
+        paddingVertical: 14,
+        marginBottom: 12,
+    },
+    locationButtonObtained: {
+        backgroundColor: '#F0FFF4',
+        borderColor: '#C6F6D5',
+    },
+    locationButtonIcon: {
+        fontSize: 20,
+        marginRight: 8,
+    },
+    locationButtonText: {
+        color: '#FF6B35',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    locationButtonTextObtained: {
+        color: '#38A169',
+    },
+    locationCoords: {
+        fontSize: 12,
+        color: '#999',
+        textAlign: 'center',
+        marginBottom: 12,
+    },
+    submitButton: {
+        backgroundColor: '#FF6B35',
+        borderRadius: 14,
+        paddingVertical: 16,
+        alignItems: 'center',
+        marginHorizontal: 16,
+        marginTop: 8,
+        shadowColor: '#FF6B35',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    submitButtonDisabled: {
+        opacity: 0.7,
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontSize: 17,
+        fontWeight: '700',
+    },
 });
 
 export default BecomeSellerScreen;

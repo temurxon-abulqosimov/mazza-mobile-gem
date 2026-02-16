@@ -36,9 +36,7 @@
         "login_subtitle": "Login to save food and save money",
         "create_account": "Create Account",
         "register_subtitle": "Join the fight against food waste",
-        "continue_google": "Continue with Google",
-        "signup_google": "Sign up with Google",
-        "or": "or",
+
         "terms_agree": "I agree to the",
         "terms_conditions": "Terms & Conditions",
         "terms_required_title": "Terms Required",
@@ -101,7 +99,13 @@
         "no_products": "No Products Found",
         "no_products_subtitle": "Try adjusting your filters or check back later",
         "could_not_update_favorites": "Could not update favorites",
-        "open_settings": "Open Settings"
+        "open_settings": "Open Settings",
+        "searching": "Searching...",
+        "stores": "Stores",
+        "products": "Products",
+        "found": "found",
+        "no_search_results": "No Results Found",
+        "no_search_results_subtitle": "No results for \"{{query}}\". Try a different search term."
     },
     "product_detail": {
         "pickup_time": "Pickup Time",
